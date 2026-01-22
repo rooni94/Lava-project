@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;600;700&family=Sora:wght@400;600;700&family=Cairo:wght@400;600;700&family=Tajawal:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #1f2937;
+  background-color: #f8f9fa;
+}
+
+.dark {
+  color: #e5e7eb;
+  background-color: #0b0f17;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #f8f9fa;
+  color: inherit;
+  font-family: "Cairo", "Tajawal", "IBM Plex Sans Arabic", sans-serif;
+  direction: inherit;
+}
+
+.dark body {
+  background: #0b0f17;
+  color: #e5e7eb;
+}
+
+html[dir="ltr"] body {
+  font-family: "Space Grotesk", "Inter", "Sora", sans-serif;
+}
+
+.gradient-hero {
+  background: radial-gradient(circle at 20% 20%, rgba(88, 2, 19, 0.16), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(34, 34, 34, 0.12), transparent 30%),
+    linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.dark .gradient-hero {
+  background: radial-gradient(circle at 20% 20%, rgba(255, 74, 117, 0.12), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.06), transparent 30%),
+    linear-gradient(135deg, #0b0f17 0%, #0f172a 100%);
+}

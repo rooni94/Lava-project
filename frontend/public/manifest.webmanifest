@@ -1,0 +1,9 @@
+{
+  "name": "LAVA",
+  "short_name": "LAVA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F9FA",
+  "theme_color": "#580213",
+  "icons": []
+}
