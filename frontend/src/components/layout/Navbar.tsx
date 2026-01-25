@@ -57,9 +57,12 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 backdrop-blur bg-white/85 dark:bg-neutral-900/85 dark:text-neutral-100 border-b border-accent/30 dark:border-neutral-800">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-3">
-          <Link to="/" className="flex items-center gap-3 text-primary font-bold text-xl">
-            <span className="w-10 h-10 rounded-2xl bg-primary text-white grid place-items-center shadow-sm">L</span>
-            <span className="tracking-wide">LAVA</span>
+          {/* هنا تم استبدال النص LAVA بالشعار */}
+          <Link to="/" className="flex items-center gap-2 text-primary font-bold text-xl">
+            {/* تأكد من أن ملف logo.PNG موجود في مجلد public */}
+            <img src="/logo.PNG" alt="LAVA Logo" className="h-16 w-auto" />
+            {/* يمكنك إزالة السطر التالي إذا كنت لا تريد أن يظهر النص بجانب الشعار */}
+            {/* <span className="tracking-wide">LAVA</span> */}
           </Link>
 
           <nav className="hidden md:flex items-center gap-2 text-sm font-semibold">
@@ -99,7 +102,6 @@ export default function Navbar() {
               {t("لوحة التحكم", "Dashboard")}
             </Link>
           </nav>
-
           <div className="md:hidden flex items-center gap-2">
             <button
               onClick={toggleTheme}
@@ -124,7 +126,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-
       <AnimatePresence>
         {open && (
           <motion.div
