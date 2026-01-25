@@ -106,7 +106,7 @@ export default function DashboardProjects() {
         cover_image = res.data.path || res.data.url || res.data.file || res.data;
       }
 
-      let gallery = [...(form.gallery || [])];
+      const gallery = [...(form.gallery || [])];
       if (galleryFiles && galleryFiles.length) {
         for (const file of Array.from(galleryFiles)) {
           const res = await uploadFile(file);
