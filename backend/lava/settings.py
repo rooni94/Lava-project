@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "apps.team",
     "apps.clients",
     "apps.careers",
+    "apps.packages",
 ]
 
 MIDDLEWARE = [
@@ -199,6 +200,7 @@ REST_FRAMEWORK = {
         "contact": "30/hour",
         "services": "60/min",
         "projects": "60/min",
+        "packages": "60/min",
         "blog": "60/min",
         "jobs": "60/min",
         "clients": "60/min",

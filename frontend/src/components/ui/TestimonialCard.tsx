@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { renderRiyalText } from "../../utils/currency";
 import { Client } from "../../types";
 
 export default function TestimonialCard({ client }: { client: Client }) {
@@ -24,7 +25,7 @@ export default function TestimonialCard({ client }: { client: Client }) {
           </p>
         </div>
       </div>
-      <p className="text-sm text-secondary/80 dark:text-neutral-300 leading-7">{displayText}</p>
+      <p className="text-sm text-secondary/80 dark:text-neutral-300 leading-7">{renderRiyalText(displayText)}</p>
     </div>
   );
 }

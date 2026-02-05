@@ -25,64 +25,40 @@ export default function About() {
   const isAr = i18n.language === "ar";
   const values = isAr
     ? [
-        {
-          title: "شراكة وثقة",
-          body: "نبدأ كل مشروع بفهم عميق للسياق التجاري لنضمن أن الحل يخدم هدفك بوضوح.",
-        },
-        {
-          title: "جودة وتقنية",
-          body: "نستخدم أفضل الممارسات في الكود والاختبارات لضمان الاستقرار والأداء.",
-        },
-        {
-          title: "تجربة مستخدم أولًا",
-          body: "نصمم بعيون المستخدم النهائي لنحقق تبنيًا سريعًا ونموًا مستدامًا.",
-        },
-        {
-          title: "تعلم مستمر",
-          body: "نطوّر الفريق باستمرار ليواكب التقنيات والأدوات الحديثة.",
-        },
+        { title: "شراكة طويلة الأمد", body: "نعمل كامتداد لفريقك ونقيس نجاحنا بالأثر على عملك لا بعدد المهام." },
+        { title: "إبداع يقوده التحليل", body: "نمزج بين الأفكار الجريئة والبيانات لضبط الرسالة والحملات والمنتج." },
+        { title: "إنتاج + برمجة متماسكة", body: "محتوى وتصميم وموشن جرافيك يتكامل مع مواقع وتطبيقات وأنظمة قابلة للتوسع." },
+        { title: "وضوح وشفافية", body: "تقارير دورية، أولويات متفق عليها، وتواصل مباشر مع فريق متعدد التخصصات." },
       ]
     : [
-        {
-          title: "Partnership mindset",
-          body: "We work as one team with you - aligning on outcomes, transparent plans, and a cadence you can rely on.",
-        },
-        {
-          title: "Quality and craft",
-          body: "Robust code, automated checks, and thoughtful design systems keep releases stable and future-proof.",
-        },
-        {
-          title: "User-first thinking",
-          body: "Discovery, research, and prototyping to ensure experiences are intuitive, accessible, and delightful.",
-        },
-        {
-          title: "Continuous learning",
-          body: "We invest in training, retros, and technical spikes so the team stays sharp and ready for what's next.",
-        },
+        { title: "Long-term partnership", body: "We operate as your extended team and measure success by business impact." },
+        { title: "Creative + analytical", body: "Bold ideas guided by data to tune the message, campaigns, and product." },
+        { title: "Production + build in sync", body: "Content, design, and motion shipped alongside scalable sites, apps, and systems." },
+        { title: "Clarity & transparency", body: "Regular reports, aligned priorities, and direct access to a hybrid team." },
       ];
 
   return (
     <Layout>
       <MetaHead
-        title={isAr ? "من نحن | لافا" : "About | LAVA"}
+        title={isAr ? "من نحن | LAVA وكالة تسويق وبرمجة" : "About | LAVA marketing & engineering"}
         description={
           isAr
-            ? "فريق لافا يجمع بين الاستراتيجية، التصميم، والهندسة لبناء منتجات رقمية موثوقة."
-            : "LAVA blends strategy, design, and engineering to ship dependable digital products."
+            ? "فريق واحد يجمع التسويق بالمحتوى والتصميم والموشن مع برمجة المواقع والتطبيقات والأنظمة لتحقيق نمو قابل للقياس."
+            : "One team for marketing, content, design, motion, and engineering web/apps/systems for measurable growth."
         }
       />
       <section className="py-14 bg-white dark:bg-neutral-950 text-secondary dark:text-neutral-100">
         <div className="container mx-auto px-4 space-y-6">
           <SectionTitle
-            title={isAr ? "نبني منتجات رقمية تدوم" : "We build digital products that last"}
+            title={isAr ? "نمو رقمي يقوده الإبداع" : "Creative-led digital growth"}
             subtitle={
-              isAr ? "فريق متعدد التخصصات في التصميم والهندسة والاستراتيجية." : "A multidisciplinary team across design, engineering, and strategy."
+              isAr ? "تسويق، محتوى، تصميم، موشن، وبرمجة في فريق واحد." : "Marketing, content, design, motion, and engineering under one roof."
             }
           />
           <p className="text-secondary/80 dark:text-neutral-300 leading-8 text-lg">
             {isAr
-              ? "لافا بدأت كفريق صغير في 2019 ونمت لتغطي كامل دورة حياة المنتج: البحث، التصميم، التطوير، والإطلاق. نعمل مع الشركات التقنية والجهات الحكومية والقطاع غير الربحي لبناء حلول عالية الاعتمادية."
-              : "LAVA started in 2019 as a compact team and grew to cover the full product lifecycle: research, design, development, and launch. We partner with tech companies, government entities, and nonprofits to ship reliable solutions with clear business outcomes."}
+            ? "LAVA وكالة تسويق إلكتروني وبرمجة متكاملة تأسست على فكرة بسيطة: الإبداع الحقيقي يجب أن يقود إلى نتائج حقيقية. نجمع مسوقين ومصممين وكتّاب محتوى ومهندسي برمجيات لنكتب الرسالة، نصمم الهوية، ونبني المواقع والتطبيقات والأنظمة التي تخدم حملاتك وتوسّع أثرك."
+            : "LAVA is a full-stack marketing and engineering agency built on one belief: creativity must deliver real results. Marketers, designers, writers, and engineers craft the story, brand, and the web/apps/systems that make campaigns work and scale."}
           </p>
         </div>
       </section>

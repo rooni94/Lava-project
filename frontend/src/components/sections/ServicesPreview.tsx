@@ -9,35 +9,35 @@ const quickServices = {
   ar: [
     {
       id: 1,
-      title: "تطوير مواقع",
-      description: "مواقع سريعة وآمنة بتجربة مستخدم حديثة.",
+      title: "تسويق محتوى وحملات + برمجة",
+      description: "استراتيجية، كتابة، تصميم، موشن، وإدارة الإعلانات مع صفحات ومواقع وأتمتة تدعم التحويل.",
     },
     {
       id: 2,
-      title: "تصميم UX/UI",
-      description: "تصاميم مدفوعة بالأبحاث وتجربة مستخدم واضحة.",
+      title: "تصميم وهوية بصرية",
+      description: "شعارات، أدلة هوية، واجهات رقمية، وسوشيال ميديا بتوجه تجاري.",
     },
     {
       id: 3,
-      title: "أنظمة أعمال",
-      description: "أتمتة وذكاء تشغيلي لدعم فرق المبيعات والدعم.",
+      title: "برمجة مواقع وأنظمة",
+      description: "مواقع React/Next، متاجر، تطبيقات، ولوحات تحكم قابلة للتوسع.",
     },
   ],
   en: [
     {
       id: 1,
-      title: "Web platforms",
-      description: "Fast, secure web experiences built with modern stacks and strong quality practices.",
+      title: "Content & campaigns + build",
+      description: "Strategy, copy, design, motion, paid ads, plus landing pages and automation that convert.",
     },
     {
       id: 2,
-      title: "UX/UI design",
-      description: "Research-driven interfaces with clear journeys and crisp visual systems.",
+      title: "Design & identity",
+      description: "Logos, brand systems, UI kits, and social visuals that sell.",
     },
     {
       id: 3,
-      title: "Business systems",
-      description: "ERP/CRM workflows, automation, and dashboards that keep teams aligned.",
+      title: "Web & systems engineering",
+      description: "React/Next sites, eCommerce, apps, and scalable dashboards.",
     },
   ],
 };

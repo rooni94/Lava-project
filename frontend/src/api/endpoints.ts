@@ -4,6 +4,8 @@ import {
   Client,
   Page,
   Project,
+  Package,
+  PackageCategory,
   Section,
   Service,
   TeamMember,
@@ -24,8 +26,8 @@ export const fetchService = async (id: string): Promise<Service> => {
   return data;
 };
 
-export const fetchProjects = async (): Promise<Project[]> => {
-  const { data } = await api.get("/projects/");
+export const fetchProjects = async (params?: Record<string, string | number | boolean>): Promise<Project[]> => {
+  const { data } = await api.get("/projects/", { params });
   return data.results ?? data;
 };
 
@@ -33,6 +35,36 @@ export const fetchProject = async (id: string): Promise<Project> => {
   const { data } = await api.get(`/projects/${id}/`);
   return data;
 };
+
+export const fetchProjectStats = async (): Promise<{
+  total_projects: number;
+  featured_projects: number;
+  by_category: Record<string, number>;
+  media_items: number;
+  technologies: number;
+}> => {
+  const { data } = await api.get("/projects/stats/");
+  return data;
+};
+
+export const fetchPackageCategories = async (): Promise<PackageCategory[]> => {
+  const { data } = await api.get("/package-categories/");
+  return data.results ?? data;
+};
+
+export const fetchPackages = async (params?: Record<string, string | number | boolean>): Promise<Package[]> => {
+  const { data } = await api.get("/packages/", { params });
+  return data.results ?? data;
+};
+
+export const fetchPackage = async (idOrSlug: string | number): Promise<Package> => {
+  const { data } = await api.get(`/packages/${idOrSlug}/`);
+  return data;
+};
+
+export const createPackage = async (payload: Partial<Package>) => api.post("/packages/", payload);
+export const updatePackage = async (id: number, payload: Partial<Package>) => api.patch(`/packages/${id}/`, payload);
+export const deletePackage = async (id: number) => api.delete(`/packages/${id}/`);
 
 export const fetchTeam = async (): Promise<TeamMember[]> => {
   const { data } = await api.get("/team/");

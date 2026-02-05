@@ -1,10 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import Layout from "../components/layout/Layout";
 import MetaHead from "../components/MetaHead";
-import SectionTitle from "../components/ui/SectionTitle";
 import Skeleton from "../components/ui/Skeleton";
 import { fetchProject } from "../api/endpoints";
 import { Project } from "../types";
@@ -27,29 +25,25 @@ const categoryLabels = {
   },
 };
 
+const statusLabels = {
+  ar: { draft: "مسودة", in_progress: "قيد التنفيذ", done: "منجز" },
+  en: { draft: "Draft", in_progress: "In progress", done: "Done" },
+};
+
 export default function ProjectDetail() {
   const { id } = useParams();
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const labels = isAr ? categoryLabels.ar : categoryLabels.en;
+  const statusMap = isAr ? statusLabels.ar : statusLabels.en;
+
   const { data, isLoading } = useQuery<Project | undefined>({
     queryKey: ["project", id],
     queryFn: () => fetchProject(String(id)),
     enabled: Boolean(id),
   });
 
-  const gallery: string[] = data?.gallery || [];
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  const openLightbox = (idx: number) => setLightboxIndex(idx);
-  const closeLightbox = () => setLightboxIndex(null);
-  const goto = (dir: 1 | -1) => {
-    if (lightboxIndex === null) return;
-    const next = (lightboxIndex + dir + gallery.length) % gallery.length;
-    setLightboxIndex(next);
-  };
-
-  if (isLoading || !data) {
+  if (isLoading) {
     return (
       <Layout>
         <section className="py-14 container mx-auto px-4">
@@ -59,209 +53,212 @@ export default function ProjectDetail() {
     );
   }
 
+  if (!data) {
+    return (
+      <Layout>
+        <section className="py-14 container mx-auto px-4 text-secondary dark:text-neutral-100">
+          {isAr ? "لم يتم العثور على العمل المطلوب." : "Project not found."}
+        </section>
+      </Layout>
+    );
+  }
+
+  const chips = [
+    { label: isAr ? "التصنيف" : "Category", value: labels[data.category as keyof typeof labels] || data.category },
+    data.status ? { label: isAr ? "الحالة" : "Status", value: statusMap[data.status as keyof typeof statusMap] || data.status } : null,
+    data.client ? { label: isAr ? "العميل" : "Client", value: data.client } : null,
+    data.scope ? { label: isAr ? "النطاق" : "Scope", value: data.scope } : null,
+    data.duration ? { label: isAr ? "المدة" : "Duration", value: data.duration } : null,
+    data.team_size ? { label: isAr ? "الفريق" : "Team", value: data.team_size } : null,
+    data.budget ? { label: isAr ? "الميزانية" : "Budget", value: data.budget } : null,
+  ].filter(Boolean) as { label: string; value: string }[];
+
+  const gallery = data.gallery || [];
+
   return (
     <Layout>
       <MetaHead title={data.title} description={data.description} image={data.cover_image} />
       <section
-        className="py-14 container mx-auto px-4 space-y-6 text-secondary dark:text-neutral-100"
+        className="py-14 container mx-auto px-4 space-y-8 text-secondary dark:text-neutral-100"
         style={{ fontFamily: data.body_font_family || "Space Grotesk" }}
       >
-        <SectionTitle
-          title={data.title}
-          subtitle={data.client || labels[data.category as keyof typeof labels] || (isAr ? "العميل" : "Client")}
-          titleStyle={{
-            fontFamily: data.title_font_family || "Space Grotesk",
-            fontSize: (data.title_font_size || 28) + "px",
-            color: data.primary_color || "#8A1538",
-          }}
-        />
-
-        {data.cover_image && (
-          <img
-            src={resolveMediaUrl(data.cover_image)}
-            alt={data.title}
-            className="w-full max-h-[360px] object-cover rounded-2xl border border-accent/30 dark:border-neutral-800"
-            loading="lazy"
-          />
-        )}
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50" style={{ fontFamily: data.title_font_family }}>
-              {isAr ? "ملخص سريع" : "Quick summary"}
-            </h3>
-            <p className="leading-7 text-secondary/80 dark:text-neutral-300" style={{ fontSize: (data.body_font_size || 16) + "px" }}>
-              {data.summary || data.description}
-            </p>
-            <div className="flex flex-wrap gap-3 text-sm text-secondary/70 dark:text-neutral-300">
-              {data.client && (
-                <span className="px-3 py-1 rounded bg-surface dark:bg-neutral-900 border dark:border-neutral-800">
-                  {isAr ? "العميل:" : "Client:"} {data.client}
-                </span>
-              )}
-              {data.duration && (
-                <span className="px-3 py-1 rounded bg-surface dark:bg-neutral-900 border dark:border-neutral-800">
-                  {isAr ? "المدة:" : "Duration:"} {data.duration}
-                </span>
-              )}
-              {data.scope && (
-                <span className="px-3 py-1 rounded bg-surface dark:bg-neutral-900 border dark:border-neutral-800">
-                  {isAr ? "النطاق:" : "Scope:"} {data.scope}
-                </span>
-              )}
-              {data.team_size && (
-                <span className="px-3 py-1 rounded bg-surface dark:bg-neutral-900 border dark:border-neutral-800">
-                  {isAr ? "الفريق:" : "Team:"} {data.team_size}
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50" style={{ fontFamily: data.title_font_family }}>
-              {isAr ? "أرقام وروابط" : "Links & resources"}
-            </h3>
-            <div className="flex flex-wrap gap-3 text-sm">
-              {data.live_url && (
-                <a
-                  href={data.live_url}
-                  className="px-4 py-2 rounded-full bg-primary text-white"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {isAr ? "زيارة المشروع" : "View live product"}
-                </a>
-              )}
-              {data.github_url && (
-                <a
-                  href={data.github_url}
-                  className="px-4 py-2 rounded-full border border-primary text-primary"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {isAr ? "الاطلاع على الكود" : "View repository"}
-                </a>
-              )}
-            </div>
-            {data.technologies && (
+        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-primary/12 via-rose-50 to-white dark:from-primary/20 dark:via-neutral-900 dark:to-neutral-950 border border-accent/40 dark:border-neutral-800 shadow-2xl">
+          <div className="absolute -left-16 -top-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
+          <div className="absolute -right-14 -bottom-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+          <div className="relative grid lg:grid-cols-[1.3fr_0.7fr] gap-6 items-center px-6 py-8 md:px-10 md:py-12">
+            <div className="space-y-4">
+              <p className="text-xs uppercase tracking-[0.25em] text-secondary/60 dark:text-neutral-400">
+                {labels[data.category as keyof typeof labels] || data.category}
+              </p>
+              <h1
+                className="text-3xl md:text-4xl font-bold leading-tight text-secondary dark:text-white"
+                style={{
+                  fontFamily: data.title_font_family || "Space Grotesk",
+                  color: data.primary_color || undefined,
+                }}
+              >
+                {data.title}
+              </h1>
+              <p
+                className="text-secondary/80 dark:text-neutral-200 whitespace-pre-wrap"
+                style={{ fontSize: (data.body_font_size || 16) + "px" }}
+              >
+                {data.summary || data.description}
+              </p>
               <div className="flex flex-wrap gap-2 text-xs text-secondary/70 dark:text-neutral-300">
-                {data.technologies.map((tech) => (
-                  <span key={tech.id} className="px-2 py-1 bg-surface dark:bg-neutral-900 border border-accent/50 dark:border-neutral-800 rounded-full">
-                    {tech.name}
+                {chips.map((c) => (
+                  <span
+                    key={c.label}
+                    className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700"
+                  >
+                    {c.label}: {c.value}
                   </span>
                 ))}
               </div>
-            )}
+              <div className="flex flex-wrap gap-3 text-sm">
+                {data.live_url && (
+                  <a
+                    href={data.live_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2 rounded-full bg-primary text-white shadow hover:shadow-md"
+                  >
+                    {isAr ? "زيارة المشروع" : "View live project"}
+                  </a>
+                )}
+                {data.github_url && (
+                  <a
+                    href={data.github_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary/10"
+                  >
+                    {isAr ? "عرض الكود" : "View repository"}
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border border-accent/40 dark:border-neutral-800 bg-neutral-900/70">
+              {data.cover_image ? (
+                <img
+                  src={resolveMediaUrl(data.cover_image)}
+                  alt={data.title}
+                  className="w-full h-full max-h-[360px] object-cover"
+                />
+              ) : (
+                <div className="h-full min-h-[260px] grid place-items-center text-neutral-200">{isAr ? "لا توجد صورة" : "No cover image"}</div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {data.goals && (
-            <div className="bg-white dark:bg-neutral-900 border dark:border-neutral-800 rounded-2xl p-4 shadow-sm">
-              <h3 className="text-lg font-semibold mb-2 text-secondary dark:text-neutral-50" style={{ fontFamily: data.title_font_family }}>
-                {isAr ? "الأهداف" : "Goals"}
-              </h3>
-              <p className="leading-7 text-secondary/80 dark:text-neutral-300" style={{ fontSize: (data.body_font_size || 16) + "px" }}>
-                {data.goals}
-              </p>
-            </div>
-          )}
-          {data.challenges && (
-            <div className="bg-white dark:bg-neutral-900 border dark:border-neutral-800 rounded-2xl p-4 shadow-sm">
-              <h3 className="text-lg font-semibold mb-2 text-secondary dark:text-neutral-50" style={{ fontFamily: data.title_font_family }}>
-                {isAr ? "التحديات" : "Challenges"}
-              </h3>
-              <p className="leading-7 text-secondary/80 dark:text-neutral-300" style={{ fontSize: (data.body_font_size || 16) + "px" }}>
-                {data.challenges}
-              </p>
-            </div>
-          )}
-        </div>
+        <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-6 items-start">
+          <div className="space-y-4">
+            <InfoCard title={isAr ? "نظرة عامة" : "Overview"} body={data.description || data.summary} bodyFont={data.body_font_size} />
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {data.solution && (
-            <div className="bg-white dark:bg-neutral-900 border dark:border-neutral-800 rounded-2xl p-4 shadow-sm">
-              <h3 className="text-lg font-semibold mb-2 text-secondary dark:text-neutral-50" style={{ fontFamily: data.title_font_family }}>
-                {isAr ? "الحل والمنهجية" : "Solution & approach"}
-              </h3>
-              <p className="leading-7 text-secondary/80 dark:text-neutral-300" style={{ fontSize: (data.body_font_size || 16) + "px" }}>
-                {data.solution}
-              </p>
-            </div>
-          )}
-          {data.results && (
-            <div className="bg-white dark:bg-neutral-900 border dark:border-neutral-800 rounded-2xl p-4 shadow-sm">
-              <h3 className="text-lg font-semibold mb-2 text-secondary dark:text-neutral-50" style={{ fontFamily: data.title_font_family }}>
-                {isAr ? "النتائج والأثر" : "Outcomes & impact"}
-              </h3>
-              <p className="leading-7 text-secondary/80 dark:text-neutral-300" style={{ fontSize: (data.body_font_size || 16) + "px" }}>
-                {data.results}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {gallery.length > 0 && (
-          <>
-            <div className="grid md:grid-cols-3 gap-3">
-              {gallery.map((img, idx) => (
-                <button
-                  key={img}
-                  onClick={() => openLightbox(idx)}
-                  className="rounded-xl border border-accent/30 dark:border-neutral-800 overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <img
-                    src={resolveMediaUrl(img)}
-                    alt={data.title}
-                    className="object-cover w-full h-48 transition hover:scale-105"
-                    loading="lazy"
-                  />
-                </button>
-              ))}
+            <div className="grid md:grid-cols-2 gap-4">
+              {data.goals && <InfoCard title={isAr ? "الأهداف" : "Goals"} body={data.goals} bodyFont={data.body_font_size} />}
+              {data.challenges && (
+                <InfoCard title={isAr ? "التحديات" : "Challenges"} body={data.challenges} bodyFont={data.body_font_size} />
+              )}
+              {data.solution && (
+                <InfoCard title={isAr ? "الحل والمنهجية" : "Solution & approach"} body={data.solution} bodyFont={data.body_font_size} />
+              )}
+              {data.results && (
+                <InfoCard title={isAr ? "النتائج والأثر" : "Outcomes & impact"} body={data.results} bodyFont={data.body_font_size} />
+              )}
             </div>
 
-            {lightboxIndex !== null && (
-              <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <button
-                  className="absolute top-6 right-6 text-white text-2xl"
-                  onClick={closeLightbox}
-                  aria-label={isAr ? "إغلاق" : "Close"}
-                >
-                  X
-                </button>
-                <div className="relative max-w-5xl w-full">
-                  <img
-                    src={resolveMediaUrl(gallery[lightboxIndex])}
-                    alt={data.title}
-                    className="w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
-                  />
-                  {gallery.length > 1 && (
-                    <>
-                      <button
-                        onClick={() => goto(-1)}
-                        className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/50 text-white px-3 py-2 rounded-full"
-                        aria-label={isAr ? "السابق" : "Previous"}
-                      >
-                        &lsaquo;
-                      </button>
-                      <button
-                        onClick={() => goto(1)}
-                        className="absolute top-1/2 -translate-y-1/2 right-2 bg-black/50 text-white px-3 py-2 rounded-full"
-                        aria-label={isAr ? "التالي" : "Next"}
-                      >
-                        &rsaquo;
-                      </button>
-                    </>
-                  )}
-                  <div className="absolute bottom-2 right-4 text-white text-sm">
-                    {lightboxIndex + 1} / {gallery.length}
-                  </div>
+            {gallery.length > 0 && (
+              <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-4 shadow-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "معرض الصور" : "Gallery"}</h3>
+                  <span className="text-xs text-secondary/60 dark:text-neutral-400">{gallery.length} {isAr ? "صورة" : "images"}</span>
+                </div>
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {gallery.map((img) => (
+                    <img
+                      key={img}
+                      src={resolveMediaUrl(img)}
+                      alt={data.title}
+                      className="w-full h-32 object-cover rounded-xl border border-accent/40 dark:border-neutral-800"
+                      loading="lazy"
+                    />
+                  ))}
                 </div>
               </div>
             )}
-          </>
-        )}
+          </div>
+
+          <aside className="space-y-4">
+            {chips.length > 0 && (
+              <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-4 shadow-sm space-y-2">
+                <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "بيانات المشروع" : "Project facts"}</h3>
+                <ul className="space-y-2 text-sm text-secondary/80 dark:text-neutral-300">
+                  {chips.map((c) => (
+                    <li key={c.label} className="flex items-center justify-between gap-3 border-b border-accent/30 dark:border-neutral-800 pb-2 last:border-none last:pb-0">
+                      <span className="text-secondary/70 dark:text-neutral-400">{c.label}</span>
+                      <span className="font-semibold text-secondary dark:text-neutral-50">{c.value}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {data.technologies && data.technologies.length > 0 && (
+              <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-4 shadow-sm space-y-3">
+                <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "التقنيات" : "Tech stack"}</h3>
+                <div className="flex flex-wrap gap-2 text-xs text-secondary/80 dark:text-neutral-300">
+                  {data.technologies.map((tech) => (
+                    <span key={tech.id} className="px-3 py-1 rounded-full border border-accent/50 dark:border-neutral-700 bg-surface dark:bg-neutral-800">
+                      {tech.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(data.live_url || data.github_url) && (
+              <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-4 shadow-sm space-y-2 text-sm">
+                <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "روابط" : "Links"}</h3>
+                {data.live_url && (
+                  <a
+                    href={data.live_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block px-3 py-2 rounded-xl border border-accent/50 dark:border-neutral-700 hover:border-primary text-primary"
+                  >
+                    {isAr ? "الموقع المباشر" : "Live link"}
+                  </a>
+                )}
+                {data.github_url && (
+                  <a
+                    href={data.github_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block px-3 py-2 rounded-xl border border-accent/50 dark:border-neutral-700 hover:border-primary text-secondary dark:text-neutral-100"
+                  >
+                    {isAr ? "المستودع" : "Repository"}
+                  </a>
+                )}
+              </div>
+            )}
+          </aside>
+        </div>
       </section>
     </Layout>
+  );
+}
+
+function InfoCard({ title, body, bodyFont }: { title: string; body?: string; bodyFont?: number }) {
+  if (!body) return null;
+  return (
+    <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-4 shadow-sm space-y-2">
+      <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{title}</h3>
+      <p className="leading-7 text-secondary/80 dark:text-neutral-300 whitespace-pre-wrap" style={{ fontSize: (bodyFont || 16) + "px" }}>
+        {body}
+      </p>
+    </div>
   );
 }

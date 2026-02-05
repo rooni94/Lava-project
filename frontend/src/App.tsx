@@ -8,6 +8,8 @@ import {
   ServiceDetailPage,
   PortfolioPage,
   ProjectDetailPage,
+  PackagesPage,
+  PackageDetailPage,
   BlogPage,
   BlogDetailPage,
   ContactPage,
@@ -21,6 +23,7 @@ import {
   DashboardBlogPage,
   DashboardTeamPage,
   DashboardClientsPage,
+  DashboardPackagesPage,
   DashboardJobsPage,
   DashboardMediaPage,
   DashboardPagesPage,
@@ -44,6 +47,8 @@ export default function App() {
         <Route path="/services/:id" element={<ServiceDetailPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/portfolio/:id" element={<ProjectDetailPage />} />
+        <Route path="/packages" element={<PackagesPage />} />
+        <Route path="/packages/:id" element={<PackageDetailPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/contact" element={<ContactPage />} />
@@ -95,6 +100,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DashboardClientsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/packages"
+          element={
+            <ProtectedRoute>
+              <DashboardPackagesPage />
             </ProtectedRoute>
           }
         />

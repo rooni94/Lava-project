@@ -9,6 +9,7 @@ const navItems = [
   { to: "/dashboard/blog", label: { ar: "المدونة", en: "Blog" } },
   { to: "/dashboard/team", label: { ar: "الفريق", en: "Team" } },
   { to: "/dashboard/clients", label: { ar: "العملاء", en: "Clients" } },
+  { to: "/dashboard/packages", label: { ar: "الباقات", en: "Packages" } },
   { to: "/dashboard/jobs", label: { ar: "الوظائف", en: "Jobs" } },
   { to: "/dashboard/media", label: { ar: "المكتبة", en: "Media Library" } },
   { to: "/dashboard/sections", label: { ar: "الأقسام", en: "Sections" } },
@@ -49,9 +50,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 key={item.to}
                 to={item.to}
                 className={`block px-3 py-2 rounded-xl transition-colors ${
-                  active
-                    ? "bg-primary text-white shadow"
-                    : "hover:bg-surface hover:text-primary dark:hover:bg-neutral-800"
+                  active ? "bg-primary text-white shadow" : "hover:bg-surface hover:text-primary dark:hover:bg-neutral-800"
                 }`}
               >
                 {t(item.label.ar, item.label.en)}

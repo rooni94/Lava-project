@@ -9,6 +9,7 @@ import Skeleton from "../components/ui/Skeleton";
 import { createComment, fetchBlogPost } from "../api/endpoints";
 import { Comment } from "../types";
 import MetaHead from "../components/MetaHead";
+import { renderRiyalText } from "../utils/currency";
 
 type CommentForm = {
   name: string;
@@ -85,7 +86,7 @@ export default function BlogDetailPage() {
 
         {data.content && (
           <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow border border-accent/30 dark:border-neutral-800 p-6 leading-8 text-secondary/80 dark:text-neutral-300 whitespace-pre-wrap">
-            {data.content}
+            {renderRiyalText(data.content)}
           </div>
         )}
 
@@ -102,7 +103,7 @@ export default function BlogDetailPage() {
                     <span className="font-semibold text-secondary dark:text-neutral-100">{comment.name}</span>
                     {comment.created_at && <span>{new Date(comment.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US")}</span>}
                   </div>
-                  <p className="text-secondary/80 dark:text-neutral-200 leading-7">{comment.content}</p>
+                  <p className="text-secondary/80 dark:text-neutral-200 leading-7">{renderRiyalText(comment.content)}</p>
                 </div>
               ))
             ) : (

@@ -13,11 +13,11 @@ export default function Home() {
   return (
     <Layout>
       <MetaHead
-        title={isAr ? "لافا | حلول برمجية وتصميم منتجات رقمية" : "LAVA | Software solutions and digital product design"}
+        title={isAr ? "LAVA | وكالة تسويق وبرمجة متكاملة" : "LAVA | Integrated marketing & engineering agency"}
         description={
           isAr
-            ? "نبني مواقع وتطبيقات ويب وتطبيقات جوال مع فرق تصميم وتطوير متكاملة."
-            : "We build web platforms, mobile apps, and cohesive product experiences with strategy, design, and engineering under one roof."
+            ? "نمزج التسويق الإبداعي مع هندسة المنتجات: محتوى وتصميم وموشن جرافيك وخطط نمو، إلى جانب برمجة مواقع، تطبيقات، ولوحات تحكم وأنظمة قابلة للتوسع."
+            : "We blend creative marketing with product engineering: content, design, motion, and growth strategy paired with scalable web, app, dashboard, and system development."
         }
       />
       <Hero />

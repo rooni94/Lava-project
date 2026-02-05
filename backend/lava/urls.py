@@ -35,6 +35,7 @@ from apps.portfolio.views import ProjectImageViewSet
 from apps.services.views import ServiceViewSet
 from apps.team.views import TeamMemberViewSet
 from apps.careers.views import JobApplicationViewSet, JobOpeningViewSet
+from apps.packages.views import PackageViewSet, PackageCategoryViewSet
 from apps.core.views import ExportMessagesView, ExportSubscribersView
 from lava.views import robots_txt, sitemap_xml, healthz
 
@@ -61,6 +62,8 @@ router.register(r"users", UserViewSet, basename="users")
 router.register(r"careers/jobs", JobOpeningViewSet, basename="job-openings")
 router.register(r"careers/applications", JobApplicationViewSet, basename="job-applications")
 router.register(r"activities", ActivityLogViewSet, basename="activities")
+router.register(r"packages", PackageViewSet, basename="packages")
+router.register(r"package-categories", PackageCategoryViewSet, basename="package-categories")
 
 schema_view = get_schema_view(
     openapi.Info(

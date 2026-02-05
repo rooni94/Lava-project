@@ -117,6 +117,33 @@ export type Comment = {
   created_at?: string;
 };
 
+export type PackageCategory = {
+  id: number;
+  name_ar: string;
+  name_en: string;
+  slug: string;
+};
+
+export type Package = {
+  id: number;
+  slug: string;
+  title_ar: string;
+  title_en: string;
+  short_description_ar?: string;
+  short_description_en?: string;
+  description_ar?: string;
+  description_en?: string;
+  price: number;
+  price_note?: string;
+  currency: string;
+  product_type?: string;
+  featured?: boolean;
+  is_active?: boolean;
+  category?: PackageCategory | null;
+  category_id?: number | null;
+  created_at?: string;
+};
+
 export type SiteSettings = {
   id: number;
   site_name: string;

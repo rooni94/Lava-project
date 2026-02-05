@@ -6,33 +6,7 @@ import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import { bulkService, createService, deleteService, fetchServices, updateService } from "../../api/endpoints";
 import Skeleton from "../../components/ui/Skeleton";
 import { Service } from "../../types";
-
-const iconOptions = {
-  ar: [
-    { value: "default", label: "أيقونة افتراضية" },
-    { value: "design", label: "تصميم / واجهات" },
-    { value: "code", label: "تطوير ويب" },
-    { value: "mobile", label: "تطبيقات الجوال" },
-    { value: "erp", label: "حلول مؤسسات ERP/CRM" },
-    { value: "marketing", label: "تسويق و SEO" },
-    { value: "data", label: "تحليلات وذكاء" },
-    { value: "cloud", label: "سحابة وبنية" },
-    { value: "support", label: "دعم وصيانة" },
-    { value: "security", label: "أمن وحماية" },
-  ],
-  en: [
-    { value: "default", label: "Default icon" },
-    { value: "design", label: "Design / Interfaces" },
-    { value: "code", label: "Web development" },
-    { value: "mobile", label: "Mobile apps" },
-    { value: "erp", label: "ERP/CRM" },
-    { value: "marketing", label: "Marketing & SEO" },
-    { value: "data", label: "Data & analytics" },
-    { value: "cloud", label: "Cloud & infra" },
-    { value: "support", label: "Support & maintenance" },
-    { value: "security", label: "Security" },
-  ],
-};
+import { serviceIcons, serviceIconKeys } from "../../components/ui/ServiceCard";
 
 export default function DashboardServices() {
   const qc = useQueryClient();
@@ -45,6 +19,45 @@ export default function DashboardServices() {
   const [icon, setIcon] = useState<string>("default");
   const [selected, setSelected] = useState<number[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
+
+  const iconOptions = serviceIconKeys.map((key) => ({
+    value: key,
+    label: isAr
+      ? {
+          design: "تصميم / واجهات",
+          code: "تطوير ويب",
+          mobile: "تطبيقات الجوال",
+          marketing: "تسويق وحملات",
+          content: "محتوى وكتابة",
+          video: "فيديو وموشن",
+          ads: "إعلانات وأداء",
+          erp: "أنظمة ERP/CRM",
+          data: "بيانات وتحليلات",
+          cloud: "سحابة وبنية",
+          support: "دعم وصيانة",
+          security: "أمن وحماية",
+          ecommerce: "متاجر إلكترونية",
+          ai: "ذكاء اصطناعي",
+          default: "أيقونة افتراضية",
+        }[key as keyof typeof serviceIcons] || key
+      : {
+          design: "Design / UI",
+          code: "Web development",
+          mobile: "Mobile apps",
+          marketing: "Marketing",
+          content: "Content",
+          video: "Video / Motion",
+          ads: "Ads / Performance",
+          erp: "ERP / CRM",
+          data: "Data / Analytics",
+          cloud: "Cloud / Infra",
+          support: "Support",
+          security: "Security",
+          ecommerce: "E-commerce",
+          ai: "AI / ML",
+          default: "Default",
+        }[key as keyof typeof serviceIcons] || key,
+  }));
 
   const save = useMutation({
     mutationFn: () =>
@@ -104,7 +117,7 @@ export default function DashboardServices() {
               onChange={(e) => setIcon(e.target.value)}
               className="border rounded-lg px-3 py-2 min-w-[220px] bg-white dark:bg-neutral-900 dark:border-neutral-700"
             >
-              {(isAr ? iconOptions.ar : iconOptions.en).map((opt) => (
+              {iconOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>
@@ -113,6 +126,9 @@ export default function DashboardServices() {
             <span className="text-sm text-secondary/70 dark:text-neutral-300">
               {t("اختر الأيقونة كما ستظهر في واجهة الخدمات.", "Choose the icon as it will appear in the services section.")}
             </span>
+            <div className="w-12 h-12 rounded-xl bg-primary text-white grid place-items-center">
+              {serviceIcons[(icon || "default") as keyof typeof serviceIcons]}
+            </div>
           </div>
           <button onClick={() => save.mutate()} className="bg-primary text-white px-4 py-2 rounded-lg" disabled={!title || !description}>
             {editingId ? t("تحديث الخدمة", "Save changes") : t("إضافة خدمة", "Add service")}

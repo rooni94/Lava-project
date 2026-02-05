@@ -11,13 +11,13 @@ export default function Hero() {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const heroTitle = isAr
-    ? data?.hero_title || "حلول برمجية متقدمة بخبرة محلية وعالمية"
-    : data?.hero_title_en || "Advanced software and product teams for bold companies";
+    ? data?.hero_title || "LAVA – تسويق، محتوى، وتصميم يلتقي مع برمجة وأنظمة متينة"
+    : data?.hero_title_en || "LAVA – Marketing, content, design meet solid engineering";
   const heroSubtitle = isAr
     ? data?.hero_subtitle ||
-      "نصمم ونطور منتجات رقمية عالية الاعتمادية مع فريق يجمع بين التصميم والهندسة والاستراتيجية."
+      "نحو نمو بلا حدود عبر الإبداع والبرمجة: نصوغ الرسالة ونطلق الحملات ونبني المواقع والتطبيقات ولوحات التحكم لقياس الأثر."
     : data?.hero_subtitle_en ||
-      "We design and engineer dependable digital products - from discovery to launch - with a senior team that blends strategy, design, and engineering.";
+      "Limitless growth through creativity and code: we craft the story, launch campaigns, and build the sites, apps, and dashboards that deliver measurable impact.";
   return (
     <section className="gradient-hero py-16 text-secondary dark:text-neutral-100">
       <div className="container mx-auto px-4 grid md:grid-cols-2 gap-10 items-center">

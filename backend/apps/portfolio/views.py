@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -20,6 +21,24 @@ class ProjectViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
         if self.action in ("list", "retrieve"):
             return [permissions.AllowAny()]
         return [RolePermission()]
+
+    @action(detail=False, methods=["get"], permission_classes=[permissions.AllowAny()], url_path="stats")
+    def stats(self, request):
+        total = Project.objects.count()
+        featured = Project.objects.filter(is_featured=True).count()
+        by_category = {item["category"]: item["count"] for item in Project.objects.values("category").annotate(count=Count("id"))}
+        gallery_items = sum(len(p.gallery or []) for p in Project.objects.only("gallery"))
+        media_items = ProjectImage.objects.count() + gallery_items
+        tech_total = Technology.objects.count()
+        return Response(
+            {
+                "total_projects": total,
+                "featured_projects": featured,
+                "by_category": by_category,
+                "media_items": media_items,
+                "technologies": tech_total,
+            }
+        )
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-publish")
     def bulk_publish(self, request):

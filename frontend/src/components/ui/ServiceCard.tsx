@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Service } from "../../types";
 
-const icons = {
+export const serviceIcons = {
   design: (
     <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="1.8">
       <path d="M4 16l8-8 4 4-8 8H4v-4z" />
@@ -38,6 +38,26 @@ const icons = {
       <path d="M4 14v2a2 2 0 002 2h2" />
     </svg>
   ),
+  content: (
+    <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="1.8">
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <path d="M7 8h10M7 12h7M7 16h5" />
+    </svg>
+  ),
+  video: (
+    <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="1.8">
+      <rect x="4" y="5" width="14" height="14" rx="2" />
+      <path d="M14 12.5 10.5 10v5z" fill="white" stroke="none" />
+      <path d="M18 9.5v5l2.5 1.5v-8z" />
+    </svg>
+  ),
+  ads: (
+    <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="1.8">
+      <circle cx="7" cy="12" r="3" />
+      <path d="M10 12h8" />
+      <path d="M14 8l4 4-4 4" />
+    </svg>
+  ),
   erp: (
     <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="1.8">
       <rect x="4" y="7" width="16" height="11" rx="2" />
@@ -70,6 +90,21 @@ const icons = {
       <path d="M9 12l2 2 4-4" strokeLinecap="round" />
     </svg>
   ),
+  ecommerce: (
+    <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="1.8">
+      <path d="M4 6h17l-2 9H6z" />
+      <circle cx="9" cy="18" r="1" />
+      <circle cx="16" cy="18" r="1" />
+      <path d="M4 6 3 3" />
+    </svg>
+  ),
+  ai: (
+    <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="1.8">
+      <rect x="4" y="4" width="16" height="16" rx="3" />
+      <path d="M9 9h6v6H9z" />
+      <path d="M9 4v3M15 4v3M9 17v3M15 17v3M4 9h3M4 15h3M17 9h3M17 15h3" />
+    </svg>
+  ),
   default: (
     <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="1.8">
       <path d="M12 3l3 6 6 .5-4.5 4 1.5 6-6-3-6 3 1.5-6L3 9.5 9 9l3-6z" />
@@ -77,23 +112,29 @@ const icons = {
   ),
 };
 
-function pickIcon(title?: string, fallback?: string) {
-  if (fallback && icons[fallback as keyof typeof icons]) return icons[fallback as keyof typeof icons];
-  const t = title || "";
-  if (/design|brand|ui|ux/i.test(t)) return icons.design;
-  if (/mobile|app/i.test(t)) return icons.mobile;
-  if (/web|development|engineer|code|frontend|backend|platform/i.test(t)) return icons.code;
-  if (/erp|crm|enterprise|system/i.test(t)) return icons.erp;
-  if (/marketing|seo|ads|growth/i.test(t)) return icons.marketing;
-  if (/data|analytics|ai|ml|insight/i.test(t)) return icons.data;
-  if (/cloud|infrastructure|network/i.test(t)) return icons.cloud;
-  if (/support|maintenance|ops/i.test(t)) return icons.support;
-  if (/security|privacy|defense/i.test(t)) return icons.security;
-  return icons.default;
+export const serviceIconKeys = Object.keys(serviceIcons);
+export const serviceIconOptions = serviceIconKeys.map((key) => ({ value: key, label: key }));
+
+function pickIcon(service: Service) {
+  if (service.icon && serviceIconKeys.includes(service.icon)) return serviceIcons[service.icon as keyof typeof serviceIcons];
+  const t = (service.title || "").toLowerCase();
+  if (/content|copy|voice/.test(t)) return serviceIcons.content;
+  if (/video|motion|reel/.test(t)) return serviceIcons.video;
+  if (/ads|seo|growth|campaign/.test(t)) return serviceIcons.ads;
+  if (/design|brand|ui|ux/.test(t)) return serviceIcons.design;
+  if (/mobile|app/.test(t)) return serviceIcons.mobile;
+  if (/web|dev|code|platform/.test(t)) return serviceIcons.code;
+  if (/erp|crm|system/.test(t)) return serviceIcons.erp;
+  if (/data|analytics|ai|ml|insight/.test(t)) return serviceIcons.data;
+  if (/cloud|infra|network/.test(t)) return serviceIcons.cloud;
+  if (/support|maintenance|ops/.test(t)) return serviceIcons.support;
+  if (/security|privacy/.test(t)) return serviceIcons.security;
+  if (/commerce|store|shop/.test(t)) return serviceIcons.ecommerce;
+  return serviceIcons.default;
 }
 
 export default function ServiceCard({ service }: { service: Service }) {
-  const icon = pickIcon(service.title, service.icon);
+  const icon = pickIcon(service);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -102,9 +143,7 @@ export default function ServiceCard({ service }: { service: Service }) {
       className="p-6 bg-white dark:bg-neutral-900 rounded-2xl shadow hover:-translate-y-1 transition-transform border border-accent/30 dark:border-neutral-800"
     >
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 rounded-xl bg-primary text-white grid place-items-center text-xl font-bold tracking-wide">
-          <span className="text-white">{icon}</span>
-        </div>
+        <div className="w-12 h-12 rounded-xl bg-primary text-white grid place-items-center">{icon}</div>
         <h3 className="text-xl font-bold text-secondary dark:text-neutral-50">{service.title}</h3>
       </div>
       <p className="text-sm text-secondary/80 dark:text-neutral-300 mb-3 leading-7">{service.description}</p>

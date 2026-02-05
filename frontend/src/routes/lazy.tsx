@@ -6,6 +6,8 @@ export const ServicesPage = lazy(() => import("../pages/Services"));
 export const ServiceDetailPage = lazy(() => import("../pages/ServiceDetail"));
 export const PortfolioPage = lazy(() => import("../pages/Portfolio"));
 export const ProjectDetailPage = lazy(() => import("../pages/ProjectDetail"));
+export const PackagesPage = lazy(() => import("../pages/Packages"));
+export const PackageDetailPage = lazy(() => import("../pages/PackageDetail"));
 export const BlogPage = lazy(() => import("../pages/Blog"));
 export const BlogDetailPage = lazy(() => import("../pages/BlogDetail"));
 export const ContactPage = lazy(() => import("../pages/Contact"));
@@ -19,6 +21,7 @@ export const DashboardProjectsPage = lazy(() => import("../pages/Dashboard/Proje
 export const DashboardBlogPage = lazy(() => import("../pages/Dashboard/Blog"));
 export const DashboardTeamPage = lazy(() => import("../pages/Dashboard/Team"));
 export const DashboardClientsPage = lazy(() => import("../pages/Dashboard/Clients"));
+export const DashboardPackagesPage = lazy(() => import("../pages/Dashboard/Packages"));
 export const DashboardJobsPage = lazy(() => import("../pages/Dashboard/Jobs"));
 export const DashboardMediaPage = lazy(() => import("../pages/Dashboard/Media"));
 export const DashboardPagesPage = lazy(() => import("../pages/Dashboard/Pages"));

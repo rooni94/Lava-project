@@ -20,6 +20,9 @@ class RolePermission(BasePermission):
         user: User = request.user
         if not user or not user.is_authenticated:
             return False
+        # Superuser/staff always allowed for write operations
+        if getattr(user, "is_superuser", False) or getattr(user, "is_staff", False):
+            return True
         if user.role == User.Role.SUPER_ADMIN:
             return True
         if user.role == User.Role.MANAGER:
