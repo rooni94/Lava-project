@@ -142,8 +142,13 @@ const SupportChatWidget = () => {
       setGuestRequestId(res.data.request_id);
       setGuestStep("code");
       localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify({ name: guestName.trim(), email: guestEmail.trim() }));
-    } catch (err: any) {
-      const msg = err?.response?.data?.detail || t("تعذر إرسال الكود. حاول لاحقاً.", "Unable to send code.");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : t("تعذر إرسال الكود. حاول لاحقاً.", "Unable to send code.");
+      const msg =
+        typeof err === "object" && err && "response" in err && (err as { response?: { data?: { detail?: string } } }).response?.data?.detail
+          ? (err as { response?: { data?: { detail?: string } } }).response?.data?.detail
+          : message;
       setGuestError(msg);
     } finally {
       setGuestSubmitting(false);
@@ -182,8 +187,12 @@ const SupportChatWidget = () => {
         JSON.stringify({ name: guestName.trim(), email: guestEmail.trim(), conversation_id: convId, guest_token: tokenVal })
       );
       await initForGuestIfHasConversation(convId, tokenVal);
-    } catch (err: any) {
-      const msg = err?.response?.data?.detail || t("كود غير صحيح أو منتهي.", "Invalid or expired code.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t("كود غير صحيح أو منتهي.", "Invalid or expired code.");
+      const msg =
+        typeof err === "object" && err && "response" in err && (err as { response?: { data?: { detail?: string } } }).response?.data?.detail
+          ? (err as { response?: { data?: { detail?: string } } }).response?.data?.detail
+          : message;
       setGuestError(msg);
     } finally {
       setGuestSubmitting(false);

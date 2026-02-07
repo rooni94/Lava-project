@@ -94,8 +94,9 @@ const DashboardSupportChat = () => {
     api
       .get("support/conversations/")
       .then((res) => {
-        const payload = (res.data as any)?.results ?? res.data;
-        setConversations(Array.isArray(payload) ? payload : []);
+        const data = res.data as { results?: Conversation[] } | Conversation[];
+        const payload = Array.isArray(data) ? data : data.results ?? [];
+        setConversations(payload);
         setAccessDenied(false);
       })
       .catch((err) => {
