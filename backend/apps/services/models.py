@@ -23,10 +23,13 @@ class ServiceCategory(TimestampedModel):
 
 class Service(TimestampedModel):
     title = models.CharField(max_length=150, verbose_name=_("العنوان"))
+    title_en = models.CharField(max_length=150, blank=True, default="", verbose_name=_("Title (EN)"))
     description = models.TextField(verbose_name=_("الوصف"))
+    description_en = models.TextField(blank=True, default="", verbose_name=_("Description (EN)"))
     icon = models.CharField(max_length=100, blank=True, verbose_name=_("الأيقونة"))
     image = models.ImageField(upload_to="services/", blank=True, null=True)
     features = models.JSONField(default=list, blank=True)
+    features_en = models.JSONField(default=list, blank=True, verbose_name=_("Features (EN)"))
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     category = models.ForeignKey(

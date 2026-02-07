@@ -15,6 +15,7 @@ type FormState = {
   description_ar: string;
   price: number;
   price_note: string;
+  price_note_en: string;
   currency: string;
   category_id: number | null;
   featured: boolean;
@@ -31,7 +32,8 @@ const empty: FormState = {
   description_ar: "",
   price: 0,
   price_note: "",
-  currency: "﷼",
+  price_note_en: "",
+  currency: "SAR",
   category_id: null,
   featured: false,
   is_active: true,
@@ -67,7 +69,8 @@ export default function PackageForm({
       description_ar: initial.description_ar || "",
       price: Number(initial.price || 0),
       price_note: initial.price_note || "",
-      currency: initial.currency || "﷼",
+      price_note_en: initial.price_note_en || "",
+      currency: initial.currency || "SAR",
       category_id: initial.category?.id ?? null,
       featured: !!initial.featured,
       is_active: initial.is_active !== false,
@@ -170,11 +173,11 @@ export default function PackageForm({
       <textarea
         value={form.description_en}
         onChange={(e) => setForm((p) => ({ ...p, description_en: e.target.value }))}
-        placeholder={t("Features / content (EN) - one per line", "Features / content (EN) - one per line")}
+        placeholder={t("المزايا / المحتوى (EN) - سطر لكل نقطة", "Features / content (EN) - one per line")}
         className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700 min-h-[90px]"
       />
 
-      <div className="grid md:grid-cols-3 gap-3">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
         <input
           type="number"
           value={form.price}
@@ -186,6 +189,12 @@ export default function PackageForm({
           value={form.price_note}
           onChange={(e) => setForm((p) => ({ ...p, price_note: e.target.value }))}
           placeholder={t("ملاحظة السعر (مثال 3,500 – 5,000)", "Price note (e.g. 3,500 – 5,000)")}
+          className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+        />
+        <input
+          value={form.price_note_en}
+          onChange={(e) => setForm((p) => ({ ...p, price_note_en: e.target.value }))}
+          placeholder={t("ملاحظة السعر (EN) مثال: From SAR 3,500", "Price note (EN) e.g. From SAR 3,500")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
         <input

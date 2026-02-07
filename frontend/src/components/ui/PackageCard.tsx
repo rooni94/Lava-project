@@ -13,6 +13,7 @@ export default function PackageCard({ item }: Props) {
   const title = isAr ? item.title_ar : item.title_en;
   const short = isAr ? item.short_description_ar : item.short_description_en;
   const desc = isAr ? item.description_ar : item.description_en;
+  const priceNote = isAr ? item.price_note : item.price_note_en || item.price_note;
   const bullets =
     desc
       ?.split("\n")
@@ -44,7 +45,7 @@ export default function PackageCard({ item }: Props) {
 
       <div className="flex items-center justify-between pt-2">
         <div>
-          {item.price_note ? <div className="text-xs text-secondary/60 dark:text-neutral-400">{renderRiyalText(item.price_note)}</div> : null}
+          {priceNote ? <div className="text-xs text-secondary/60 dark:text-neutral-400">{renderRiyalText(priceNote)}</div> : null}
           <div className="text-xl font-bold text-secondary dark:text-neutral-100">{formatRiyal(item.price, "")}</div>
         </div>
         <div className="flex gap-2">

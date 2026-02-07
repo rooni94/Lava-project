@@ -35,6 +35,7 @@ class Package(TimestampedModel):
     description_en = models.TextField(blank=True, verbose_name=_("Features / content (EN)"))
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name=_("Ø§Ù„Ø³Ø¹Ø±"))
     price_note = models.CharField(max_length=120, blank=True, verbose_name=_("Ù…Ù„Ø§Ø­Ø¸Ø© Ø§Ù„Ø³Ø¹Ø±"))
+    price_note_en = models.CharField(max_length=120, blank=True, verbose_name=_("Price note (EN)"))
     currency = models.CharField(max_length=10, default="SAR", verbose_name=_("Ø§Ù„Ø¹Ù…Ù„Ø©"))
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default="service")
     category = models.ForeignKey(

@@ -29,9 +29,15 @@ const statusLabels = {
 export default function ProjectCard({ project }: { project: Project }) {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
+  const pickText = (ar?: string, en?: string) => (isAr ? ar : en || ar);
   const detailHref = `/portfolio/${project.id}`;
   const labels = isAr ? categoryLabels.ar : categoryLabels.en;
   const statusLabel = isAr ? statusLabels.ar[project.status as keyof typeof statusLabels.ar] : statusLabels.en[project.status as keyof typeof statusLabels.en];
+  const title = pickText(project.title, project.title_en);
+  const description = pickText(project.description, project.description_en);
+  const client = pickText(project.client, project.client_en);
+  const scope = pickText(project.scope, project.scope_en);
+  const duration = pickText(project.duration, project.duration_en);
 
   const gradientBg = `linear-gradient(135deg, ${(project.primary_color as string) || "#580213"}1a, ${
     (project.accent_color as string) || "#0f172a"
@@ -80,26 +86,26 @@ export default function ProjectCard({ project }: { project: Project }) {
                 fontSize: (project.title_font_size || 20) + "px",
               }}
             >
-              {project.title}
+              {title}
             </h3>
           </Link>
-          <p className="text-sm text-secondary/80 dark:text-neutral-300 line-clamp-3">{project.description}</p>
+          <p className="text-sm text-secondary/80 dark:text-neutral-300 line-clamp-3">{description}</p>
         </div>
 
         <div className="flex flex-wrap gap-2 text-xs text-secondary/70 dark:text-neutral-300">
-          {project.client && (
+          {client && (
             <span className="px-3 py-1 rounded-full bg-surface dark:bg-neutral-800 border border-accent/40 dark:border-neutral-700">
-              {isAr ? "العميل:" : "Client:"} {project.client}
+              {isAr ? "العميل:" : "Client:"} {client}
             </span>
           )}
-          {project.scope && (
+          {scope && (
             <span className="px-3 py-1 rounded-full bg-surface dark:bg-neutral-800 border border-accent/40 dark:border-neutral-700">
-              {isAr ? "النطاق:" : "Scope:"} {project.scope}
+              {isAr ? "النطاق:" : "Scope:"} {scope}
             </span>
           )}
-          {project.duration && (
+          {duration && (
             <span className="px-3 py-1 rounded-full bg-surface dark:bg-neutral-800 border border-accent/40 dark:border-neutral-700">
-              {isAr ? "المدة:" : "Duration:"} {project.duration}
+              {isAr ? "المدة:" : "Duration:"} {duration}
             </span>
           )}
           {project.status && (

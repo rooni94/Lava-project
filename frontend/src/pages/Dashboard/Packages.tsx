@@ -67,7 +67,7 @@ export default function DashboardPackages() {
                     </div>
                     <div className="text-sm text-secondary/70 flex flex-wrap gap-2">
                       {p.category ? (isAr ? p.category.name_ar : p.category.name_en) : t("بدون تصنيف", "Uncategorized")} · {p.price} {p.currency}
-                      {p.price_note ? <> · {p.price_note}</> : null}
+                      {(isAr ? p.price_note : p.price_note_en || p.price_note) ? <> · {isAr ? p.price_note : p.price_note_en || p.price_note}</> : null}
                     </div>
                     <div className="text-xs text-secondary/60 line-clamp-2">
                       {isAr ? p.short_description_ar : p.short_description_en}

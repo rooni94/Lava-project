@@ -41,6 +41,7 @@ export default function PackageDetail() {
   const title = isAr ? data.title_ar : data.title_en;
   const short = isAr ? data.short_description_ar : data.short_description_en;
   const desc = isAr ? data.description_ar : data.description_en;
+  const priceNote = isAr ? data.price_note : data.price_note_en || data.price_note;
   const bullets = splitLines(desc);
 
   return (
@@ -57,7 +58,7 @@ export default function PackageDetail() {
               {short ? <p className="text-secondary/80 dark:text-neutral-200 text-lg">{short}</p> : null}
               <div className="flex flex-wrap gap-2 text-sm text-secondary/70 dark:text-neutral-300">
                 <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">
-                  {isAr ? "السعر:" : "Price:"} {formatRiyal(data.price, data.price_note)}
+                  {isAr ? "السعر:" : "Price:"} {formatRiyal(data.price, priceNote)}
                 </span>
                 {data.featured ? (
                   <span className="px-3 py-1 rounded-full bg-primary text-white">{isAr ? "مميزة" : "Featured"}</span>
@@ -69,7 +70,7 @@ export default function PackageDetail() {
                 to="/contact"
                 className="px-5 py-3 rounded-full bg-primary text-white shadow hover:shadow-md text-sm"
               >
-                {isAr ? "اطلب عرض" : "Request proposal"}
+                {isAr ? "اطلب عرض سعر" : "Request proposal"}
               </Link>
               <Link
                 to="/packages"
@@ -85,7 +86,7 @@ export default function PackageDetail() {
           <div className="space-y-4">
             {bullets.length ? (
               <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-5 shadow-sm">
-                <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50 mb-2">{isAr ? "محتويات الباقة" : "What’s included"}</h3>
+                <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50 mb-2">{isAr ? "محتويات الباقة" : "What's included"}</h3>
                 <ul className={`${isAr ? "pr-5 list-disc text-right" : "pl-5 list-disc"} space-y-1 text-secondary/80 dark:text-neutral-300`}>
                   {bullets.map((b, idx) => (
                     <li key={idx}>{b}</li>
@@ -97,8 +98,8 @@ export default function PackageDetail() {
               <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "مناسبة لـ" : "Best for"}</h3>
               <p className="text-sm text-secondary/80 dark:text-neutral-300">
                 {isAr
-                  ? "اختر هذه الباقة إذا كنت تبحث عن نتائج واضحة مع محتوى وهوية وبرمجة متسقة تدعم حملاتك."
-                  : "Choose this package when you need cohesive content, brand, and build to support your campaigns with clear outcomes."}
+                  ? "مناسبة للفرق التي تحتاج إطلاقًا سريعًا بجودة عالية وتكامل بين التصميم والتقنية."
+                  : "Ideal for teams that need a fast launch with aligned design and engineering."}
               </p>
             </div>
           </div>
@@ -107,14 +108,34 @@ export default function PackageDetail() {
             <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-5 shadow-sm">
               <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50 mb-2">{isAr ? "الاستثمار" : "Investment"}</h3>
               <p className="text-2xl font-bold text-secondary dark:text-neutral-100">{formatRiyal(data.price)}</p>
-              {data.price_note ? <p className="text-sm text-secondary/70 dark:text-neutral-300">{renderRiyalText(data.price_note)}</p> : null}
+              {priceNote ? <p className="text-sm text-secondary/70 dark:text-neutral-300">{renderRiyalText(priceNote)}</p> : null}
             </div>
             <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-5 shadow-sm space-y-2">
-              <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "نبدأ بخطوتين" : "Two steps to start"}</h3>
+              <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "خطوات طلب الباقة" : "Request steps"}</h3>
               <ol className={`${isAr ? "pr-5" : "pl-5"} list-decimal space-y-1 text-sm text-secondary/80 dark:text-neutral-300`}>
-                <li>{isAr ? "أخبرنا بالهدف والفئة المستهدفة والميزانية." : "Share your goal, audience, and budget."}</li>
-                <li>{isAr ? "نضبط نطاق الباقة ونرسل خطة قصيرة للتنفيذ." : "We tailor the scope and send a concise execution plan."}</li>
+                <li>{isAr ? "شارك الهدف والنطاق والميزانية والموعد المتوقع." : "Share goals, scope, budget, and target timeline."}</li>
+                <li>{isAr ? "نراجع الاحتياج ونرسل عرضًا وجدولًا خلال 24–48 ساعة عمل." : "We review the scope and send a proposal with timeline within 24–48 business hours."}</li>
+                <li>{isAr ? "بعد الاعتماد نوقّع العقد ونصدر الفاتورة." : "After approval we sign the agreement and issue the invoice."}</li>
+                <li>{isAr ? "نبدأ التنفيذ بعد الدفعة المبدئية وفق الاتفاق." : "Delivery starts after the initial payment per agreement."}</li>
               </ol>
+            </div>
+            <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-5 shadow-sm space-y-3">
+              <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "طرق الدفع المتاحة" : "Payment options"}</h3>
+              <div className="flex flex-wrap gap-2 text-xs text-secondary/70 dark:text-neutral-300">
+                {["Stripe", "Tappy", "Tamara", "Apple Pay", "Visa", "Mada"].map((method) => (
+                  <span
+                    key={method}
+                    className="px-3 py-1 rounded-full border border-accent/50 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/70"
+                  >
+                    {method}
+                  </span>
+                ))}
+              </div>
+              <p className="text-xs text-secondary/70 dark:text-neutral-300">
+                {isAr
+                  ? "بوابات دفع آمنة داخل السعودية وخارجها، مع إمكانية جدولة الدفعات حسب الاتفاق."
+                  : "Secure local and international gateways, with installment scheduling available on request."}
+              </p>
             </div>
           </aside>
         </div>

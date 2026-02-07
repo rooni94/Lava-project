@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Service } from "../../types";
 
 export const serviceIcons = {
@@ -134,6 +135,11 @@ function pickIcon(service: Service) {
 }
 
 export default function ServiceCard({ service }: { service: Service }) {
+  const { i18n } = useTranslation();
+  const isAr = i18n.language === "ar";
+  const title = isAr ? service.title : service.title_en || service.title;
+  const description = isAr ? service.description : service.description_en || service.description;
+  const features = isAr ? service.features : service.features_en?.length ? service.features_en : service.features;
   const icon = pickIcon(service);
   return (
     <motion.div
@@ -144,12 +150,12 @@ export default function ServiceCard({ service }: { service: Service }) {
     >
       <div className="flex items-center gap-3 mb-3">
         <div className="w-12 h-12 rounded-xl bg-primary text-white grid place-items-center">{icon}</div>
-        <h3 className="text-xl font-bold text-secondary dark:text-neutral-50">{service.title}</h3>
+        <h3 className="text-xl font-bold text-secondary dark:text-neutral-50">{title}</h3>
       </div>
-      <p className="text-sm text-secondary/80 dark:text-neutral-300 mb-3 leading-7">{service.description}</p>
-      {service.features && (
+      <p className="text-sm text-secondary/80 dark:text-neutral-300 mb-3 leading-7">{description}</p>
+      {features && (
         <ul className="text-sm text-secondary/80 dark:text-neutral-300 space-y-1 list-disc pl-4">
-          {service.features.map((feat, idx) => (
+          {features.map((feat, idx) => (
             <li key={idx}>{feat}</li>
           ))}
         </ul>

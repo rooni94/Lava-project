@@ -16,16 +16,16 @@ type ContactForm = {
 
 const inquiryOptions = {
   ar: [
-    { value: "web", label: "تطوير مواقع" },
-    { value: "mobile", label: "تطبيقات جوال" },
+    { value: "web", label: "مواقع ومتاجر إلكترونية" },
+    { value: "mobile", label: "تطبيقات الجوال" },
     { value: "erp", label: "أنظمة ERP/CRM" },
-    { value: "other", label: "خدمة أخرى" },
+    { value: "other", label: "تسويق وهوية / أخرى" },
   ],
   en: [
-    { value: "web", label: "Web platforms" },
+    { value: "web", label: "Websites & ecommerce" },
     { value: "mobile", label: "Mobile apps" },
     { value: "erp", label: "ERP/CRM systems" },
-    { value: "other", label: "Other service" },
+    { value: "other", label: "Marketing & branding / Other" },
   ],
 } as const;
 
@@ -46,9 +46,13 @@ export default function ContactPage() {
         phone: values.phone,
       });
       reset({ inquiry: values.inquiry });
-      toast.success(isAr ? "تم استلام رسالتك، سنعاود التواصل خلال 24 ساعة." : "We received your message. Expect a reply within one business day.");
+      toast.success(
+        isAr
+          ? "تم استلام طلبك، سنعاود التواصل خلال 24–48 ساعة عمل."
+          : "We received your request. Expect a reply within 24–48 business hours."
+      );
     } catch {
-      toast.error(isAr ? "تعذر إرسال الرسالة، حاول مرة أخرى." : "Unable to send your message. Please try again.");
+      toast.error(isAr ? "تعذر إرسال الطلب، حاول مرة أخرى." : "Unable to send your request. Please try again.");
     }
   };
 
@@ -56,8 +60,12 @@ export default function ContactPage() {
     <Layout>
       <section className="py-14 container mx-auto px-4 text-secondary dark:text-neutral-100">
         <SectionTitle
-          title={isAr ? "تواصل معنا" : "Contact us"}
-          subtitle={isAr ? "نساعدك في تحويل فكرتك إلى منتج رقمي بأعلى جودة." : "We help turn ideas into reliable digital products."}
+          title={isAr ? "اطلب خدمة أو باقة" : "Request a service or package"}
+          subtitle={
+            isAr
+              ? "صف لنا الهدف ونطاق العمل والميزانية لنرسل عرضًا وجدولًا واضحًا خلال 24–48 ساعة عمل."
+              : "Share your goals, scope, and budget to receive a clear proposal within 24–48 business hours."
+          }
         />
         <div className="grid md:grid-cols-2 gap-8">
           <form
@@ -69,7 +77,7 @@ export default function ContactPage() {
               <input
                 {...register("name", { required: true })}
                 className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                placeholder={isAr ? "الاسم" : "Your name"}
+                placeholder={isAr ? "اكتب اسمك" : "Your name"}
               />
             </div>
             <div>
@@ -86,11 +94,11 @@ export default function ContactPage() {
               <input
                 {...register("phone")}
                 className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                placeholder="+9665xxxxxxx"
+                placeholder="+9665xxxxxxxx"
               />
             </div>
             <div>
-              <label className="block text-sm mb-1">{isAr ? "نوع المشروع" : "Project type"}</label>
+              <label className="block text-sm mb-1">{isAr ? "نوع الخدمة" : "Service type"}</label>
               <select
                 {...register("inquiry")}
                 className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
@@ -108,17 +116,33 @@ export default function ContactPage() {
                 rows={4}
                 {...register("message", { required: true })}
                 className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                placeholder={isAr ? "اذكر فكرة المشروع وهدفك الرئيسي" : "Tell us about the idea, goals, and timeline."}
+                placeholder={
+                  isAr ? "اشرح الهدف والنطاق والموعد المتوقع والميزانية التقريبية." : "Share goals, scope, timeline, and estimated budget."
+                }
               />
             </div>
             <button type="submit" className="bg-primary text-white px-6 py-3 rounded-lg">
-              {isAr ? "أرسل الرسالة" : "Send message"}
+              {isAr ? "أرسل الطلب" : "Send request"}
             </button>
             <p className="text-xs text-secondary/60 dark:text-neutral-400">
-              {isAr ? "نرد عادة خلال يوم عمل واحد." : "We usually respond within one business day."}
+              {isAr ? "نرد عادة خلال 24–48 ساعة عمل." : "We usually respond within 24–48 business hours."}
             </p>
           </form>
           <div className="space-y-4">
+            <div className="bg-surface dark:bg-neutral-900 p-6 rounded-2xl border border-accent/50 dark:border-neutral-800 shadow">
+              <h4 className="font-bold text-secondary dark:text-neutral-50 mb-2">{isAr ? "خطوات طلب الخدمة والدفع" : "Request & payment steps"}</h4>
+              <ul className={`space-y-2 text-sm text-secondary/80 dark:text-neutral-300 list-disc ${isAr ? "pr-4 text-right" : "pl-4"}`}>
+                <li>{isAr ? "عرّفنا بالنشاط والهدف والنطاق والميزانية المتوقعة." : "Share your business context, goals, scope, and budget."}</li>
+                <li>{isAr ? "نراجع الاحتياج ونقترح الحل والجدول خلال 24–48 ساعة عمل." : "We propose the right solution and timeline within 24–48 business hours."}</li>
+                <li>{isAr ? "بعد الموافقة نوقّع العقد ونصدر الفاتورة ونحدد خطة الدفعات." : "After approval we sign, issue the invoice, and confirm the payment plan."}</li>
+                <li>{isAr ? "نبدأ التنفيذ مع مدير مشروع وتحديثات منتظمة حتى التسليم." : "Delivery starts with a dedicated PM and clear milestone updates."}</li>
+              </ul>
+              <p className="text-xs text-secondary/70 dark:text-neutral-300 mt-3">
+                {isAr
+                  ? "طرق الدفع المتاحة: Stripe، Tappy، Tamara، Apple Pay، Visa، Mada (السعودية). تتوفر الدفعات حسب الاتفاق."
+                  : "Payment methods: Stripe, Tappy, Tamara, Apple Pay, Visa, Mada (Saudi Arabia). Installments available on request."}
+              </p>
+            </div>
             <div className="bg-surface dark:bg-neutral-900 p-6 rounded-2xl border border-accent/50 dark:border-neutral-800 shadow">
               <h4 className="font-bold text-secondary dark:text-neutral-50 mb-2">{isAr ? "بيانات التواصل" : "Contact details"}</h4>
               <p className="text-sm text-secondary/80 dark:text-neutral-300">
@@ -134,14 +158,6 @@ export default function ContactPage() {
                 {isAr ? "ساعات العمل:" : "Working hours:"}{" "}
                 {contactInfo?.working_hours || (isAr ? "الأحد - الخميس، 8 ص - 6 م" : "Sunday - Thursday, 8 AM - 6 PM")}
               </p>
-            </div>
-            <div className="bg-surface dark:bg-neutral-900 p-6 rounded-2xl border border-accent/50 dark:border-neutral-800 shadow">
-              <h4 className="font-bold text-secondary dark:text-neutral-50 mb-2">{isAr ? "لماذا لافا؟" : "Why partner with LAVA?"}</h4>
-              <ul className="space-y-2 text-sm text-secondary/80 dark:text-neutral-300 list-disc pl-4">
-                <li>{isAr ? "خطط تنفيذ واضحة وجدول زمني واقعي." : "Clear execution plans with realistic timelines."}</li>
-                <li>{isAr ? "تواصل مباشر مع فريق العمل ومسؤول الحساب." : "Direct communication with the delivery team and account lead."}</li>
-                <li>{isAr ? "اختبارات جودة وأمن قبل الإطلاق." : "Quality and security checks before launch."}</li>
-              </ul>
             </div>
           </div>
         </div>

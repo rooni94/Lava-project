@@ -1,27 +1,42 @@
 export type Service = {
   id: number;
   title: string;
+  title_en?: string;
   description: string;
+  description_en?: string;
   icon?: string;
   image?: string;
   features?: string[];
+  features_en?: string[];
 };
 
 export type Project = {
   id: number;
   title: string;
+  title_en?: string;
   description: string;
+  description_en?: string;
   summary?: string;
+  summary_en?: string;
   goals?: string;
+  goals_en?: string;
   challenges?: string;
+  challenges_en?: string;
   solution?: string;
+  solution_en?: string;
   results?: string;
+  results_en?: string;
   scope?: string;
+  scope_en?: string;
   duration?: string;
+  duration_en?: string;
   team_size?: string;
+  team_size_en?: string;
   budget?: string;
+  budget_en?: string;
   category: string;
   client?: string;
+  client_en?: string;
   technologies?: { id: number; name: string }[];
   technology_ids?: number[];
   cover_image?: string;
@@ -135,6 +150,7 @@ export type Package = {
   description_en?: string;
   price: number;
   price_note?: string;
+  price_note_en?: string;
   currency: string;
   product_type?: string;
   featured?: boolean;

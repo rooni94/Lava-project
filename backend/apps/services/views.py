@@ -12,6 +12,7 @@ class ServiceViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     permission_classes = [RolePermission()]
+    pagination_class = None
     search_fields = ("title", "description")
     filterset_fields = ("category", "is_active")
     throttle_scope = "services"

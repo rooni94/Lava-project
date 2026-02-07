@@ -57,19 +57,31 @@ const statusLabels = {
 
 const baseForm: Partial<Project> = {
   title: "",
+  title_en: "",
   description: "",
+  description_en: "",
   summary: "",
+  summary_en: "",
   goals: "",
+  goals_en: "",
   challenges: "",
+  challenges_en: "",
   solution: "",
+  solution_en: "",
   results: "",
+  results_en: "",
   scope: "",
+  scope_en: "",
   duration: "",
+  duration_en: "",
   team_size: "",
+  team_size_en: "",
   budget: "",
+  budget_en: "",
   category: "web",
   status: "done",
   client: "",
+  client_en: "",
   live_url: "",
   github_url: "",
   primary_color: "#8A1538",
@@ -351,6 +363,92 @@ export default function DashboardProjects() {
                   className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
                 />
               </div>
+
+              <div className="border-t border-accent/20 dark:border-neutral-800 pt-4 space-y-3">
+                <h3 className="text-lg font-semibold text-secondary">
+                  {t("الترجمة الإنجليزية", "English content")}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <input
+                    value={form.title_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, title_en: e.target.value }))}
+                    placeholder={t("عنوان العمل (EN)", "Project title (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                  <input
+                    value={form.client_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, client_en: e.target.value }))}
+                    placeholder={t("اسم العميل (EN)", "Client name (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                </div>
+                <textarea
+                  value={form.description_en || ""}
+                  onChange={(e) => setForm((p) => ({ ...p, description_en: e.target.value }))}
+                  placeholder={t("وصف مختصر (EN)", "Short description (EN)")}
+                  className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                />
+                <div className="grid md:grid-cols-2 gap-3">
+                  <textarea
+                    value={form.summary_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, summary_en: e.target.value }))}
+                    placeholder={t("ملخص تنفيذي (EN)", "Executive summary (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                  <textarea
+                    value={form.goals_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, goals_en: e.target.value }))}
+                    placeholder={t("الأهداف والنتائج (EN)", "Goals and expected outcomes (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                </div>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <textarea
+                    value={form.challenges_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, challenges_en: e.target.value }))}
+                    placeholder={t("التحديات (EN)", "Challenges (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                  <textarea
+                    value={form.solution_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, solution_en: e.target.value }))}
+                    placeholder={t("الحل / المنهجية (EN)", "Solution / approach (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                </div>
+                <textarea
+                  value={form.results_en || ""}
+                  onChange={(e) => setForm((p) => ({ ...p, results_en: e.target.value }))}
+                  placeholder={t("النتائج والأثر (EN)", "Results & impact (EN)")}
+                  className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                />
+                <div className="grid md:grid-cols-3 gap-3">
+                  <input
+                    value={form.scope_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, scope_en: e.target.value }))}
+                    placeholder={t("نطاق العمل (EN)", "Scope (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                  <input
+                    value={form.duration_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, duration_en: e.target.value }))}
+                    placeholder={t("المدة / الجدول (EN)", "Duration / timeline (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                  <input
+                    value={form.team_size_en || ""}
+                    onChange={(e) => setForm((p) => ({ ...p, team_size_en: e.target.value }))}
+                    placeholder={t("حجم الفريق (EN)", "Team size (EN)")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  />
+                </div>
+                <input
+                  value={form.budget_en || ""}
+                  onChange={(e) => setForm((p) => ({ ...p, budget_en: e.target.value }))}
+                  placeholder={t("الميزانية (EN)", "Budget (EN)")}
+                  className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                />
+              </div>
               <div className="grid md:grid-cols-2 gap-3">
                 <label className="w-full border rounded-lg px-3 py-2 flex items-center justify-between cursor-pointer">
                   <span>{t("صورة الغلاف", "Cover image")}</span>
@@ -529,21 +627,27 @@ export default function DashboardProjects() {
                         />
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
-                            <p className="font-bold text-secondary text-lg">{p.title}</p>
+                            <p className="font-bold text-secondary text-lg">{isAr ? p.title : p.title_en || p.title}</p>
                             <span className="px-2 py-1 text-xs rounded-full bg-surface border text-secondary/80">
-                              {categoryLabels[p.category] || p.category}
+                              {categoryMap[p.category as keyof typeof categoryMap] || p.category}
                             </span>
                             {p.status && (
                               <span className="px-2 py-1 text-xs rounded-full bg-accent text-secondary">
-                                {statusLabels[p.status] || p.status}
+                                {statusMap[p.status as keyof typeof statusMap] || p.status}
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-secondary/70 line-clamp-2">{p.description}</p>
+                          <p className="text-sm text-secondary/70 line-clamp-2">{isAr ? p.description : p.description_en || p.description}</p>
                           <div className="text-xs text-secondary/60 flex gap-2 flex-wrap">
-                            {p.client && <span>{t("العميل:", "Client:")} {p.client}</span>}
-                            {p.duration && <span>{t("المدة:", "Duration:")} {p.duration}</span>}
-                            {p.scope && <span>{t("نطاق العمل:", "Scope:")} {p.scope}</span>}
+                            {(isAr ? p.client : p.client_en || p.client) && (
+                              <span>{t("العميل:", "Client:")} {isAr ? p.client : p.client_en || p.client}</span>
+                            )}
+                            {(isAr ? p.duration : p.duration_en || p.duration) && (
+                              <span>{t("المدة:", "Duration:")} {isAr ? p.duration : p.duration_en || p.duration}</span>
+                            )}
+                            {(isAr ? p.scope : p.scope_en || p.scope) && (
+                              <span>{t("نطاق العمل:", "Scope:")} {isAr ? p.scope : p.scope_en || p.scope}</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -614,7 +718,7 @@ export default function DashboardProjects() {
               ) : (
                 <ul className="text-sm text-secondary/80 list-disc pr-4 space-y-1">
                   {selectedProjects.map((p) => (
-                    <li key={p.id}>{p.title}</li>
+                    <li key={p.id}>{isAr ? p.title : p.title_en || p.title}</li>
                   ))}
                 </ul>
               )}

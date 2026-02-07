@@ -34,6 +34,7 @@ export default function ProjectDetail() {
   const { id } = useParams();
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
+  const pickText = (ar?: string, en?: string) => (isAr ? ar : en || ar);
   const labels = isAr ? categoryLabels.ar : categoryLabels.en;
   const statusMap = isAr ? statusLabels.ar : statusLabels.en;
 
@@ -63,21 +64,34 @@ export default function ProjectDetail() {
     );
   }
 
+  const title = pickText(data.title, data.title_en) || data.title;
+  const description = pickText(data.description, data.description_en) || data.description;
+  const summary = pickText(data.summary, data.summary_en) || description;
+  const goals = pickText(data.goals, data.goals_en);
+  const challenges = pickText(data.challenges, data.challenges_en);
+  const solution = pickText(data.solution, data.solution_en);
+  const results = pickText(data.results, data.results_en);
+  const scope = pickText(data.scope, data.scope_en);
+  const duration = pickText(data.duration, data.duration_en);
+  const teamSize = pickText(data.team_size, data.team_size_en);
+  const budget = pickText(data.budget, data.budget_en);
+  const client = pickText(data.client, data.client_en);
+
   const chips = [
     { label: isAr ? "التصنيف" : "Category", value: labels[data.category as keyof typeof labels] || data.category },
     data.status ? { label: isAr ? "الحالة" : "Status", value: statusMap[data.status as keyof typeof statusMap] || data.status } : null,
-    data.client ? { label: isAr ? "العميل" : "Client", value: data.client } : null,
-    data.scope ? { label: isAr ? "النطاق" : "Scope", value: data.scope } : null,
-    data.duration ? { label: isAr ? "المدة" : "Duration", value: data.duration } : null,
-    data.team_size ? { label: isAr ? "الفريق" : "Team", value: data.team_size } : null,
-    data.budget ? { label: isAr ? "الميزانية" : "Budget", value: data.budget } : null,
+    client ? { label: isAr ? "العميل" : "Client", value: client } : null,
+    scope ? { label: isAr ? "النطاق" : "Scope", value: scope } : null,
+    duration ? { label: isAr ? "المدة" : "Duration", value: duration } : null,
+    teamSize ? { label: isAr ? "الفريق" : "Team", value: teamSize } : null,
+    budget ? { label: isAr ? "الميزانية" : "Budget", value: budget } : null,
   ].filter(Boolean) as { label: string; value: string }[];
 
   const gallery = data.gallery || [];
 
   return (
     <Layout>
-      <MetaHead title={data.title} description={data.description} image={data.cover_image} />
+      <MetaHead title={title} description={description} image={data.cover_image} />
       <section
         className="py-14 container mx-auto px-4 space-y-8 text-secondary dark:text-neutral-100"
         style={{ fontFamily: data.body_font_family || "Space Grotesk" }}
@@ -97,13 +111,13 @@ export default function ProjectDetail() {
                   color: data.primary_color || undefined,
                 }}
               >
-                {data.title}
+                {title}
               </h1>
               <p
                 className="text-secondary/80 dark:text-neutral-200 whitespace-pre-wrap"
                 style={{ fontSize: (data.body_font_size || 16) + "px" }}
               >
-                {data.summary || data.description}
+                {summary}
               </p>
               <div className="flex flex-wrap gap-2 text-xs text-secondary/70 dark:text-neutral-300">
                 {chips.map((c) => (
@@ -139,11 +153,11 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-            <div className="rounded-2xl overflow-hidden border border-accent/40 dark:border-neutral-800 bg-neutral-900/70">
+          <div className="rounded-2xl overflow-hidden border border-accent/40 dark:border-neutral-800 bg-neutral-900/70">
               {data.cover_image ? (
                 <img
                   src={resolveMediaUrl(data.cover_image)}
-                  alt={data.title}
+                  alt={title}
                   className="w-full h-full max-h-[360px] object-cover"
                 />
               ) : (
@@ -155,18 +169,18 @@ export default function ProjectDetail() {
 
         <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-6 items-start">
           <div className="space-y-4">
-            <InfoCard title={isAr ? "نظرة عامة" : "Overview"} body={data.description || data.summary} bodyFont={data.body_font_size} />
+            <InfoCard title={isAr ? "نظرة عامة" : "Overview"} body={description || summary} bodyFont={data.body_font_size} />
 
             <div className="grid md:grid-cols-2 gap-4">
-              {data.goals && <InfoCard title={isAr ? "الأهداف" : "Goals"} body={data.goals} bodyFont={data.body_font_size} />}
-              {data.challenges && (
-                <InfoCard title={isAr ? "التحديات" : "Challenges"} body={data.challenges} bodyFont={data.body_font_size} />
+              {goals && <InfoCard title={isAr ? "الأهداف" : "Goals"} body={goals} bodyFont={data.body_font_size} />}
+              {challenges && (
+                <InfoCard title={isAr ? "التحديات" : "Challenges"} body={challenges} bodyFont={data.body_font_size} />
               )}
-              {data.solution && (
-                <InfoCard title={isAr ? "الحل والمنهجية" : "Solution & approach"} body={data.solution} bodyFont={data.body_font_size} />
+              {solution && (
+                <InfoCard title={isAr ? "الحل والمنهجية" : "Solution & approach"} body={solution} bodyFont={data.body_font_size} />
               )}
-              {data.results && (
-                <InfoCard title={isAr ? "النتائج والأثر" : "Outcomes & impact"} body={data.results} bodyFont={data.body_font_size} />
+              {results && (
+                <InfoCard title={isAr ? "النتائج والأثر" : "Outcomes & impact"} body={results} bodyFont={data.body_font_size} />
               )}
             </div>
 

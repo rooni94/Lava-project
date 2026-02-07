@@ -8,7 +8,7 @@ db.sqlite3
 .cache/
 staticfiles/
 media/
-
+data.json
 # Node / React
 node_modules/
 dist/

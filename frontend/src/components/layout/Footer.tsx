@@ -18,7 +18,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-secondary text-white dark:bg-neutral-950 dark:text-neutral-100 mt-16 border-t border-white/10 dark:border-neutral-800">
+    <footer className="bg-secondary text-white dark:bg-neutral-950 dark:text-neutral-100 border-t border-white/10 dark:border-neutral-800">
       <div className="container mx-auto px-4 py-10 grid gap-8 md:grid-cols-3">
         <div>
           <h3 className="font-bold text-lg mb-3">
@@ -60,6 +60,30 @@ export default function Footer() {
               {t("تم الاشتراك بنجاح.", "Thanks for subscribing.")}
             </p>
           )}
+        </div>
+      </div>
+      <div className="border-t border-white/10 dark:border-neutral-800">
+        <div className="container mx-auto px-4 py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="text-sm font-semibold text-white/90 dark:text-neutral-100">
+            {t("طرق الدفع الآمنة", "Secure payment methods")}
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {[
+              { src: "/payments/stripe.svg", alt: "Stripe" },
+              { src: "/payments/tappy.svg", alt: "Tappy" },
+              { src: "/payments/tamara.svg", alt: "Tamara" },
+              { src: "/payments/apple-pay.svg", alt: "Apple Pay" },
+              { src: "/payments/visa.svg", alt: "Visa" },
+              { src: "/payments/mada.svg", alt: "Mada" },
+            ].map((logo) => (
+              <span
+                key={logo.alt}
+                className="inline-flex items-center justify-center rounded-md bg-white/90 border border-white/10 px-2 py-1 shadow-sm"
+              >
+                <img src={logo.src} alt={logo.alt} className="h-6 w-auto" loading="lazy" decoding="async" />
+              </span>
+            ))}
+          </div>
         </div>
       </div>
       <div className="border-t border-white/10 dark:border-neutral-800 text-center text-xs py-3 text-white/70 dark:text-neutral-400">

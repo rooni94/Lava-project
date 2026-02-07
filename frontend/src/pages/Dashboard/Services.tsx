@@ -16,9 +16,18 @@ export default function DashboardServices() {
   const t = (ar: string, en: string) => (isAr ? ar : en);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [titleEn, setTitleEn] = useState("");
+  const [descriptionEn, setDescriptionEn] = useState("");
+  const [features, setFeatures] = useState("");
+  const [featuresEn, setFeaturesEn] = useState("");
   const [icon, setIcon] = useState<string>("default");
   const [selected, setSelected] = useState<number[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const splitLines = (text: string) =>
+    text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
 
   const iconOptions = serviceIconKeys.map((key) => ({
     value: key,
@@ -62,12 +71,32 @@ export default function DashboardServices() {
   const save = useMutation({
     mutationFn: () =>
       editingId
-        ? updateService(editingId, { title, description, icon: icon || undefined })
-        : createService({ title, description, icon: icon || undefined }),
+        ? updateService(editingId, {
+            title,
+            description,
+            title_en: titleEn,
+            description_en: descriptionEn,
+            features: splitLines(features),
+            features_en: splitLines(featuresEn),
+            icon: icon || undefined,
+          })
+        : createService({
+            title,
+            description,
+            title_en: titleEn,
+            description_en: descriptionEn,
+            features: splitLines(features),
+            features_en: splitLines(featuresEn),
+            icon: icon || undefined,
+          }),
     onSuccess: () => {
       toast.success(editingId ? t("تم تحديث الخدمة بنجاح", "Service updated") : t("تمت إضافة خدمة جديدة", "Service added"));
       setTitle("");
       setDescription("");
+      setTitleEn("");
+      setDescriptionEn("");
+      setFeatures("");
+      setFeaturesEn("");
       setIcon("default");
       setEditingId(null);
       qc.invalidateQueries({ queryKey: ["services-admin"] });
@@ -105,11 +134,35 @@ export default function DashboardServices() {
             placeholder={t("عنوان الخدمة", "Service title")}
             className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
           />
+          <input
+            value={titleEn}
+            onChange={(e) => setTitleEn(e.target.value)}
+            placeholder={t("عنوان الخدمة (EN)", "Service title (EN)")}
+            className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+          />
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t("وصف مختصر للخدمة", "Short service description")}
             className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+          />
+          <textarea
+            value={descriptionEn}
+            onChange={(e) => setDescriptionEn(e.target.value)}
+            placeholder={t("وصف مختصر للخدمة (EN)", "Short service description (EN)")}
+            className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+          />
+          <textarea
+            value={features}
+            onChange={(e) => setFeatures(e.target.value)}
+            placeholder={t("المميزات (AR) - كل سطر نقطة", "Features (AR) - one per line")}
+            className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700 min-h-[90px]"
+          />
+          <textarea
+            value={featuresEn}
+            onChange={(e) => setFeaturesEn(e.target.value)}
+            placeholder={t("المميزات (EN) - كل سطر نقطة", "Features (EN) - one per line")}
+            className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700 min-h-[90px]"
           />
           <div className="flex flex-wrap gap-3 items-center">
             <select
@@ -139,6 +192,10 @@ export default function DashboardServices() {
                 setEditingId(null);
                 setTitle("");
                 setDescription("");
+                setTitleEn("");
+                setDescriptionEn("");
+                setFeatures("");
+                setFeaturesEn("");
                 setIcon("default");
               }}
               className="text-sm text-secondary dark:text-neutral-300 underline"
@@ -159,6 +216,10 @@ export default function DashboardServices() {
                   setEditingId(svc.id);
                   setTitle(svc.title);
                   setDescription(svc.description);
+                  setTitleEn(svc.title_en || "");
+                  setDescriptionEn(svc.description_en || "");
+                  setFeatures((svc.features || []).join("\n"));
+                  setFeaturesEn((svc.features_en || []).join("\n"));
                   setIcon(svc.icon || "default");
                 }
               }}
@@ -192,8 +253,10 @@ export default function DashboardServices() {
                       }
                     />
                     <div>
-                      <p className="font-bold text-secondary dark:text-neutral-50">{svc.title}</p>
-                      <p className="text-sm text-secondary/70 dark:text-neutral-300 line-clamp-2">{svc.description}</p>
+                      <p className="font-bold text-secondary dark:text-neutral-50">{isAr ? svc.title : svc.title_en || svc.title}</p>
+                      <p className="text-sm text-secondary/70 dark:text-neutral-300 line-clamp-2">
+                        {isAr ? svc.description : svc.description_en || svc.description}
+                      </p>
                       <div className="text-xs text-secondary/60 dark:text-neutral-400">{t("الأيقونة:", "Icon:")} {svc.icon || "default"}</div>
                       <span className={`text-xs px-2 py-1 rounded ${svc.is_active ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-700"}`}>
                         {svc.is_active ? t("مفعلة", "Active") : t("معطلة", "Inactive")}
@@ -206,6 +269,10 @@ export default function DashboardServices() {
                         setEditingId(svc.id);
                         setTitle(svc.title);
                         setDescription(svc.description);
+                        setTitleEn(svc.title_en || "");
+                        setDescriptionEn(svc.description_en || "");
+                        setFeatures((svc.features || []).join("\n"));
+                        setFeaturesEn((svc.features_en || []).join("\n"));
                         setIcon(svc.icon || "default");
                       }}
                       className="text-blue-600 dark:text-blue-400 text-sm"
