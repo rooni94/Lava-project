@@ -25,6 +25,8 @@ import {
   DashboardClientsPage,
   DashboardPackagesPage,
   DashboardJobsPage,
+  DashboardMessagesPage,
+  DashboardSupportChatPage,
   DashboardMediaPage,
   DashboardPagesPage,
   DashboardSectionsPage,
@@ -116,6 +118,22 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DashboardJobsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/messages"
+          element={
+            <ProtectedRoute>
+              <DashboardMessagesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/support-chat"
+          element={
+            <ProtectedRoute>
+              <DashboardSupportChatPage />
             </ProtectedRoute>
           }
         />

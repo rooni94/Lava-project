@@ -178,6 +178,14 @@ export const uploadFile = async (file: File) => {
 export const updateMedia = async (id: number, payload: { title?: string; category?: string }) =>
   api.patch(`/media/${id}/`, payload);
 
+export const fetchMessages = async (params?: Record<string, string | number | boolean>) => {
+  const { data } = await api.get("/messages/", { params });
+  return data.results ?? data;
+};
+
+export const updateMessage = async (id: number, payload: Record<string, unknown>) => api.patch(`/messages/${id}/`, payload);
+export const deleteMessage = async (id: number) => api.delete(`/messages/${id}/`);
+
 export const fetchPages = async (): Promise<Page[]> => {
   const { data } = await api.get("/pages/");
   return data.results ?? data;

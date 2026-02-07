@@ -11,6 +11,8 @@ const navItems = [
   { to: "/dashboard/clients", label: { ar: "العملاء", en: "Clients" } },
   { to: "/dashboard/packages", label: { ar: "الباقات", en: "Packages" } },
   { to: "/dashboard/jobs", label: { ar: "الوظائف", en: "Jobs" } },
+  { to: "/dashboard/messages", label: { ar: "رسائل التواصل", en: "Messages" } },
+  { to: "/dashboard/support-chat", label: { ar: "دعم العملاء", en: "Support chat" } },
   { to: "/dashboard/media", label: { ar: "المكتبة", en: "Media Library" } },
   { to: "/dashboard/sections", label: { ar: "الأقسام", en: "Sections" } },
   { to: "/dashboard/pages", label: { ar: "الصفحات", en: "Pages" } },

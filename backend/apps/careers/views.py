@@ -58,7 +58,13 @@ class JobApplicationViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     def perform_create(self, serializer):
         resume = self.request.FILES.get("resume")
         validate_resume_upload(resume)
-        serializer.save()
+        application = serializer.save()
+        try:
+            from apps.core.email_utils import send_job_application_notification
+
+            send_job_application_notification(application)
+        except Exception:
+            pass
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-status")
     def bulk_status(self, request):

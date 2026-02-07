@@ -5,6 +5,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
+from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,6 +23,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
     "apps.accounts",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     "apps.clients",
     "apps.careers",
     "apps.packages",
+    "apps.support",
 ]
 
 MIDDLEWARE = [
@@ -128,12 +131,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.User"
 
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
-EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.hostinger.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "465"))
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@lava.local")
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "True") == "True"
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "False") == "True"
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@itlava.com")
+
+SUPPORT_EMAIL = os.environ.get("SUPPORT_EMAIL", "support@itlava.com")
+CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "contact@itlava.com")
+JOBS_EMAIL = os.environ.get("JOBS_EMAIL", "jobs@itlava.com")
+NOREPLY_EMAIL = os.environ.get("NOREPLY_EMAIL", "noreply@itlava.com")
 
 # CV / Resume scanning
 CV_SCAN_REQUIRED = os.environ.get("CV_SCAN_REQUIRED", "True") == "True"
@@ -176,6 +185,18 @@ else:
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
             "LOCATION": "lava-locmem",
         }
+    }
+
+if REDIS_URL:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {"hosts": [REDIS_URL]},
+        }
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}
     }
 
 RATELIMIT_USE_CACHE = "default"
@@ -230,6 +251,9 @@ CORS_ALLOWED_ORIGINS = [
     if origin.strip()
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-guest-token",
+]
 
 SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,

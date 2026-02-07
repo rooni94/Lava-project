@@ -180,3 +180,15 @@ export type ContactInfo = {
   map_embed?: string;
   working_hours?: string;
 };
+
+export type ContactMessage = {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+  service_type?: string;
+  status?: string;
+  is_handled?: boolean;
+  created_at?: string;
+};

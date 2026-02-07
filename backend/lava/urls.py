@@ -88,6 +88,7 @@ urlpatterns = [
     path("api/export/messages/", ExportMessagesView.as_view(), name="export_messages"),
     path("api/contact/", ContactSubmitView.as_view(), name="contact_submit"),
     path("api/subscribe/", SubscribeView.as_view(), name="subscribe"),
+    path("api/support/", include("apps.support.urls")),
     path("api/", include(router.urls)),
     path(
         "api/docs/",

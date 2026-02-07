@@ -86,6 +86,7 @@ class ContactMessageViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     filterset_fields = ("service_type", "status")
     search_fields = ("name", "email", "message")
     throttle_scope = "contact"
+    pagination_class = None
 
     def get_permissions(self):
         if self.action in ("create",):
@@ -173,7 +174,15 @@ class ContactSubmitView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = ContactMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        message = serializer.save()
+        try:
+            from apps.core.email_utils import send_contact_notification
+
+            topic = request.data.get("topic") or request.data.get("category")
+            send_contact_notification(message, topic=topic)
+        except Exception:
+            # Avoid blocking the response if email sending fails
+            pass
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
