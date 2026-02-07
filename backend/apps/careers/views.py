@@ -6,6 +6,7 @@ from apps.accounts.permissions import RolePermission
 from apps.core.mixins import ActivityLoggerMixin
 from apps.careers.models import JobApplication, JobOpening
 from apps.careers.serializers import JobApplicationSerializer, JobOpeningSerializer
+from apps.careers.utils import validate_resume_upload
 
 
 class JobOpeningViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
@@ -53,6 +54,11 @@ class JobApplicationViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
         if self.action in ("create",):
             return [permissions.AllowAny()]
         return [RolePermission()]
+
+    def perform_create(self, serializer):
+        resume = self.request.FILES.get("resume")
+        validate_resume_upload(resume)
+        serializer.save()
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-status")
     def bulk_status(self, request):

@@ -133,8 +133,8 @@ export const confirmPasswordReset = async (payload: { uid: string; token: string
   return api.post("/auth/reset-password-confirm/", payload);
 };
 
-export const fetchJobOpenings = async () => {
-  const { data } = await api.get("/careers/jobs/");
+export const fetchJobOpenings = async (params?: Record<string, string | number | boolean>) => {
+  const { data } = await api.get("/careers/jobs/", { params });
   return data.results ?? data;
 };
 
