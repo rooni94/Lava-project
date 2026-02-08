@@ -89,6 +89,7 @@ export default function CareersPage() {
     formData.append("email", values.email);
     if (values.phone) formData.append("phone", values.phone);
     if (cover) formData.append("cover_letter", cover);
+    formData.append("language", i18n.language);
     formData.append("resume", resumeFile);
 
     apply.mutate(formData);

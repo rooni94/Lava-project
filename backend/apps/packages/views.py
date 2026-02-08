@@ -1,4 +1,6 @@
 from rest_framework import permissions, viewsets, filters
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from apps.accounts.permissions import RolePermission
 from apps.core.mixins import ActivityLoggerMixin
@@ -32,3 +34,28 @@ class PackageViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
         if self.action in ("list", "retrieve"):
             return [permissions.AllowAny()]
         return [RolePermission()]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        request = getattr(self, "request", None)
+        if not request or not request.user.is_authenticated:
+            qs = qs.filter(is_active=True)
+        return qs
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-activate")
+    def bulk_activate(self, request):
+        ids = request.data.get("ids", [])
+        Package.objects.filter(id__in=ids).update(is_active=True)
+        return Response({"detail": "Activated"})
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-deactivate")
+    def bulk_deactivate(self, request):
+        ids = request.data.get("ids", [])
+        Package.objects.filter(id__in=ids).update(is_active=False)
+        return Response({"detail": "Deactivated"})
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-delete")
+    def bulk_delete(self, request):
+        ids = request.data.get("ids", [])
+        Package.objects.filter(id__in=ids).delete()
+        return Response({"detail": "Deleted"})

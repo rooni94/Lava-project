@@ -44,6 +44,7 @@ class JobApplication(TimestampedModel):
     phone = models.CharField(max_length=50, blank=True)
     resume = models.FileField(upload_to="careers/resumes/")
     cover_letter = models.TextField(blank=True)
+    language = models.CharField(max_length=5, default="ar")
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
     notes = models.TextField(blank=True)
 

@@ -38,8 +38,8 @@ class ContactInfoAdmin(admin.ModelAdmin):
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ("name", "email", "service_type", "status", "is_handled", "created_at")
-    list_filter = ("is_handled", "service_type", "status")
+    list_display = ("name", "email", "service_type", "topic", "language", "status", "is_handled", "created_at")
+    list_filter = ("is_handled", "service_type", "topic", "language", "status")
     search_fields = ("name", "email", "message")
 
 

@@ -13,7 +13,7 @@ class ProjectViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     queryset = Project.objects.select_related().prefetch_related("technologies").all()
     serializer_class = ProjectSerializer
     permission_classes = [RolePermission()]
-    filterset_fields = ("category", "status", "is_featured")
+    filterset_fields = ("category", "status", "is_featured", "is_active")
     search_fields = ("title", "description", "client")
     throttle_scope = "projects"
 
@@ -22,12 +22,22 @@ class ProjectViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [RolePermission()]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        request = getattr(self, "request", None)
+        if not request or not request.user.is_authenticated:
+            qs = qs.filter(is_active=True)
+        return qs
+
     @action(detail=False, methods=["get"], permission_classes=[permissions.AllowAny()], url_path="stats")
     def stats(self, request):
-        total = Project.objects.count()
-        featured = Project.objects.filter(is_featured=True).count()
-        by_category = {item["category"]: item["count"] for item in Project.objects.values("category").annotate(count=Count("id"))}
-        gallery_items = sum(len(p.gallery or []) for p in Project.objects.only("gallery"))
+        qs = Project.objects.all()
+        if not request.user.is_authenticated:
+            qs = qs.filter(is_active=True)
+        total = qs.count()
+        featured = qs.filter(is_featured=True).count()
+        by_category = {item["category"]: item["count"] for item in qs.values("category").annotate(count=Count("id"))}
+        gallery_items = sum(len(p.gallery or []) for p in qs.only("gallery"))
         media_items = ProjectImage.objects.count() + gallery_items
         tech_total = Technology.objects.count()
         return Response(
@@ -40,23 +50,35 @@ class ProjectViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
             }
         )
 
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-activate")
+    def bulk_activate(self, request):
+        ids = request.data.get("ids", [])
+        Project.objects.filter(id__in=ids).update(is_active=True)
+        return Response({"detail": "Activated selected projects"})
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-deactivate")
+    def bulk_deactivate(self, request):
+        ids = request.data.get("ids", [])
+        Project.objects.filter(id__in=ids).update(is_active=False)
+        return Response({"detail": "Deactivated selected projects"})
+
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-publish")
     def bulk_publish(self, request):
         ids = request.data.get("ids", [])
         Project.objects.filter(id__in=ids).update(status="done")
-        return Response({"detail": "تم نشر الأعمال المحددة"})
+        return Response({"detail": "?? ??? ??????? ???????"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-feature")
     def bulk_feature(self, request):
         ids = request.data.get("ids", [])
         Project.objects.filter(id__in=ids).update(is_featured=True)
-        return Response({"detail": "تم تمييز الأعمال المحددة"})
+        return Response({"detail": "?? ????? ??????? ???????"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-delete")
     def bulk_delete(self, request):
         ids = request.data.get("ids", [])
         Project.objects.filter(id__in=ids).delete()
-        return Response({"detail": "تم حذف الأعمال المحددة"})
+        return Response({"detail": "?? ??? ??????? ???????"})
 
 
 class TechnologyViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):

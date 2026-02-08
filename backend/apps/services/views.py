@@ -22,6 +22,13 @@ class ServiceViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [RolePermission()]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        request = getattr(self, "request", None)
+        if not request or not request.user.is_authenticated:
+            qs = qs.filter(is_active=True)
+        return qs
+
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-activate")
     def bulk_activate(self, request):
         ids = request.data.get("ids", [])

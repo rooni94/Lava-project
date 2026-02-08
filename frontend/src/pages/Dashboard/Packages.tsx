@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import PackageForm from "../../components/dashboard/PackageForm";
-import { deletePackage, fetchPackageCategories, fetchPackages } from "../../api/endpoints";
+import { bulkPackage, deletePackage, fetchPackageCategories, fetchPackages } from "../../api/endpoints";
 import Skeleton from "../../components/ui/Skeleton";
 import { Package, PackageCategory } from "../../types";
 
@@ -18,6 +18,7 @@ export default function DashboardPackages() {
   const { data: packages, isLoading } = useQuery<Package[]>({ queryKey: ["packages-admin"], queryFn: () => fetchPackages({ product_type: "service" }) });
 
   const [editing, setEditing] = useState<Package | null>(null);
+  const [selected, setSelected] = useState<number[]>([]);
 
   const remove = useMutation({
     mutationFn: (id: number) => deletePackage(id),
@@ -27,6 +28,17 @@ export default function DashboardPackages() {
       qc.invalidateQueries({ queryKey: ["packages"] });
     },
     onError: () => toast.error(t("تعذر الحذف", "Delete failed")),
+  });
+
+  const bulkMutate = useMutation({
+    mutationFn: (action: "activate" | "deactivate" | "delete") => bulkPackage(action, selected),
+    onSuccess: () => {
+      toast.success(t("تم تنفيذ الإجراء", "Action completed"));
+      setSelected([]);
+      qc.invalidateQueries({ queryKey: ["packages-admin"] });
+      qc.invalidateQueries({ queryKey: ["packages"] });
+    },
+    onError: () => toast.error(t("تعذر تنفيذ الإجراء", "Action failed")),
   });
 
   const featuredCount = useMemo(() => packages?.filter((p) => p.featured).length ?? 0, [packages]);
@@ -47,8 +59,31 @@ export default function DashboardPackages() {
         <PackageForm categories={categories} initial={editing} onDone={() => setEditing(null)} />
 
         <div className="bg-white dark:bg-neutral-900 border border-accent/30 dark:border-neutral-800 rounded-2xl p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
             <h2 className="text-lg font-semibold text-secondary">{t("الباقات الحالية", "Current packages")}</h2>
+            <div className="flex gap-2 flex-wrap">
+              <button
+                disabled={!selected.length}
+                onClick={() => bulkMutate.mutate("activate")}
+                className="px-3 py-1 bg-green-100 text-green-700 rounded disabled:opacity-60"
+              >
+                {t("تفعيل", "Activate")}
+              </button>
+              <button
+                disabled={!selected.length}
+                onClick={() => bulkMutate.mutate("deactivate")}
+                className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded disabled:opacity-60"
+              >
+                {t("تعطيل", "Deactivate")}
+              </button>
+              <button
+                disabled={!selected.length}
+                onClick={() => bulkMutate.mutate("delete")}
+                className="px-3 py-1 bg-red-100 text-red-700 rounded disabled:opacity-60"
+              >
+                {t("حذف", "Delete")}
+              </button>
+            </div>
           </div>
           {isLoading ? (
             <Skeleton className="h-32 w-full" />
@@ -58,7 +93,16 @@ export default function DashboardPackages() {
             <div className="space-y-2">
               {packages.map((p) => (
                 <div key={p.id} className="flex items-start justify-between gap-3 border rounded-xl p-3 hover:border-primary/40">
-                  <div className="space-y-1">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(p.id)}
+                      onChange={(e) =>
+                        setSelected((prev) => (e.target.checked ? [...prev, p.id] : prev.filter((id) => id !== p.id)))
+                      }
+                      className="mt-1"
+                    />
+                    <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-secondary text-lg">{p.title_ar}</span>
                       <span className="text-secondary/70 text-sm">/ {p.title_en}</span>
@@ -71,6 +115,7 @@ export default function DashboardPackages() {
                     </div>
                     <div className="text-xs text-secondary/60 line-clamp-2">
                       {isAr ? p.short_description_ar : p.short_description_en}
+                    </div>
                     </div>
                   </div>
                   <div className="flex gap-2">

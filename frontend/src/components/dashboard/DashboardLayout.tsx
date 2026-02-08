@@ -3,19 +3,22 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const navItems = [
-  { to: "/dashboard", label: { ar: "لوحة التحكم", en: "Dashboard" } },
-  { to: "/dashboard/services", label: { ar: "الخدمات", en: "Services" } },
-  { to: "/dashboard/projects", label: { ar: "الأعمال", en: "Projects" } },
-  { to: "/dashboard/blog", label: { ar: "المدونة", en: "Blog" } },
-  { to: "/dashboard/team", label: { ar: "الفريق", en: "Team" } },
-  { to: "/dashboard/clients", label: { ar: "العملاء", en: "Clients" } },
-  { to: "/dashboard/packages", label: { ar: "الباقات", en: "Packages" } },
-  { to: "/dashboard/jobs", label: { ar: "الوظائف", en: "Jobs" } },
-  { to: "/dashboard/messages", label: { ar: "رسائل التواصل", en: "Messages" } },
-  { to: "/dashboard/support-chat", label: { ar: "دعم العملاء", en: "Support chat" } },
-  { to: "/dashboard/media", label: { ar: "المكتبة", en: "Media Library" } },
-  { to: "/dashboard/sections", label: { ar: "الأقسام", en: "Sections" } },
-  { to: "/dashboard/pages", label: { ar: "الصفحات", en: "Pages" } },
+  { to: "/dashboard", label: { ar: "???? ??????", en: "Dashboard" } },
+  { to: "/dashboard/services", label: { ar: "???????", en: "Services" } },
+  { to: "/dashboard/projects", label: { ar: "???????", en: "Projects" } },
+  { to: "/dashboard/blog", label: { ar: "???????", en: "Blog" } },
+  { to: "/dashboard/team", label: { ar: "??????", en: "Team" } },
+  { to: "/dashboard/clients", label: { ar: "???????", en: "Clients" } },
+  { to: "/dashboard/packages", label: { ar: "???????", en: "Packages" } },
+  { to: "/dashboard/jobs", label: { ar: "???????", en: "Jobs" } },
+  { to: "/dashboard/messages", query: "sales", label: { ar: "????? ??????? ????????", en: "Sales & packages" } },
+  { to: "/dashboard/messages", query: "support", label: { ar: "????? ????? ?????", en: "Support messages" } },
+  { to: "/dashboard/messages", query: "general", label: { ar: "????? ????", en: "General messages" } },
+  { to: "/dashboard/job-applications", label: { ar: "????? ???????", en: "Applications" } },
+  { to: "/dashboard/support-chat", label: { ar: "??? ???????", en: "Support chat" } },
+  { to: "/dashboard/media", label: { ar: "???????", en: "Media Library" } },
+  { to: "/dashboard/sections", label: { ar: "???????", en: "Sections" } },
+  { to: "/dashboard/pages", label: { ar: "???????", en: "Pages" } },
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
@@ -46,11 +49,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </div>
         <nav className="space-y-1">
           {navItems.map((item) => {
-            const active = location.pathname.startsWith(item.to);
+            const params = new URLSearchParams(location.search);
+            const topic = params.get("topic") || "sales";
+            const active = item.to === "/dashboard/messages"
+              ? location.pathname.startsWith(item.to) && (!item.query || item.query === topic)
+              : location.pathname.startsWith(item.to);
+            const target = item.query ? `${item.to}?topic=${item.query}` : item.to;
             return (
               <Link
-                key={item.to}
-                to={item.to}
+                key={item.to + (item.query || "")}
+                to={target}
                 className={`block px-3 py-2 rounded-xl transition-colors ${
                   active ? "bg-primary text-white shadow" : "hover:bg-surface hover:text-primary dark:hover:bg-neutral-800"
                 }`}

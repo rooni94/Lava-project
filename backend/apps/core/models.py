@@ -105,12 +105,23 @@ class ContactMessage(TimestampedModel):
         ("erp", _("ERP/CRM")),
         ("other", _("Other")),
     ]
+    TOPIC_CHOICES = [
+        ("sales", _("Sales / Packages")),
+        ("support", _("Support")),
+        ("general", _("General")),
+    ]
+    LANGUAGE_CHOICES = [
+        ("ar", _("Arabic")),
+        ("en", _("English")),
+    ]
 
     name = models.CharField(max_length=120, verbose_name=_("Name"))
     email = models.EmailField(verbose_name=_("Email"))
     phone = models.CharField(max_length=50, blank=True, verbose_name=_("Phone"))
     message = models.TextField(verbose_name=_("Message"))
     service_type = models.CharField(max_length=50, choices=SERVICE_CHOICES, default="other")
+    topic = models.CharField(max_length=20, choices=TOPIC_CHOICES, default="sales")
+    language = models.CharField(max_length=5, choices=LANGUAGE_CHOICES, default="ar")
     status = models.CharField(
         max_length=20,
         choices=[("new", _("New")), ("replied", _("Replied")), ("resolved", _("Closed"))],

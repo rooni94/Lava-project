@@ -22,6 +22,13 @@ class JobOpeningViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [RolePermission()]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        request = getattr(self, "request", None)
+        if not request or not request.user.is_authenticated:
+            qs = qs.filter(is_active=True)
+        return qs
+
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-close")
     def bulk_close(self, request):
         ids = request.data.get("ids", [])
@@ -49,6 +56,7 @@ class JobApplicationViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     filterset_fields = ("status", "job")
     search_fields = ("full_name", "email")
     throttle_scope = "contact"
+    pagination_class = None
 
     def get_permissions(self):
         if self.action in ("create",):
@@ -58,13 +66,32 @@ class JobApplicationViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     def perform_create(self, serializer):
         resume = self.request.FILES.get("resume")
         validate_resume_upload(resume)
-        application = serializer.save()
+        from apps.core.email_utils import detect_language
+
+        language = self.request.data.get("language") or detect_language(self.request.data.get("cover_letter", ""))
+        application = serializer.save(language=language, status=JobApplication.Status.NEW)
         try:
-            from apps.core.email_utils import send_job_application_notification
+            from apps.core.email_utils import send_job_application_ack, send_job_application_notification
 
             send_job_application_notification(application)
+            send_job_application_ack(application)
         except Exception:
             pass
+
+    @action(detail=True, methods=["post"], permission_classes=[RolePermission()], url_path="reply")
+    def reply(self, request, pk=None):
+        application = self.get_object()
+        subject = request.data.get("subject") or f"Re: {application.job.title}"
+        body = request.data.get("body")
+        if not body:
+            return Response({"detail": "Body is required"}, status=400)
+        from apps.core.email_utils import send_job_application_reply
+
+        send_job_application_reply(application, subject=subject, body=body)
+        if application.status == application.Status.NEW:
+            application.status = application.Status.REVIEW
+        application.save(update_fields=["status"])
+        return Response({"detail": "تم إرسال الرد"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-status")
     def bulk_status(self, request):

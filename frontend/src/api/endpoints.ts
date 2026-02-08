@@ -148,6 +148,15 @@ export const applyToJob = async (payload: FormData) => {
   });
 };
 
+export const fetchJobApplications = async (params?: Record<string, string | number | boolean>) => {
+  const { data } = await api.get("/careers/applications/", { params });
+  return data.results ?? data;
+};
+export const replyJobApplication = async (id: number, payload: { subject?: string; body: string }) =>
+  api.post(`/careers/applications/${id}/reply/`, payload);
+export const updateJobApplication = async (id: number, payload: Record<string, unknown>) =>
+  api.patch(`/careers/applications/${id}/`, payload);
+
 export const createService = async (payload: Partial<Service>) => api.post("/services/", payload);
 export const updateService = async (id: number, payload: Partial<Service>) => api.patch(`/services/${id}/`, payload);
 export const deleteService = async (id: number) => api.delete(`/services/${id}/`);
@@ -185,6 +194,8 @@ export const fetchMessages = async (params?: Record<string, string | number | bo
 
 export const updateMessage = async (id: number, payload: Record<string, unknown>) => api.patch(`/messages/${id}/`, payload);
 export const deleteMessage = async (id: number) => api.delete(`/messages/${id}/`);
+export const replyMessage = async (id: number, payload: { subject?: string; body: string }) =>
+  api.post(`/messages/${id}/reply/`, payload);
 
 export const fetchPages = async (): Promise<Page[]> => {
   const { data } = await api.get("/pages/");
@@ -207,9 +218,11 @@ export const reorderSections = async (orders: { id: number; order: number }[]) =
 // Bulk APIs
 export const bulkService = (action: "activate" | "deactivate" | "delete", ids: number[]) =>
   api.post(`/services/bulk-${action}/`, { ids });
-export const bulkProject = (action: "publish" | "feature" | "delete", ids: number[]) =>
+export const bulkProject = (action: "publish" | "feature" | "delete" | "activate" | "deactivate", ids: number[]) =>
   api.post(`/projects/bulk-${action}/`, { ids });
-export const bulkBlog = (action: "publish" | "delete", ids: number[]) => api.post(`/blog/posts/bulk-${action}/`, { ids });
+export const bulkPackage = (action: "activate" | "deactivate" | "delete", ids: number[]) =>
+  api.post(`/packages/bulk-${action}/`, { ids });
+export const bulkBlog = (action: "publish" | "unpublish" | "delete", ids: number[]) => api.post(`/blog/posts/bulk-${action}/`, { ids });
 export const bulkJobs = (action: "publish" | "delete" | "close", ids: number[]) =>
   api.post(`/careers/jobs/bulk-${action}/`, { ids });
 export const bulkMediaDelete = (ids: number[]) => api.post("/media/bulk-delete/", { ids });

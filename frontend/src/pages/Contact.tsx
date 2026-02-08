@@ -73,6 +73,7 @@ type ContactForm = {
   phone?: string;
   website?: string;
   inquiry: "web" | "mobile" | "erp" | "other";
+  topic: "sales" | "support";
   package_type: "service" | "bundle";
   package_interest?: string;
   budget?: string;
@@ -89,7 +90,7 @@ export default function ContactPage() {
     queryFn: () => fetchPackages({ product_type: "service", ordering: "-featured" }),
   });
   const { register, handleSubmit, reset, watch } = useForm<ContactForm>({
-    defaultValues: { inquiry: "web", package_type: "service" },
+    defaultValues: { inquiry: "web", package_type: "service", topic: "sales" },
   });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
@@ -107,6 +108,7 @@ export default function ContactPage() {
       values.company ? `${label("المنشأة", "Company")}: ${values.company}` : "",
       values.website ? `${label("الموقع", "Website")}: ${values.website}` : "",
       `${label("نوع الخدمة", "Service type")}: ${options.find((o) => o.value === values.inquiry)?.label || values.inquiry}`,
+      `${label("نوع الرسالة", "Message type")}: ${values.topic === "support" ? label("دعم فني", "Support") : label("طلب باقة/خدمة", "Sales / Package")}`,
       `${label("نوع الباقة", "Package type")}: ${values.package_type === "bundle" ? label("باقة", "Bundle") : label("خدمة", "Service")}`,
       values.package_interest ? `${label("الباقة المرغوبة", "Package preference")}: ${values.package_interest}` : "",
       values.stage ? `${label("مرحلة المشروع", "Project stage")}: ${values.stage}` : "",
@@ -123,9 +125,11 @@ export default function ContactPage() {
         email: values.email,
         message: fullMessage,
         service_type: values.inquiry,
+        topic: values.topic,
+        language: i18n.language,
         phone: values.phone,
       });
-      reset({ inquiry: values.inquiry, package_type: values.package_type });
+      reset({ inquiry: values.inquiry, package_type: values.package_type, topic: values.topic });
       toast.success(
         isAr
           ? "تم استلام طلبك، سنعاود التواصل خلال 24–48 ساعة عمل."
@@ -261,6 +265,32 @@ export default function ContactPage() {
                   </select>
                 </div>
               </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm mb-1">{isAr ? "نوع الرسالة" : "Message type"}</label>
+                  <select
+                    {...register("topic")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  >
+                    <option value="sales">{isAr ? "طلب باقة/خدمة" : "Sales / Package"}</option>
+                    <option value="support">{isAr ? "دعم فني أو مشكلة" : "Support / Issue"}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm mb-1">{isAr ? "طريقة الدفع المفضلة" : "Preferred payment method"}</label>
+                  <select
+                    {...register("payment_method")}
+                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  >
+                    <option value="">{isAr ? "بدون تحديد" : "No preference"}</option>
+                    {paymentMethods.map((method) => (
+                      <option key={method.name} value={method.name}>
+                        {method.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -335,21 +365,6 @@ export default function ContactPage() {
                     placeholder={isAr ? "مثال: 15,000 - 30,000 ريال" : "e.g. SAR 15,000 - 30,000"}
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm mb-1">{isAr ? "طريقة الدفع المفضلة" : "Preferred payment method"}</label>
-                <select
-                  {...register("payment_method")}
-                  className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                >
-                  <option value="">{isAr ? "بدون تحديد" : "No preference"}</option>
-                  {paymentMethods.map((method) => (
-                    <option key={method.name} value={method.name}>
-                      {method.name}
-                    </option>
-                  ))}
-                </select>
               </div>
 
               <div>

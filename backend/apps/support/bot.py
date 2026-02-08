@@ -7,7 +7,7 @@ from typing import Optional, List, Dict
 
 from django.contrib.auth import get_user_model
 
-from apps.core.email_utils import send_contact_notification
+from apps.core.email_utils import send_contact_notification, send_contact_ack, detect_language
 from apps.core.models import ContactMessage
 from apps.packages.models import Package
 from apps.services.models import Service
@@ -378,15 +378,21 @@ def _guess_service_type(text: str) -> str:
 
 def _create_contact_message(data: Dict[str, str]) -> Optional[ContactMessage]:
     try:
+        brief = data.get("brief", "")
+        topic = data.get("topic", "sales")
+        language = data.get("language") or detect_language(brief)
         msg = ContactMessage.objects.create(
-            name=data.get("name", "عميل"),
+            name=data.get("name", "????"),
             email=data.get("email", ""),
             phone=data.get("phone", ""),
-            message=data.get("brief", ""),
+            message=brief,
             service_type=data.get("service_type", "other"),
+            topic=topic,
+            language=language,
         )
-        topic = data.get("topic", "sales")
         send_contact_notification(msg, topic=topic)
+        if msg.email:
+            send_contact_ack(msg)
         return msg
     except Exception:
         logger.exception("Failed to create contact message from support bot")

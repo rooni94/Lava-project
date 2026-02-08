@@ -33,17 +33,30 @@ class BlogPostViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [RolePermission()]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        request = getattr(self, "request", None)
+        if not request or not request.user.is_authenticated:
+            qs = qs.filter(is_published=True)
+        return qs
+
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-publish")
     def bulk_publish(self, request):
         ids = request.data.get("ids", [])
         BlogPost.objects.filter(id__in=ids).update(is_published=True)
-        return Response({"detail": "تم النشر"})
+        return Response({"detail": "?? ?????"})
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-unpublish")
+    def bulk_unpublish(self, request):
+        ids = request.data.get("ids", [])
+        BlogPost.objects.filter(id__in=ids).update(is_published=False)
+        return Response({"detail": "?? ????? ?????"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-delete")
     def bulk_delete(self, request):
         ids = request.data.get("ids", [])
         BlogPost.objects.filter(id__in=ids).delete()
-        return Response({"detail": "تم الحذف"})
+        return Response({"detail": "?? ?????"})
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

@@ -24,6 +24,7 @@ export const DashboardClientsPage = lazy(() => import("../pages/Dashboard/Client
 export const DashboardPackagesPage = lazy(() => import("../pages/Dashboard/Packages"));
 export const DashboardJobsPage = lazy(() => import("../pages/Dashboard/Jobs"));
 export const DashboardMessagesPage = lazy(() => import("../pages/Dashboard/Messages"));
+export const DashboardJobApplicationsPage = lazy(() => import("../pages/Dashboard/JobApplications"));
 export const DashboardSupportChatPage = lazy(() => import("../pages/Dashboard/SupportChat"));
 export const DashboardMediaPage = lazy(() => import("../pages/Dashboard/Media"));
 export const DashboardPagesPage = lazy(() => import("../pages/Dashboard/Pages"));

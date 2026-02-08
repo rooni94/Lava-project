@@ -45,6 +45,7 @@ export type Project = {
   github_url?: string;
   status?: string;
   is_featured?: boolean;
+  is_active?: boolean;
   scheduled_publish_at?: string;
   title_font_family?: string;
   body_font_family?: string;
@@ -86,6 +87,7 @@ export type BlogPost = {
   content?: string;
   featured_image?: string;
   published_at?: string;
+  is_published?: boolean;
   created_at?: string;
   tags?: string[];
   comments?: Comment[];
@@ -188,7 +190,23 @@ export type ContactMessage = {
   phone?: string;
   message: string;
   service_type?: string;
+  topic?: string;
+  language?: string;
   status?: string;
   is_handled?: boolean;
+  created_at?: string;
+};
+
+export type JobApplication = {
+  id: number;
+  job: number;
+  job_title?: string;
+  full_name: string;
+  email: string;
+  phone?: string;
+  resume: string;
+  cover_letter?: string;
+  status?: string;
+  language?: string;
   created_at?: string;
 };

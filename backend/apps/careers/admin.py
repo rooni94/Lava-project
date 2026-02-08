@@ -12,6 +12,6 @@ class JobOpeningAdmin(admin.ModelAdmin):
 
 @admin.register(JobApplication)
 class JobApplicationAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "job", "status", "created_at")
-    list_filter = ("status", "job")
+    list_display = ("full_name", "job", "status", "language", "created_at")
+    list_filter = ("status", "job", "language")
     search_fields = ("full_name", "email")

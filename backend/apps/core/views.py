@@ -54,6 +54,13 @@ class PageViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelViewSet):
     filterset_fields = ("status",)
     search_fields = ("name", "title", "slug")
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        request = getattr(self, "request", None)
+        if not request or not request.user.is_authenticated:
+            qs = qs.filter(status="published")
+        return qs
+
 
 class SectionViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelViewSet):
     queryset = Section.objects.select_related("page").all()
@@ -83,7 +90,7 @@ class ContactInfoViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelVie
 class ContactMessageViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
-    filterset_fields = ("service_type", "status")
+    filterset_fields = ("service_type", "status", "topic")
     search_fields = ("name", "email", "message")
     throttle_scope = "contact"
     pagination_class = None
@@ -92,6 +99,21 @@ class ContactMessageViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
         if self.action in ("create",):
             return [permissions.AllowAny()]
         return [RolePermission()]
+
+    @action(detail=True, methods=["post"], permission_classes=[RolePermission()], url_path="reply")
+    def reply(self, request, pk=None):
+        message = self.get_object()
+        subject = request.data.get("subject") or f"Re: {message.name}"
+        body = request.data.get("body")
+        if not body:
+            return Response({"detail": "Body is required"}, status=400)
+        from apps.core.email_utils import send_contact_reply
+
+        send_contact_reply(message, subject=subject, body=body)
+        message.status = "replied"
+        message.is_handled = True
+        message.save(update_fields=["status", "is_handled"])
+        return Response({"detail": "تم إرسال الرد"})
 
 
 class SubscriberViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
@@ -148,9 +170,9 @@ class ExportMessagesView(APIView):
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = 'attachment; filename="contact_messages.csv"'
         writer = csv.writer(response)
-        writer.writerow(["name", "email", "service_type", "status", "message", "created_at"])
+        writer.writerow(["name", "email", "service_type", "topic", "language", "status", "message", "created_at"])
         for msg in ContactMessage.objects.all():
-            writer.writerow([msg.name, msg.email, msg.service_type, msg.status, msg.message, msg.created_at])
+            writer.writerow([msg.name, msg.email, msg.service_type, msg.topic, msg.language, msg.status, msg.message, msg.created_at])
         return response
 
 
@@ -172,14 +194,24 @@ class ContactSubmitView(APIView):
     throttle_scope = "contact"
 
     def post(self, request, *args, **kwargs):
-        serializer = ContactMessageSerializer(data=request.data)
+        payload = request.data.copy()
+        if not payload.get("topic"):
+            payload["topic"] = "sales"
+        if not payload.get("language"):
+            from apps.core.email_utils import detect_language
+
+            payload["language"] = detect_language(payload.get("message", ""))
+        payload["status"] = "new"
+        payload["is_handled"] = False
+        serializer = ContactMessageSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
         message = serializer.save()
         try:
-            from apps.core.email_utils import send_contact_notification
+            from apps.core.email_utils import send_contact_ack, send_contact_notification
 
-            topic = request.data.get("topic") or request.data.get("category")
+            topic = request.data.get("topic") or request.data.get("category") or message.topic
             send_contact_notification(message, topic=topic)
+            send_contact_ack(message)
         except Exception:
             # Avoid blocking the response if email sending fails
             pass

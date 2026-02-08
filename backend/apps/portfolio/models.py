@@ -66,6 +66,7 @@ class Project(TimestampedModel):
     live_url = models.URLField(blank=True, verbose_name=_("رابط المشروع"))
     github_url = models.URLField(blank=True, verbose_name=_("رابط الكود"))
     is_featured = models.BooleanField(default=False, verbose_name=_("مميز في الواجهة"))
+    is_active = models.BooleanField(default=True, verbose_name=_("Visible on site"))
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="done", verbose_name=_("الحالة"))
     scheduled_publish_at = models.DateTimeField(blank=True, null=True, verbose_name=_("نشر مجدول في"))
 
