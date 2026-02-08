@@ -11,7 +11,7 @@ type Job = { id: number; title: string; department?: string; is_active: boolean 
 
 export default function DashboardJobs() {
   const qc = useQueryClient();
-  const { data, isLoading } = useQuery<JobOpening[]>({ queryKey: ["jobs-admin"], queryFn: fetchJobOpenings });
+  const { data, isLoading } = useQuery<JobOpening[]>({ queryKey: ["jobs-admin"], queryFn: () => fetchJobOpenings() });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const t = (ar: string, en: string) => (isAr ? ar : en);

@@ -29,19 +29,42 @@ export default function DashboardSections() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [titleEn, setTitleEn] = useState("");
+  const [contentEn, setContentEn] = useState("");
+  const [sectionType, setSectionType] = useState("");
+  const [extraBase, setExtraBase] = useState<Record<string, unknown>>({});
   const [order, setOrder] = useState(0);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
 
+  const buildExtra = () => {
+    const nextExtra: Record<string, unknown> = { ...extraBase };
+    if (titleEn) {
+      nextExtra.title_en = titleEn;
+    } else {
+      delete nextExtra.title_en;
+    }
+    if (contentEn) {
+      nextExtra.content_en = contentEn;
+    } else {
+      delete nextExtra.content_en;
+    }
+    return nextExtra;
+  };
+
   const save = useMutation({
     mutationFn: () =>
       editingId
-        ? updateSection(editingId, { title, content, order, page: pageId })
-        : createSection({ title, content, order, page: pageId }),
+        ? updateSection(editingId, { title, content, order, page: pageId, section_type: sectionType, extra: buildExtra() })
+        : createSection({ title, content, order, page: pageId, section_type: sectionType, extra: buildExtra() }),
     onSuccess: () => {
       toast.success(editingId ? t("تم تحديث القسم", "Section updated") : t("تم إضافة القسم", "Section added"));
       setTitle("");
       setContent("");
+      setTitleEn("");
+      setContentEn("");
+      setSectionType("");
+      setExtraBase({});
       setOrder(0);
       setEditingId(null);
       qc.invalidateQueries({ queryKey: ["sections", pageId] });
@@ -77,6 +100,11 @@ export default function DashboardSections() {
       setTitle(sec.title);
       setContent(sec.content);
       setOrder(sec.order);
+      setSectionType(sec.section_type || "");
+      const extra = (sec.extra || {}) as Record<string, unknown>;
+      setExtraBase(extra);
+      setTitleEn((extra?.title_en as string) || "");
+      setContentEn((extra?.content_en as string) || "");
     }
   };
 
@@ -104,9 +132,21 @@ export default function DashboardSections() {
             ))}
           </select>
           <input
+            value={sectionType}
+            onChange={(e) => setSectionType(e.target.value)}
+            placeholder={t("نوع القسم (مثال: hero)", "Section type (e.g. hero)")}
+            className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+          />
+          <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t("عنوان القسم", "Section title")}
+            className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+          />
+          <input
+            value={titleEn}
+            onChange={(e) => setTitleEn(e.target.value)}
+            placeholder={t("عنوان القسم بالإنجليزية (اختياري)", "Section title (English, optional)")}
             className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
           />
           <input
@@ -117,6 +157,11 @@ export default function DashboardSections() {
             className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
           />
           <RichEditor value={content} onChange={setContent} placeholder={t("المحتوى التفصيلي / WYSIWYG", "Detailed content / WYSIWYG")} />
+          <RichEditor
+            value={contentEn}
+            onChange={setContentEn}
+            placeholder={t("المحتوى بالإنجليزية (اختياري)", "English content (optional)")}
+          />
           <button onClick={() => save.mutate()} className="bg-primary text-white px-4 py-2 rounded-lg" disabled={!pageId || !title}>
             {editingId ? t("حفظ التعديل", "Save changes") : t("إضافة القسم", "Add section")}
           </button>
@@ -126,6 +171,10 @@ export default function DashboardSections() {
                 setEditingId(null);
                 setTitle("");
                 setContent("");
+                setTitleEn("");
+                setContentEn("");
+                setSectionType("");
+                setExtraBase({});
                 setOrder(0);
               }}
               className="text-sm text-secondary dark:text-neutral-300 underline"
@@ -169,7 +218,10 @@ export default function DashboardSections() {
                       <p className="font-bold text-secondary dark:text-neutral-50">
                         {sec.order}. {sec.title}
                       </p>
-                      <p className="text-xs text-secondary/70 dark:text-neutral-300">{t("معرف الصفحة:", "Page ID:")} {sec.page}</p>
+                      <p className="text-xs text-secondary/70 dark:text-neutral-300">
+                        {t("معرف الصفحة:", "Page ID:")} {sec.page}
+                        {sec.section_type ? ` · ${t("النوع:", "Type:")} ${sec.section_type}` : ""}
+                      </p>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -179,6 +231,11 @@ export default function DashboardSections() {
                         setTitle(sec.title);
                         setContent(sec.content);
                         setOrder(sec.order);
+                        setSectionType(sec.section_type || "");
+                        const extra = (sec.extra || {}) as Record<string, unknown>;
+                        setExtraBase(extra);
+                        setTitleEn((extra?.title_en as string) || "");
+                        setContentEn((extra?.content_en as string) || "");
                       }}
                       className="text-blue-600 dark:text-blue-400 text-sm"
                     >

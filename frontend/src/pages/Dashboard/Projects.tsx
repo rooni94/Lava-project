@@ -80,6 +80,7 @@ const baseForm: Partial<Project> = {
   budget_en: "",
   category: "web",
   status: "done",
+  is_active: true,
   client: "",
   client_en: "",
   live_url: "",
@@ -95,7 +96,7 @@ const baseForm: Partial<Project> = {
 
 export default function DashboardProjects() {
   const qc = useQueryClient();
-  const { data: projects, isLoading } = useQuery<Project[]>({ queryKey: ["projects-admin"], queryFn: fetchProjects });
+  const { data: projects, isLoading } = useQuery<Project[]>({ queryKey: ["projects-admin"], queryFn: () => fetchProjects() });
   const { data: technologies } = useQuery<Technology[]>({ queryKey: ["technologies"], queryFn: fetchTechnologies });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
@@ -154,7 +155,7 @@ export default function DashboardProjects() {
   });
 
   const bulkMutate = useMutation({
-    mutationFn: (action: "publish" | "feature" | "delete") => bulkProject(action, selected),
+    mutationFn: (action: "publish" | "feature" | "delete" | "activate" | "deactivate") => bulkProject(action, selected),
     onSuccess: () => {
       toast.success(t("تم تنفيذ الإجراء على العناصر المحددة", "Action applied to selected items"));
       setSelected([]);
@@ -216,6 +217,20 @@ export default function DashboardProjects() {
               className="px-3 py-2 rounded-lg bg-green-100 text-green-700 text-sm"
             >
               {t("نشر المحدد", "Publish selected")}
+            </button>
+            <button
+              onClick={() => bulkMutate.mutate("activate")}
+              disabled={!selected.length}
+              className="px-3 py-2 rounded-lg bg-emerald-100 text-emerald-700 text-sm"
+            >
+              {t("تفعيل", "Activate")}
+            </button>
+            <button
+              onClick={() => bulkMutate.mutate("deactivate")}
+              disabled={!selected.length}
+              className="px-3 py-2 rounded-lg bg-yellow-100 text-yellow-700 text-sm"
+            >
+              {t("تعطيل", "Deactivate")}
             </button>
             <button
               onClick={() => bulkMutate.mutate("feature")}
@@ -636,6 +651,9 @@ export default function DashboardProjects() {
                                 {statusMap[p.status as keyof typeof statusMap] || p.status}
                               </span>
                             )}
+                            <span className={`px-2 py-1 text-xs rounded-full ${p.is_active === false ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
+                              {p.is_active === false ? t("غير مفعل", "Inactive") : t("مفعل", "Active")}
+                            </span>
                           </div>
                           <p className="text-sm text-secondary/70 line-clamp-2">{isAr ? p.description : p.description_en || p.description}</p>
                           <div className="text-xs text-secondary/60 flex gap-2 flex-wrap">

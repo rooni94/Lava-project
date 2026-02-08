@@ -110,6 +110,8 @@ export type Section = {
   order: number;
   section_type?: string;
   page: number;
+  extra?: Record<string, unknown>;
+  media?: string;
 };
 
 export type JobOpening = {

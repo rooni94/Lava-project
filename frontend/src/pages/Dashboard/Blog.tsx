@@ -44,7 +44,7 @@ export default function DashboardBlog() {
   });
 
   const bulkMutate = useMutation({
-    mutationFn: (action: "publish" | "delete") => bulkBlog(action, selected),
+    mutationFn: (action: "publish" | "unpublish" | "delete") => bulkBlog(action, selected),
     onSuccess: () => {
       toast.success(t("تم تنفيذ الإجراء على العناصر المحددة", "Action applied to selected posts"));
       setSelected([]);
@@ -117,6 +117,13 @@ export default function DashboardBlog() {
             </button>
             <button
               disabled={!selected.length}
+              onClick={() => bulkMutate.mutate("unpublish")}
+              className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded disabled:opacity-60"
+            >
+              {t("إلغاء النشر", "Unpublish")}
+            </button>
+            <button
+              disabled={!selected.length}
               onClick={() => bulkMutate.mutate("delete")}
               className="px-3 py-1 bg-red-100 text-red-700 rounded disabled:opacity-60"
             >
@@ -139,7 +146,12 @@ export default function DashboardBlog() {
                       }
                     />
                     <div>
-                      <p className="font-bold text-secondary dark:text-neutral-50">{post.title}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-secondary dark:text-neutral-50">{post.title}</p>
+                        <span className={`px-2 py-1 rounded-full text-xs ${post.is_published ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-700"}`}>
+                          {post.is_published ? t("منشور", "Published") : t("مسودة", "Draft")}
+                        </span>
+                      </div>
                       <p className="text-sm text-secondary/70 dark:text-neutral-300 line-clamp-1">{post.excerpt}</p>
                     </div>
                   </div>

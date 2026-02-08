@@ -3,7 +3,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("portfolio", "0009_seed_cafems_systems"),
+        ("portfolio", "0010_seed_cafems_system_translations"),
     ]
 
     operations = [

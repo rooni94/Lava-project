@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link, NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { applyTheme, getInitialTheme } from "../../utils/theme";
 import { useTranslation } from "react-i18next";
+import { fetchPages } from "../../api/endpoints";
+import { Page } from "../../types";
 
 const navLinks = [
   { to: "/", label: { ar: "الرئيسية", en: "Home" } },
@@ -46,6 +49,9 @@ export default function Navbar() {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const t = (ar: string, en: string) => (isAr ? ar : en);
+  const { data: pages } = useQuery<Page[]>({ queryKey: ["pages-public"], queryFn: fetchPages });
+  const enabledSlugs = new Set((pages || []).filter((page) => page.status === "published").map((page) => page.slug));
+  const visibleLinks = pages ? navLinks.filter((link) => !link.slug || enabledSlugs.has(link.slug)) : navLinks;
 
   useEffect(() => {
     applyTheme(theme);
@@ -63,7 +69,7 @@ export default function Navbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-2 text-sm font-semibold">
-            {navLinks.map((link) => (
+            {visibleLinks.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
@@ -130,7 +136,7 @@ export default function Navbar() {
             className="md:hidden bg-white dark:bg-neutral-900 shadow-inner overflow-hidden border-t border-accent/30 dark:border-neutral-800"
           >
             <div className="flex flex-col px-4 pb-4 gap-2 text-secondary dark:text-neutral-100">
-              {navLinks.map((link) => (
+              {visibleLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}

@@ -4,6 +4,7 @@ import csv
 
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -53,6 +54,17 @@ class PageViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelViewSet):
     lookup_field = "slug"
     filterset_fields = ("status",)
     search_fields = ("name", "title", "slug")
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        lookup_value = self.kwargs.get(lookup_url_kwarg)
+        if lookup_value and str(lookup_value).isdigit():
+            obj = queryset.filter(id=int(lookup_value)).first()
+            if obj:
+                self.check_object_permissions(self.request, obj)
+                return obj
+        return get_object_or_404(queryset, **{self.lookup_field: lookup_value})
 
     def get_queryset(self):
         qs = super().get_queryset()

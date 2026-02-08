@@ -39,13 +39,13 @@ class JobOpeningViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     def bulk_publish(self, request):
         ids = request.data.get("ids", [])
         JobOpening.objects.filter(id__in=ids).update(is_active=True)
-        return Response({"detail": "?? ????? ??????? ???????"})
+        return Response({"detail": "Jobs activated"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-delete")
     def bulk_delete(self, request):
         ids = request.data.get("ids", [])
         JobOpening.objects.filter(id__in=ids).delete()
-        return Response({"detail": "?? ??? ??????? ???????"})
+        return Response({"detail": "Jobs deleted"})
 
 
 

@@ -44,19 +44,19 @@ class BlogPostViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     def bulk_publish(self, request):
         ids = request.data.get("ids", [])
         BlogPost.objects.filter(id__in=ids).update(is_published=True)
-        return Response({"detail": "?? ?????"})
+        return Response({"detail": "Published"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-unpublish")
     def bulk_unpublish(self, request):
         ids = request.data.get("ids", [])
         BlogPost.objects.filter(id__in=ids).update(is_published=False)
-        return Response({"detail": "?? ????? ?????"})
+        return Response({"detail": "Unpublished"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-delete")
     def bulk_delete(self, request):
         ids = request.data.get("ids", [])
         BlogPost.objects.filter(id__in=ids).delete()
-        return Response({"detail": "?? ?????"})
+        return Response({"detail": "Deleted"})
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

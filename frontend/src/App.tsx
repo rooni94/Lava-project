@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Suspense } from "react";
+import PageGuard from "./components/layout/PageGuard";
 import { useTranslation } from "react-i18next";
 import {
   HomePage,
@@ -44,18 +45,18 @@ export default function App() {
   return (
     <Suspense fallback={<div className="p-6 text-center">{isAr ? "جارٍ التحميل..." : "Loading..."}</div>}>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/services" element={<ServicesPage />} />
-        <Route path="/services/:id" element={<ServiceDetailPage />} />
-        <Route path="/portfolio" element={<PortfolioPage />} />
-        <Route path="/portfolio/:id" element={<ProjectDetailPage />} />
-        <Route path="/packages" element={<PackagesPage />} />
-        <Route path="/packages/:id" element={<PackageDetailPage />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/blog/:slug" element={<BlogDetailPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/careers" element={<CareersPage />} />
+        <Route path="/" element={<PageGuard slug="home"><HomePage /></PageGuard>} />
+        <Route path="/about" element={<PageGuard slug="about"><AboutPage /></PageGuard>} />
+        <Route path="/services" element={<PageGuard slug="services"><ServicesPage /></PageGuard>} />
+        <Route path="/services/:id" element={<PageGuard slug="services"><ServiceDetailPage /></PageGuard>} />
+        <Route path="/portfolio" element={<PageGuard slug="portfolio"><PortfolioPage /></PageGuard>} />
+        <Route path="/portfolio/:id" element={<PageGuard slug="portfolio"><ProjectDetailPage /></PageGuard>} />
+        <Route path="/packages" element={<PageGuard slug="packages"><PackagesPage /></PageGuard>} />
+        <Route path="/packages/:id" element={<PageGuard slug="packages"><PackageDetailPage /></PageGuard>} />
+        <Route path="/blog" element={<PageGuard slug="blog"><BlogPage /></PageGuard>} />
+        <Route path="/blog/:slug" element={<PageGuard slug="blog"><BlogDetailPage /></PageGuard>} />
+        <Route path="/contact" element={<PageGuard slug="contact"><ContactPage /></PageGuard>} />
+        <Route path="/careers" element={<PageGuard slug="careers"><CareersPage /></PageGuard>} />
         <Route path="/reset-password" element={<ResetRequestPage />} />
         <Route path="/reset-password/confirm" element={<ResetConfirmPage />} />
         <Route

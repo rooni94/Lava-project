@@ -3,22 +3,22 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const navItems = [
-  { to: "/dashboard", label: { ar: "???? ??????", en: "Dashboard" } },
-  { to: "/dashboard/services", label: { ar: "???????", en: "Services" } },
-  { to: "/dashboard/projects", label: { ar: "???????", en: "Projects" } },
-  { to: "/dashboard/blog", label: { ar: "???????", en: "Blog" } },
-  { to: "/dashboard/team", label: { ar: "??????", en: "Team" } },
-  { to: "/dashboard/clients", label: { ar: "???????", en: "Clients" } },
-  { to: "/dashboard/packages", label: { ar: "???????", en: "Packages" } },
-  { to: "/dashboard/jobs", label: { ar: "???????", en: "Jobs" } },
-  { to: "/dashboard/messages", query: "sales", label: { ar: "????? ??????? ????????", en: "Sales & packages" } },
-  { to: "/dashboard/messages", query: "support", label: { ar: "????? ????? ?????", en: "Support messages" } },
-  { to: "/dashboard/messages", query: "general", label: { ar: "????? ????", en: "General messages" } },
-  { to: "/dashboard/job-applications", label: { ar: "????? ???????", en: "Applications" } },
-  { to: "/dashboard/support-chat", label: { ar: "??? ???????", en: "Support chat" } },
-  { to: "/dashboard/media", label: { ar: "???????", en: "Media Library" } },
-  { to: "/dashboard/sections", label: { ar: "???????", en: "Sections" } },
-  { to: "/dashboard/pages", label: { ar: "???????", en: "Pages" } },
+  { to: "/dashboard", label: { ar: "لوحة التحكم", en: "Dashboard" } },
+  { to: "/dashboard/services", label: { ar: "الخدمات", en: "Services" } },
+  { to: "/dashboard/projects", label: { ar: "الأعمال", en: "Projects" } },
+  { to: "/dashboard/blog", label: { ar: "المدونة", en: "Blog" } },
+  { to: "/dashboard/team", label: { ar: "الفريق", en: "Team" } },
+  { to: "/dashboard/clients", label: { ar: "العملاء", en: "Clients" } },
+  { to: "/dashboard/packages", label: { ar: "الباقات", en: "Packages" } },
+  { to: "/dashboard/jobs", label: { ar: "الوظائف", en: "Jobs" } },
+  { to: "/dashboard/messages", query: "sales", label: { ar: "رسائل الباقات والخدمات", en: "Sales & packages" } },
+  { to: "/dashboard/messages", query: "support", label: { ar: "رسائل الدعم الفني", en: "Support messages" } },
+  { to: "/dashboard/messages", query: "general", label: { ar: "رسائل عامة", en: "General messages" } },
+  { to: "/dashboard/job-applications", label: { ar: "طلبات التوظيف", en: "Applications" } },
+  { to: "/dashboard/support-chat", label: { ar: "دعم العملاء", en: "Support chat" } },
+  { to: "/dashboard/media", label: { ar: "المكتبة", en: "Media Library" } },
+  { to: "/dashboard/sections", label: { ar: "الأقسام", en: "Sections" } },
+  { to: "/dashboard/pages", label: { ar: "الصفحات", en: "Pages" } },
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

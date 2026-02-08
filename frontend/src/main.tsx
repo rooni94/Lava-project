@@ -13,9 +13,8 @@ import "./i18n";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+  <QueryClientProvider client={queryClient}>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <HelmetProvider>
           <ErrorBoundary>
             <Analytics />
@@ -25,5 +24,4 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         </HelmetProvider>
       </BrowserRouter>
     </QueryClientProvider>
-  </React.StrictMode>
 );

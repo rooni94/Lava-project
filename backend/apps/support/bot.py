@@ -382,7 +382,7 @@ def _create_contact_message(data: Dict[str, str]) -> Optional[ContactMessage]:
         topic = data.get("topic", "sales")
         language = data.get("language") or detect_language(brief)
         msg = ContactMessage.objects.create(
-            name=data.get("name", "????"),
+            name=data.get("name", "Customer"),
             email=data.get("email", ""),
             phone=data.get("phone", ""),
             message=brief,

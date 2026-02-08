@@ -3,20 +3,32 @@ import { Link } from "react-router-dom";
 import CountUp from "react-countup";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { fetchSiteSettings } from "../../api/endpoints";
+import { fetchPages, fetchSections, fetchSiteSettings } from "../../api/endpoints";
 import Skeleton from "../ui/Skeleton";
+import { Page, Section } from "../../types";
 
 export default function Hero() {
   const { data, isLoading } = useQuery({ queryKey: ["site-settings"], queryFn: fetchSiteSettings });
+  const { data: pages } = useQuery<Page[]>({ queryKey: ["pages-public"], queryFn: fetchPages });
+  const homePage = pages?.find((p) => p.slug === "home");
+  const { data: sections } = useQuery<Section[]>({
+    queryKey: ["sections-public", homePage?.id],
+    queryFn: () => fetchSections(homePage?.id),
+    enabled: !!homePage?.id,
+  });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
+  const heroSection = sections?.find((sec) => sec.section_type === "hero");
+  const heroExtra = (heroSection?.extra || {}) as Record<string, string>;
   const heroTitle = isAr
-    ? data?.hero_title || "LAVA Tech: حلول رقمية وتسويق أداء ينمّي أعمالك"
-    : data?.hero_title_en || "LAVA Tech: digital products and growth marketing that scale";
+    ? heroSection?.title || data?.hero_title || "LAVA Tech: حلول رقمية وتسويق أداء ينمّي أعمالك"
+    : heroExtra?.title_en || heroSection?.title || "LAVA Tech: digital products and growth marketing that scale";
   const heroSubtitle = isAr
-    ? data?.hero_subtitle ||
+    ? heroSection?.content ||
+      data?.hero_subtitle ||
       "من بناء الهوية والمحتوى إلى تطوير المواقع والتطبيقات وأنظمة ERP/CRM، فريق واحد يسلّم تجربة متكاملة ونتائج قابلة للقياس."
-    : data?.hero_subtitle_en ||
+    : heroExtra?.content_en ||
+      heroSection?.content ||
       "From brand, content, and strategy to web/apps and ERP/CRM systems, one team delivers cohesive experiences and measurable results.";
   return (
     <section className="gradient-hero py-16 text-secondary dark:text-neutral-100">
@@ -29,7 +41,10 @@ export default function Hero() {
           >
             {heroTitle}
           </motion.h1>
-          <p className="text-secondary/80 dark:text-neutral-300 leading-8">{heroSubtitle}</p>
+          <div
+            className="text-secondary/80 dark:text-neutral-300 leading-8"
+            dangerouslySetInnerHTML={{ __html: heroSubtitle }}
+          />
           <div className="flex flex-wrap gap-3">
             <Link
               to="/contact"

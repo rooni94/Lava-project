@@ -66,19 +66,19 @@ class ProjectViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     def bulk_publish(self, request):
         ids = request.data.get("ids", [])
         Project.objects.filter(id__in=ids).update(status="done")
-        return Response({"detail": "?? ??? ??????? ???????"})
+        return Response({"detail": "Projects published"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-feature")
     def bulk_feature(self, request):
         ids = request.data.get("ids", [])
         Project.objects.filter(id__in=ids).update(is_featured=True)
-        return Response({"detail": "?? ????? ??????? ???????"})
+        return Response({"detail": "Projects featured"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-delete")
     def bulk_delete(self, request):
         ids = request.data.get("ids", [])
         Project.objects.filter(id__in=ids).delete()
-        return Response({"detail": "?? ??? ??????? ???????"})
+        return Response({"detail": "Projects deleted"})
 
 
 class TechnologyViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
