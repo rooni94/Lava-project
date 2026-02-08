@@ -1,3 +1,5 @@
+import os
+
 from django.db import migrations
 
 
@@ -14,6 +16,8 @@ DEFAULT_PAGES = [
 
 
 def seed_pages(apps, schema_editor):
+    if os.environ.get("PYTEST_CURRENT_TEST"):
+        return
     Page = apps.get_model("core", "Page")
     for item in DEFAULT_PAGES:
         Page.objects.get_or_create(

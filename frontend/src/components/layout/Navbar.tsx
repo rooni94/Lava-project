@@ -8,14 +8,14 @@ import { fetchPages } from "../../api/endpoints";
 import { Page } from "../../types";
 
 const navLinks = [
-  { to: "/", label: { ar: "الرئيسية", en: "Home" } },
-  { to: "/about", label: { ar: "من نحن", en: "About" } },
-  { to: "/services", label: { ar: "الخدمات", en: "Services" } },
-  { to: "/packages", label: { ar: "الباقات", en: "Packages" } },
-  { to: "/portfolio", label: { ar: "الأعمال", en: "Portfolio" } },
-  { to: "/blog", label: { ar: "المدونة", en: "Blog" } },
-  { to: "/careers", label: { ar: "الوظائف", en: "Careers" } },
-  { to: "/contact", label: { ar: "تواصل معنا", en: "Contact" } },
+  { to: "/", label: { ar: "الرئيسية", en: "Home" }, slug: "home" },
+  { to: "/about", label: { ar: "من نحن", en: "About" }, slug: "about" },
+  { to: "/services", label: { ar: "الخدمات", en: "Services" }, slug: "services" },
+  { to: "/packages", label: { ar: "الباقات", en: "Packages" }, slug: "packages" },
+  { to: "/portfolio", label: { ar: "الأعمال", en: "Portfolio" }, slug: "portfolio" },
+  { to: "/blog", label: { ar: "المدونة", en: "Blog" }, slug: "blog" },
+  { to: "/careers", label: { ar: "الوظائف", en: "Careers" }, slug: "careers" },
+  { to: "/contact", label: { ar: "تواصل معنا", en: "Contact" }, slug: "contact" },
 ];
 
 function SunIcon() {
