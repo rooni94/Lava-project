@@ -65,12 +65,18 @@ class ProjectViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-publish")
     def bulk_publish(self, request):
         ids = request.data.get("ids", [])
+        missing = [p.id for p in Project.objects.filter(id__in=ids).only("id", "gallery") if not (p.gallery or [])]
+        if missing:
+            return Response({"detail": "Gallery is required to publish.", "missing_gallery_ids": missing}, status=400)
         Project.objects.filter(id__in=ids).update(status="done")
         return Response({"detail": "Projects published"})
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-feature")
     def bulk_feature(self, request):
         ids = request.data.get("ids", [])
+        missing = [p.id for p in Project.objects.filter(id__in=ids).only("id", "gallery") if not (p.gallery or [])]
+        if missing:
+            return Response({"detail": "Gallery is required to feature.", "missing_gallery_ids": missing}, status=400)
         Project.objects.filter(id__in=ids).update(is_featured=True)
         return Response({"detail": "Projects featured"})
 

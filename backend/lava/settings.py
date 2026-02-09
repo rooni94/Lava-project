@@ -117,6 +117,17 @@ WHITENOISE_MAX_AGE = 60 * 60 * 24 * 30  # 30 days
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 SERVE_MEDIA = os.environ.get("SERVE_MEDIA", "True") == "True"
+MEDIA_MAX_UPLOAD_MB = int(os.environ.get("MEDIA_MAX_UPLOAD_MB", "20"))
+MEDIA_WATERMARK_ENABLED = os.environ.get("MEDIA_WATERMARK_ENABLED", "True") == "True"
+MEDIA_WATERMARK_TEXT = os.environ.get("MEDIA_WATERMARK_TEXT", "LAVA")
+MEDIA_WATERMARK_OPACITY = float(os.environ.get("MEDIA_WATERMARK_OPACITY", "0.22"))
+MEDIA_WATERMARK_COLOR = os.environ.get("MEDIA_WATERMARK_COLOR", "#ffffff")
+MEDIA_WATERMARK_IMAGE_PATH = os.environ.get("MEDIA_WATERMARK_IMAGE_PATH", "")
+MEDIA_WATERMARK_IMAGE_SCALE = float(os.environ.get("MEDIA_WATERMARK_IMAGE_SCALE", "0.18"))
+MEDIA_IMAGE_MAX_SIDE = int(os.environ.get("MEDIA_IMAGE_MAX_SIDE", "1920"))
+MEDIA_IMAGE_QUALITY = int(os.environ.get("MEDIA_IMAGE_QUALITY", "92"))
+MEDIA_IMAGE_WEBP_METHOD = int(os.environ.get("MEDIA_IMAGE_WEBP_METHOD", "6"))
+MEDIA_IMAGE_ALPHA_LOSSLESS = os.environ.get("MEDIA_IMAGE_ALPHA_LOSSLESS", "True") == "True"
 
 if os.environ.get("USE_S3", "False") == "True":
     AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")

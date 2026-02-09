@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -7,6 +8,7 @@ import Skeleton from "../components/ui/Skeleton";
 import { fetchProject } from "../api/endpoints";
 import { Project } from "../types";
 import { resolveMediaUrl } from "../utils/media";
+import ImageLightbox from "../components/ui/ImageLightbox";
 
 const categoryLabels = {
   ar: {
@@ -37,6 +39,8 @@ export default function ProjectDetail() {
   const pickText = (ar?: string, en?: string) => (isAr ? ar : en || ar);
   const labels = isAr ? categoryLabels.ar : categoryLabels.en;
   const statusMap = isAr ? statusLabels.ar : statusLabels.en;
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const { data, isLoading } = useQuery<Project | undefined>({
     queryKey: ["project", id],
@@ -88,6 +92,7 @@ export default function ProjectDetail() {
   ].filter(Boolean) as { label: string; value: string }[];
 
   const gallery = data.gallery || [];
+  const galleryUrls = gallery.map((p) => resolveMediaUrl(p)).filter(Boolean) as string[];
 
   return (
     <Layout>
@@ -191,14 +196,28 @@ export default function ProjectDetail() {
                   <span className="text-xs text-secondary/60 dark:text-neutral-400">{gallery.length} {isAr ? "صورة" : "images"}</span>
                 </div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {gallery.map((img) => (
-                    <img
-                      key={img}
-                      src={resolveMediaUrl(img)}
-                      alt={data.title}
-                      className="w-full h-32 object-cover rounded-xl border border-accent/40 dark:border-neutral-800"
-                      loading="lazy"
-                    />
+                  {galleryUrls.map((src, idx) => (
+                    <button
+                      key={src}
+                      type="button"
+                      onClick={() => {
+                        setLightboxIndex(idx);
+                        setLightboxOpen(true);
+                      }}
+                      className="group relative overflow-hidden rounded-xl border border-accent/40 dark:border-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary"
+                      aria-label={isAr ? "معاينة الصورة" : "Preview image"}
+                    >
+                      <img
+                        src={src}
+                        alt={data.title}
+                        className="w-full h-32 object-cover transition duration-300 group-hover:scale-[1.03]"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />
+                      <div className="absolute bottom-2 left-2 px-2 py-1 text-[11px] rounded-full bg-black/55 text-white opacity-0 group-hover:opacity-100 transition">
+                        {isAr ? "عرض" : "View"}
+                      </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -261,6 +280,14 @@ export default function ProjectDetail() {
           </aside>
         </div>
       </section>
+
+      <ImageLightbox
+        open={lightboxOpen}
+        images={galleryUrls}
+        startIndex={lightboxIndex}
+        title={title}
+        onClose={() => setLightboxOpen(false)}
+      />
     </Layout>
   );
 }

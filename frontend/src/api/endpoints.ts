@@ -187,6 +187,18 @@ export const uploadFile = async (file: File) => {
   formData.append("file", file);
   return api.post("/upload/", formData, { headers: { "Content-Type": "multipart/form-data" } });
 };
+export const bulkUploadMedia = async (files: File[], meta?: { title?: string; category?: string }) => {
+  const formData = new FormData();
+  for (const f of files) formData.append("files", f);
+  if (meta?.title) formData.append("title", meta.title);
+  if (meta?.category) formData.append("category", meta.category);
+  return api.post("/media/bulk-upload/", formData, { headers: { "Content-Type": "multipart/form-data" } });
+};
+export const replaceMediaFile = async (id: number, file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return api.post(`/media/${id}/replace-file/`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+};
 export const updateMedia = async (id: number, payload: { title?: string; category?: string }) =>
   api.patch(`/media/${id}/`, payload);
 

@@ -23,6 +23,16 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = "__all__"
 
+    def validate(self, attrs):
+        instance = getattr(self, "instance", None)
+        status_value = attrs.get("status", getattr(instance, "status", "done"))
+        is_active = attrs.get("is_active", getattr(instance, "is_active", True))
+        gallery = attrs.get("gallery", getattr(instance, "gallery", []))
+
+        if is_active and status_value != "draft" and not (gallery or []):
+            raise serializers.ValidationError({"gallery": "At least one gallery image is required."})
+        return attrs
+
     def create(self, validated_data):
         self._apply_schedule(validated_data)
         return super().create(validated_data)

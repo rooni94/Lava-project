@@ -11,10 +11,11 @@ import {
   fetchProjects,
   fetchTechnologies,
   updateProject,
-  uploadFile,
+  bulkUploadMedia,
 } from "../../api/endpoints";
 import Skeleton from "../../components/ui/Skeleton";
 import { Project, Technology } from "../../types";
+import MediaPickerModal from "../../components/dashboard/MediaPickerModal";
 
 const fontOptions = [
   { label: "Cairo", value: "Cairo" },
@@ -110,22 +111,28 @@ export default function DashboardProjects() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [techIds, setTechIds] = useState<number[]>([]);
   const [newTechName, setNewTechName] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const save = useMutation({
     mutationFn: async () => {
       let cover_image = form.cover_image;
       if (coverFile) {
-        const res = await uploadFile(coverFile);
-        cover_image = res.data.path || res.data.url || res.data.file || res.data;
+        const res = await bulkUploadMedia([coverFile], { category: "projects" });
+        const item = Array.isArray(res.data) ? res.data[0] : res.data?.items?.[0];
+        cover_image = item?.file || cover_image;
       }
 
       const gallery = [...(form.gallery || [])];
       if (galleryFiles && galleryFiles.length) {
-        for (const file of Array.from(galleryFiles)) {
-          const res = await uploadFile(file);
-          const path = res.data.path || res.data.url || res.data.file || res.data;
-          if (path) gallery.push(path);
+        const res = await bulkUploadMedia(Array.from(galleryFiles), { category: "projects" });
+        const items = Array.isArray(res.data) ? res.data : res.data?.items || [];
+        for (const it of items) {
+          if (it?.file) gallery.push(it.file);
         }
+      }
+
+      if (!gallery.length) {
+        throw new Error("gallery_required");
       }
 
       const payload: Partial<Project> & { technology_ids?: number[] } = {
@@ -142,8 +149,15 @@ export default function DashboardProjects() {
       resetForm();
       qc.invalidateQueries({ queryKey: ["projects-admin"] });
     },
-    onError: () => toast.error(t("تعذر حفظ العمل، تحقق من البيانات", "Unable to save project, check the data")),
-  });
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : "";
+      if (msg.includes("gallery_required")) {
+        toast.error(t("معرض الصور للمشروع مطلوب قبل الحفظ", "A project gallery is required before saving"));
+        return;
+      }
+      toast.error(t("تعذر حفظ المشروع، تحقق من البيانات", "Unable to save project, check the data"));
+    },
+});
 
   const remove = useMutation({
     mutationFn: (id: number) => deleteProject(id),
@@ -475,6 +489,52 @@ export default function DashboardProjects() {
                 </label>
               </div>
 
+
+              <div className="flex flex-wrap gap-2 items-center">
+                <button
+                  type="button"
+                  onClick={() => setPickerOpen(true)}
+                  className="px-3 py-2 rounded-lg bg-white dark:bg-neutral-900 border border-accent/30 dark:border-neutral-800 text-sm"
+                >
+                  {t("إضافة صور من مكتبة الوسائط", "Add images from media library")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setForm((p) => ({ ...p, gallery: [] }))}
+                  className="px-3 py-2 rounded-lg bg-red-50 text-red-700 border border-red-200 text-sm"
+                >
+                  {t("مسح المعرض", "Clear gallery")}
+                </button>
+                <span className="text-xs text-secondary/60 dark:text-neutral-400">
+                  {t("مطلوب: يجب أن يحتوي كل مشروع على معرض صور.", "Required: every project must have a gallery.")}
+                </span>
+              </div>
+
+              {(form.gallery || []).length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {(form.gallery || []).map((img) => (
+                    <div
+                      key={img}
+                      className="border rounded-xl overflow-hidden border-accent/30 dark:border-neutral-800 bg-white dark:bg-neutral-900"
+                    >
+                      <img src={img} alt={form.title || "Gallery"} className="w-full h-28 object-cover" loading="lazy" />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm((p) => ({
+                            ...p,
+                            gallery: (p.gallery || []).filter((x) => x !== img),
+                          }))
+                        }
+                        className="w-full px-2 py-2 text-xs text-red-700 bg-red-50"
+                      >
+                        {t("إزالة", "Remove")}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="grid md:grid-cols-2 gap-3">
                 <div className="border rounded-xl p-3 space-y-2">
                   <div className="flex items-center justify-between">
@@ -751,6 +811,19 @@ export default function DashboardProjects() {
           </div>
         </div>
       </div>
+
+      <MediaPickerModal
+        open={pickerOpen}
+        title={t("اختيار الصور", "Pick images")}
+        onClose={() => setPickerOpen(false)}
+        onPick={(urls) =>
+          setForm((p) => ({
+            ...p,
+            gallery: Array.from(new Set([...(p.gallery || []), ...urls])),
+          }))
+        }
+      />
+
     </DashboardLayout>
   );
 }

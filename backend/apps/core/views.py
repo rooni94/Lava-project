@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 
 from apps.accounts.permissions import RolePermission
 from apps.core.mixins import ActivityLoggerMixin
+from apps.core.media_utils import guess_media_type, iter_uploads, process_image_upload
 from apps.core.models import ActivityLog, ContactInfo, ContactMessage, MediaFile, Page, Section, SiteSettings, Subscriber
 from apps.core.serializers import (
     ActivityLogSerializer,
@@ -154,6 +155,65 @@ class MediaFileViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
 
     def get_permissions(self):
         return [RolePermission()]
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-upload")
+    def bulk_upload(self, request):
+        uploads = list(iter_uploads(request.FILES))
+        if not uploads:
+            return Response({"detail": "No files provided."}, status=400)
+
+        from django.conf import settings as dj_settings
+
+        max_mb = int(getattr(dj_settings, "MEDIA_MAX_UPLOAD_MB", 20))
+        max_bytes = max_mb * 1024 * 1024
+        category = (request.data.get("category") or "").strip()
+        created = []
+
+        for upload in uploads:
+            if not upload:
+                continue
+            if getattr(upload, "size", 0) and upload.size > max_bytes:
+                return Response({"detail": f"File '{upload.name}' exceeds {max_mb} MB limit."}, status=400)
+
+            media_type = guess_media_type(
+                content_type=getattr(upload, "content_type", None),
+                filename=getattr(upload, "name", None),
+            )
+            title = (request.data.get("title") or "").strip() or getattr(upload, "name", "")
+
+            obj = MediaFile(media_type=media_type, title=title, category=category)
+            if media_type == MediaFile.MediaType.IMAGE:
+                processed = process_image_upload(upload, watermark=True)
+                obj.file.save(processed.filename, processed.content, save=False)
+            else:
+                obj.file.save(getattr(upload, "name", "upload.bin"), upload, save=False)
+            obj.save()
+            created.append(obj)
+
+        serializer = self.get_serializer(created, many=True)
+        return Response(serializer.data, status=201)
+
+    @action(detail=True, methods=["post"], permission_classes=[RolePermission()], url_path="replace-file")
+    def replace_file(self, request, pk=None):
+        obj = self.get_object()
+        upload = request.FILES.get("file")
+        if not upload:
+            return Response({"detail": "File is required."}, status=400)
+
+        media_type = guess_media_type(
+            content_type=getattr(upload, "content_type", None),
+            filename=getattr(upload, "name", None),
+        )
+        obj.media_type = media_type
+
+        if media_type == MediaFile.MediaType.IMAGE:
+            processed = process_image_upload(upload, watermark=True)
+            obj.file.save(processed.filename, processed.content, save=False)
+        else:
+            obj.file.save(getattr(upload, "name", "upload.bin"), upload, save=False)
+
+        obj.save()
+        return Response(self.get_serializer(obj).data, status=200)
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-delete")
     def bulk_delete(self, request):

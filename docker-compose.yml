@@ -31,6 +31,12 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       DEBUG: "False"
       SECURE_SSL_REDIRECT: "False"
+      MEDIA_WATERMARK_ENABLED: "True"
+      MEDIA_WATERMARK_IMAGE_PATH: "static/watermarks/logo.png"
+      MEDIA_WATERMARK_IMAGE_SCALE: "0.18"
+      MEDIA_WATERMARK_OPACITY: "0.35"
+      MEDIA_IMAGE_MAX_SIDE: "1920"
+      MEDIA_IMAGE_QUALITY: "92"
     depends_on:
       - db
       - redis
