@@ -7,6 +7,7 @@ import PackageForm from "../../components/dashboard/PackageForm";
 import { bulkPackage, deletePackage, fetchPackageCategories, fetchPackages } from "../../api/endpoints";
 import Skeleton from "../../components/ui/Skeleton";
 import { Package, PackageCategory } from "../../types";
+import { formatRiyal } from "../../utils/currency";
 
 export default function DashboardPackages() {
   const qc = useQueryClient();
@@ -110,7 +111,7 @@ export default function DashboardPackages() {
                       {p.is_active === false ? <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs">{t("غير فعال", "Inactive")}</span> : null}
                     </div>
                     <div className="text-sm text-secondary/70 flex flex-wrap gap-2">
-                      {p.category ? (isAr ? p.category.name_ar : p.category.name_en) : t("بدون تصنيف", "Uncategorized")} · {p.price} {p.currency}
+                      {p.category ? (isAr ? p.category.name_ar : p.category.name_en) : t("بدون تصنيف", "Uncategorized")} · {formatRiyal(p.price)}
                       {(isAr ? p.price_note : p.price_note_en || p.price_note) ? <> · {isAr ? p.price_note : p.price_note_en || p.price_note}</> : null}
                     </div>
                     <div className="text-xs text-secondary/60 line-clamp-2">

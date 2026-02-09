@@ -19,6 +19,7 @@ const navItems = [
   { to: "/dashboard/media", label: { ar: "المكتبة", en: "Media Library" } },
   { to: "/dashboard/sections", label: { ar: "الأقسام", en: "Sections" } },
   { to: "/dashboard/pages", label: { ar: "الصفحات", en: "Pages" } },
+  { to: "/dashboard/settings", label: { ar: "إعدادات المظهر", en: "Theme settings" } },
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

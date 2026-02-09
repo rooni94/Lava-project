@@ -4,8 +4,8 @@ import { Link, NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { applyTheme, getInitialTheme } from "../../utils/theme";
 import { useTranslation } from "react-i18next";
-import { fetchPages } from "../../api/endpoints";
-import { Page } from "../../types";
+import { fetchPages, fetchSections } from "../../api/endpoints";
+import { Page, Section } from "../../types";
 
 const navLinks = [
   { to: "/", label: { ar: "الرئيسية", en: "Home" }, slug: "home" },
@@ -50,6 +50,16 @@ export default function Navbar() {
   const isAr = i18n.language === "ar";
   const t = (ar: string, en: string) => (isAr ? ar : en);
   const { data: pages } = useQuery<Page[]>({ queryKey: ["pages-public"], queryFn: fetchPages });
+  const homePage = pages?.find((p) => p.slug === "home");
+  const { data: sections } = useQuery<Section[]>({ queryKey: ["sections-public"], queryFn: () => fetchSections() });
+  const headerSection = sections
+    ?.filter((sec) => sec.section_type === "header" && (!homePage || sec.page === homePage.id))
+    .sort((a, b) => a.order - b.order)[0];
+  const headerExtra = (headerSection?.extra || {}) as Record<string, string>;
+  const logoUrl = headerExtra.logo_url || "/logo.PNG";
+  const logoAlt = isAr ? headerExtra.logo_alt_ar || "LAVA" : headerExtra.logo_alt_en || "LAVA";
+  const rawHeight = headerExtra.logo_height ? Number(headerExtra.logo_height) : 0;
+  const logoHeight = Number.isFinite(rawHeight) && rawHeight > 0 ? rawHeight : 64;
   const enabledSlugs = new Set((pages || []).filter((page) => page.status === "published").map((page) => page.slug));
   const visibleLinks = pages ? navLinks.filter((link) => !link.slug || enabledSlugs.has(link.slug)) : navLinks;
 
@@ -65,7 +75,7 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-3">
           <Link to="/" className="flex items-center gap-2 text-primary font-bold text-xl">
-            <img src="/logo.PNG" alt="LAVA Logo" className="h-16 w-auto" />
+            <img src={logoUrl} alt={logoAlt} className="w-auto" style={{ height: `${logoHeight || 64}px` }} />
           </Link>
 
           <nav className="hidden md:flex items-center gap-2 text-sm font-semibold">

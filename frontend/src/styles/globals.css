@@ -5,43 +5,119 @@
 @tailwind utilities;
 
 :root {
-  color: #1f2937;
-  background-color: #f8f9fa;
+  color: rgb(var(--color-text));
+  background-color: rgb(var(--color-bg));
+  --color-primary: 88 2 19;
+  --color-secondary: 34 34 34;
+  --color-accent: 204 204 204;
+  --color-surface: 248 249 250;
+  --color-bg: 248 249 250;
+  --color-text: 31 41 55;
+  --color-heading: 34 34 34;
+  --color-primary-dark: 255 74 117;
+  --color-secondary-dark: 229 231 235;
+  --color-accent-dark: 55 65 81;
+  --color-surface-dark: 17 24 39;
+  --color-bg-dark: 11 15 23;
+  --color-text-dark: 229 231 235;
+  --color-heading-dark: 249 250 251;
+  --font-body: "Cairo", "Tajawal", "IBM Plex Sans Arabic", sans-serif;
+  --font-body-ltr: "Space Grotesk", "Inter", "Sora", sans-serif;
+  --font-heading: "Cairo", "Tajawal", "IBM Plex Sans Arabic", sans-serif;
+  --font-heading-ltr: "Space Grotesk", "Inter", "Sora", sans-serif;
+  --font-size-base: 16px;
+  --font-size-h1: 36px;
+  --font-size-h2: 30px;
+  --font-size-h3: 24px;
+  --font-size-h4: 20px;
+  --font-size-h5: 18px;
+  --font-size-h6: 16px;
 }
 
 .dark {
-  color: #e5e7eb;
-  background-color: #0b0f17;
+  color: rgb(var(--color-text));
+  background-color: rgb(var(--color-bg));
+  --color-primary: var(--color-primary-dark);
+  --color-secondary: var(--color-secondary-dark);
+  --color-accent: var(--color-accent-dark);
+  --color-surface: var(--color-surface-dark);
+  --color-bg: var(--color-bg-dark);
+  --color-text: var(--color-text-dark);
+  --color-heading: var(--color-heading-dark);
 }
 
 * {
   scroll-behavior: smooth;
 }
 
+html {
+  font-size: var(--font-size-base);
+}
+
 body {
-  background: #f8f9fa;
-  color: inherit;
-  font-family: "Cairo", "Tajawal", "IBM Plex Sans Arabic", sans-serif;
+  background: rgb(var(--color-bg));
+  color: rgb(var(--color-text));
+  font-family: var(--font-body);
   direction: inherit;
 }
 
-.dark body {
-  background: #0b0f17;
-  color: #e5e7eb;
+html[dir="ltr"] body {
+  font-family: var(--font-body-ltr, var(--font-body));
 }
 
-html[dir="ltr"] body {
-  font-family: "Space Grotesk", "Inter", "Sora", sans-serif;
+h1 {
+  font-size: var(--font-size-h1) !important;
+  color: rgb(var(--color-heading));
+  font-family: var(--font-heading);
+}
+
+h2 {
+  font-size: var(--font-size-h2) !important;
+  color: rgb(var(--color-heading));
+  font-family: var(--font-heading);
+}
+
+h3 {
+  font-size: var(--font-size-h3) !important;
+  color: rgb(var(--color-heading));
+  font-family: var(--font-heading);
+}
+
+h4 {
+  font-size: var(--font-size-h4) !important;
+  color: rgb(var(--color-heading));
+  font-family: var(--font-heading);
+}
+
+h5 {
+  font-size: var(--font-size-h5) !important;
+  color: rgb(var(--color-heading));
+  font-family: var(--font-heading);
+}
+
+h6 {
+  font-size: var(--font-size-h6) !important;
+  color: rgb(var(--color-heading));
+  font-family: var(--font-heading);
+}
+
+html[dir="ltr"] h1,
+html[dir="ltr"] h2,
+html[dir="ltr"] h3,
+html[dir="ltr"] h4,
+html[dir="ltr"] h5,
+html[dir="ltr"] h6 {
+  font-family: var(--font-heading-ltr, var(--font-heading));
 }
 
 .gradient-hero {
-  background: radial-gradient(circle at 20% 20%, rgba(88, 2, 19, 0.16), transparent 35%),
-    radial-gradient(circle at 80% 0%, rgba(34, 34, 34, 0.12), transparent 30%),
-    linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  background: radial-gradient(circle at 20% 20%, rgba(var(--color-primary), 0.16), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(var(--color-secondary), 0.12), transparent 30%),
+    linear-gradient(135deg, rgb(var(--color-bg)) 0%, rgb(var(--color-surface)) 100%);
 }
 
 .dark .gradient-hero {
-  background: radial-gradient(circle at 20% 20%, rgba(255, 74, 117, 0.12), transparent 35%),
-    radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.06), transparent 30%),
-    linear-gradient(135deg, #0b0f17 0%, #0f172a 100%);
+  background: radial-gradient(circle at 20% 20%, rgba(var(--color-primary), 0.12), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(var(--color-heading), 0.06), transparent 30%),
+    linear-gradient(135deg, rgb(var(--color-bg)) 0%, rgb(var(--color-surface)) 100%);
 }

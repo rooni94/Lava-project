@@ -7,6 +7,7 @@ import Layout from "../components/layout/Layout";
 import SectionTitle from "../components/ui/SectionTitle";
 import { fetchContactInfo, fetchPackages, submitContact } from "../api/endpoints";
 import { Package } from "../types";
+import { formatRiyal, renderRiyalText } from "../utils/currency";
 
 const inquiryOptions = {
   ar: [
@@ -438,7 +439,7 @@ export default function ContactPage() {
                         <div className="font-semibold text-secondary dark:text-neutral-100">{title}</div>
                         {short ? <div className="text-xs text-secondary/70 dark:text-neutral-300">{short}</div> : null}
                         <div className="text-xs text-secondary/70 dark:text-neutral-300 mt-1">
-                          {note ? note : `${pkg.price} ${pkg.currency}`}
+                          {note ? renderRiyalText(note) : formatRiyal(pkg.price)}
                         </div>
                       </div>
                     );

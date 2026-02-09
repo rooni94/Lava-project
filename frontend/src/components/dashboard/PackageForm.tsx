@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Package, PackageCategory } from "../../types";
+import { RiyalSymbol } from "../../utils/currency";
 import { createPackage, updatePackage } from "../../api/endpoints";
 import toast from "react-hot-toast";
 
@@ -70,7 +71,7 @@ export default function PackageForm({
       price: Number(initial.price || 0),
       price_note: initial.price_note || "",
       price_note_en: initial.price_note_en || "",
-      currency: initial.currency || "SAR",
+      currency: "SAR",
       category_id: initial.category?.id ?? null,
       featured: !!initial.featured,
       is_active: initial.is_active !== false,
@@ -197,12 +198,11 @@ export default function PackageForm({
           placeholder={t("ملاحظة السعر (EN) مثال: From SAR 3,500", "Price note (EN) e.g. From SAR 3,500")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
-        <input
-          value={form.currency}
-          onChange={(e) => setForm((p) => ({ ...p, currency: e.target.value }))}
-          placeholder={t("العملة", "Currency")}
-          className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-        />
+        <div className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700 flex items-center gap-2 text-secondary/80 dark:text-neutral-200">
+          <span>{t("العملة", "Currency")}:</span>
+          <span className="font-semibold">SAR</span>
+          <RiyalSymbol className="h-4 w-4" />
+        </div>
       </div>
 
       <div className="flex items-center gap-4 text-sm text-secondary/80 dark:text-neutral-300">

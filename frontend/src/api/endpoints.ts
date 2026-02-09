@@ -104,6 +104,9 @@ export const fetchSiteSettings = async (): Promise<SiteSettings | null> => {
   const settings = data.results ?? data;
   return Array.isArray(settings) && settings.length ? settings[0] : null;
 };
+export const createSiteSettings = async (payload: Partial<SiteSettings>) => api.post("/site-settings/", payload);
+export const updateSiteSettings = async (id: number, payload: Partial<SiteSettings>) =>
+  api.patch(`/site-settings/${id}/`, payload);
 
 export const fetchContactInfo = async (): Promise<ContactInfo | null> => {
   const { data } = await api.get("/contact-info/");

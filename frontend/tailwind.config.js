@@ -5,10 +5,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#580213",
-        secondary: "#222222",
-        accent: "#CCCCCC",
-        surface: "#F8F9FA",
+        primary: "rgb(var(--color-primary) / <alpha-value>)",
+        secondary: "rgb(var(--color-secondary) / <alpha-value>)",
+        accent: "rgb(var(--color-accent) / <alpha-value>)",
+        surface: "rgb(var(--color-surface) / <alpha-value>)",
       },
       fontFamily: {
         cairo: ["'Cairo'", "sans-serif"],

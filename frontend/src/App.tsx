@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Suspense } from "react";
 import PageGuard from "./components/layout/PageGuard";
 import { useTranslation } from "react-i18next";
+import SiteThemeLoader from "./components/SiteThemeLoader";
 import {
   HomePage,
   AboutPage,
@@ -32,6 +33,7 @@ import {
   DashboardMediaPage,
   DashboardPagesPage,
   DashboardSectionsPage,
+  DashboardSettingsPage,
 } from "./routes/lazy";
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
@@ -44,6 +46,7 @@ export default function App() {
   const isAr = i18n.language === "ar";
   return (
     <Suspense fallback={<div className="p-6 text-center">{isAr ? "جارٍ التحميل..." : "Loading..."}</div>}>
+      <SiteThemeLoader />
       <Routes>
         <Route path="/" element={<PageGuard slug="home"><HomePage /></PageGuard>} />
         <Route path="/about" element={<PageGuard slug="about"><AboutPage /></PageGuard>} />
@@ -168,6 +171,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DashboardSectionsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/settings"
+          element={
+            <ProtectedRoute>
+              <DashboardSettingsPage />
             </ProtectedRoute>
           }
         />
