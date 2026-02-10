@@ -204,13 +204,13 @@ export default function ProjectDetail() {
                         setLightboxIndex(idx);
                         setLightboxOpen(true);
                       }}
-                      className="group relative overflow-hidden rounded-xl border border-accent/40 dark:border-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="group relative overflow-hidden rounded-xl border border-accent/40 dark:border-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary bg-white/60 dark:bg-neutral-950/40"
                       aria-label={isAr ? "معاينة الصورة" : "Preview image"}
                     >
                       <img
                         src={src}
                         alt={data.title}
-                        className="w-full h-32 object-cover transition duration-300 group-hover:scale-[1.03]"
+                        className="w-full aspect-[16/10] object-contain p-2 transition duration-300 group-hover:scale-[1.01]"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />

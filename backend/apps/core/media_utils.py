@@ -71,7 +71,16 @@ def _watermark_color() -> tuple[int, int, int]:
 def _watermark_image_path() -> str | None:
     raw = os.environ.get("MEDIA_WATERMARK_IMAGE_PATH") or getattr(settings, "MEDIA_WATERMARK_IMAGE_PATH", "")
     path = str(raw).strip()
-    return path or None
+    if path:
+        return path
+
+    # Friendly default: if a conventional file exists in the repo, use it without extra env config.
+    base_dir = getattr(settings, "BASE_DIR", None)
+    if base_dir:
+        candidate = os.path.join(str(base_dir), "static", "watermarks", "logo.png")
+        if os.path.exists(candidate):
+            return "static/watermarks/logo.png"
+    return None
 
 
 def _watermark_image_scale() -> float:

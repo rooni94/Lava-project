@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import PageGuard from "./components/layout/PageGuard";
 import { useTranslation } from "react-i18next";
 import SiteThemeLoader from "./components/SiteThemeLoader";
+import ScrollToTop from "./components/ScrollToTop";
 import {
   HomePage,
   AboutPage,
@@ -47,6 +48,7 @@ export default function App() {
   return (
     <Suspense fallback={<div className="p-6 text-center">{isAr ? "جارٍ التحميل..." : "Loading..."}</div>}>
       <SiteThemeLoader />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<PageGuard slug="home"><HomePage /></PageGuard>} />
         <Route path="/about" element={<PageGuard slug="about"><AboutPage /></PageGuard>} />
