@@ -62,7 +62,7 @@ export default function Hero() {
               to="/contact"
               className="px-6 py-3 rounded-full bg-primary text-white shadow hover:shadow-md transition-shadow"
             >
-              {isAr ? "احجز مكالمة" : "Book a call"}
+              {isAr ? "اطلب عرض" : "Book a call"}
             </Link>
             <Link
               to="/portfolio"

@@ -227,10 +227,8 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "apps.core.throttling.RealIPScopedRateThrottle",
-        "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "user": "500/day",
         "auth": "20/min",
         "contact": "30/hour",
         "services": "300/min",
