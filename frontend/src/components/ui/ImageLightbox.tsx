@@ -79,7 +79,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
     <AnimatePresence>
       {open && safeImages.length > 0 ? (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -96,7 +96,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
             exit={{ y: 18, scale: 0.98, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 22 }}
           >
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl max-h-[calc(100svh-2rem)] flex flex-col">
+            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl flex flex-col h-[min(900px,calc(100svh-2rem))]">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-transparent to-rose-500/10" />
 
               <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10">
@@ -115,7 +115,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                 </button>
               </div>
 
-              <div className="relative grid lg:grid-cols-[64px_1fr_64px] items-center flex-1 min-h-0">
+              <div className="relative grid lg:grid-cols-[64px_minmax(0,1fr)_64px] items-stretch flex-1 min-h-0">
                 <button
                   type="button"
                   aria-label={labelPrev}
@@ -124,15 +124,15 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                     setPan({ x: 0, y: 0 });
                     setIndex((i) => (i <= 0 ? maxIndex : i - 1));
                   }}
-                  className="hidden lg:flex h-full items-center justify-center text-white/70 hover:text-white"
+                  className="hidden lg:flex h-full items-center justify-center text-white/70 hover:text-white self-stretch"
                 >
                   <span className="text-3xl leading-none select-none">‹</span>
                 </button>
 
-                <div className="relative px-3 py-4 flex flex-col min-h-0">
+                <div className="relative px-3 py-4 flex flex-col min-h-0 min-w-0">
                   <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/40 flex-1 min-h-0">
                     <div
-                      className="w-full h-full bg-black select-none touch-none flex items-center justify-center"
+                      className="w-full h-full bg-black select-none touch-none flex items-center justify-center overflow-hidden"
                       onWheel={(e) => {
                         if (!open) return;
                         e.preventDefault();
@@ -163,7 +163,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                         key={current}
                         src={current}
                         alt={title || "Image"}
-                        className="max-h-full max-w-full w-auto h-auto object-contain bg-black"
+                        className="block max-h-full max-w-full w-auto h-auto object-contain bg-black"
                         style={{
                           transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
                           transformOrigin: "center center",
@@ -198,7 +198,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                         disabled={!canZoomOut}
                         className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm border border-white/10 disabled:opacity-50 disabled:hover:bg-white/10"
                       >
-                        − {labelZoomOut}
+                        - {labelZoomOut}
                       </button>
                       <button
                         type="button"
@@ -264,7 +264,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                     setPan({ x: 0, y: 0 });
                     setIndex((i) => (i >= maxIndex ? 0 : i + 1));
                   }}
-                  className="hidden lg:flex h-full items-center justify-center text-white/70 hover:text-white"
+                  className="hidden lg:flex h-full items-center justify-center text-white/70 hover:text-white self-stretch"
                 >
                   <span className="text-3xl leading-none select-none">›</span>
                 </button>
