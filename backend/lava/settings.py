@@ -248,6 +248,12 @@ REST_FRAMEWORK = {
     },
 }
 
+# Emergency switch: disable all DRF throttling (useful when a reverse proxy hides client IPs and
+# throttle buckets become shared, causing widespread 429s).
+DISABLE_THROTTLING = os.environ.get("DISABLE_THROTTLING", "False").strip().lower() in ("1", "true", "yes", "on")
+if DISABLE_THROTTLING:
+    REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = []
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
