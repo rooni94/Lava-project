@@ -8,13 +8,25 @@ import Skeleton from "../ui/Skeleton";
 import { Page, Section } from "../../types";
 
 export default function Hero() {
-  const { data, isLoading } = useQuery({ queryKey: ["site-settings"], queryFn: fetchSiteSettings });
-  const { data: pages } = useQuery<Page[]>({ queryKey: ["pages-public"], queryFn: fetchPages });
+  const { data, isLoading } = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: fetchSiteSettings,
+    staleTime: 10 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
+  const { data: pages } = useQuery<Page[]>({
+    queryKey: ["pages-public"],
+    queryFn: fetchPages,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const homePage = pages?.find((p) => p.slug === "home");
   const { data: sections } = useQuery<Section[]>({
     queryKey: ["sections-public", homePage?.id],
     queryFn: () => fetchSections(homePage?.id),
     enabled: !!homePage?.id,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
   });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";

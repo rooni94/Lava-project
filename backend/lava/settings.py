@@ -228,11 +228,9 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.ScopedRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
-        "rest_framework.throttling.AnonRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
         "user": "500/day",
-        "anon": "100/day",
         "auth": "20/min",
         "contact": "30/hour",
         "services": "60/min",
@@ -243,6 +241,7 @@ REST_FRAMEWORK = {
         "clients": "60/min",
         "team": "60/min",
         "media": "60/min",
+        "site_settings": "120/min",
         "pages": "120/min",
         "sections": "120/min",
         "careers": "60/min",

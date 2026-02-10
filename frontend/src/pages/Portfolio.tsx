@@ -33,7 +33,12 @@ export default function PortfolioPage() {
   const [category, setCategory] = useState<string>("");
   const [sort, setSort] = useState<"latest" | "featured">("latest");
 
-  const { data: stats } = useQuery<ProjectStats>({ queryKey: ["projects", "stats"], queryFn: fetchProjectStats });
+  const { data: stats } = useQuery<ProjectStats>({
+    queryKey: ["projects", "stats"],
+    queryFn: fetchProjectStats,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const {
     data: projects,
     isLoading,
@@ -45,6 +50,8 @@ export default function PortfolioPage() {
         ...(category ? { category } : {}),
         ...(sort === "featured" ? { is_featured: true } : { ordering: "-created_at" }),
       }),
+    staleTime: 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
   });
 
   const heroCopy = t(

@@ -43,7 +43,12 @@ const quickServices = {
 };
 
 export default function ServicesPreview() {
-  const { data: services } = useQuery<Service[]>({ queryKey: ["services"], queryFn: fetchServices });
+  const { data: services } = useQuery<Service[]>({
+    queryKey: ["services"],
+    queryFn: fetchServices,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const list: Service[] = services && services.length ? services.slice(0, 3) : isAr ? quickServices.ar : quickServices.en;

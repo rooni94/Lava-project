@@ -6,7 +6,12 @@ import { fetchPages } from "../../api/endpoints";
 import { Page } from "../../types";
 
 export default function PageGuard({ slug, children }: { slug: string; children: ReactNode }) {
-  const { data: pages, isLoading } = useQuery<Page[]>({ queryKey: ["pages-public"], queryFn: fetchPages });
+  const { data: pages, isLoading } = useQuery<Page[]>({
+    queryKey: ["pages-public"],
+    queryFn: fetchPages,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const t = (ar: string, en: string) => (isAr ? ar : en);

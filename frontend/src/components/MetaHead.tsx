@@ -11,7 +11,12 @@ type Props = {
 };
 
 export default function MetaHead({ title, description, image, url, type = "website" }: Props) {
-  const { data: settings } = useQuery({ queryKey: ["site-settings"], queryFn: fetchSiteSettings });
+  const { data: settings } = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: fetchSiteSettings,
+    staleTime: 10 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const finalTitle = title || settings?.seo_title || settings?.site_name || "LAVA";
   const finalDescription = description || settings?.meta_description;
   const finalImage = image || settings?.og_image || settings?.logo;

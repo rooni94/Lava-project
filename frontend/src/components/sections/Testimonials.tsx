@@ -39,7 +39,12 @@ const fallback = {
 };
 
 export default function Testimonials() {
-  const { data: clients } = useQuery<Client[]>({ queryKey: ["clients"], queryFn: fetchClients });
+  const { data: clients } = useQuery<Client[]>({
+    queryKey: ["clients"],
+    queryFn: fetchClients,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const list: Client[] = clients && clients.length ? clients : isAr ? fallback.ar : fallback.en;

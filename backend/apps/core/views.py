@@ -47,6 +47,7 @@ class SiteSettingsViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelVi
     queryset = SiteSettings.objects.all()
     serializer_class = SiteSettingsSerializer
     permission_classes = [RolePermission(allow_editors=False)]
+    throttle_scope = "site_settings"
 
 
 class PageViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelViewSet):
@@ -55,6 +56,7 @@ class PageViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelViewSet):
     lookup_field = "slug"
     filterset_fields = ("status",)
     search_fields = ("name", "title", "slug")
+    throttle_scope = "pages"
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -80,6 +82,7 @@ class SectionViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelViewSet
     serializer_class = SectionSerializer
     filterset_fields = ("page", "section_type")
     pagination_class = None  # return جميع الأقسام دون صفحات حتى لا تُعاد 404 عند تجاوز الصفحة
+    throttle_scope = "sections"
 
     @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-delete")
     def bulk_delete(self, request):
@@ -98,6 +101,7 @@ class SectionViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelViewSet
 class ContactInfoViewSet(ActivityLoggerMixin, PublicReadMixin, viewsets.ModelViewSet):
     queryset = ContactInfo.objects.all()
     serializer_class = ContactInfoSerializer
+    throttle_scope = "contact"
 
 
 class ContactMessageViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):

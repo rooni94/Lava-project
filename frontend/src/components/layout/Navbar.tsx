@@ -49,9 +49,19 @@ export default function Navbar() {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const t = (ar: string, en: string) => (isAr ? ar : en);
-  const { data: pages } = useQuery<Page[]>({ queryKey: ["pages-public"], queryFn: fetchPages });
+  const { data: pages } = useQuery<Page[]>({
+    queryKey: ["pages-public"],
+    queryFn: fetchPages,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const homePage = pages?.find((p) => p.slug === "home");
-  const { data: sections } = useQuery<Section[]>({ queryKey: ["sections-public"], queryFn: () => fetchSections() });
+  const { data: sections } = useQuery<Section[]>({
+    queryKey: ["sections-public"],
+    queryFn: () => fetchSections(),
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const headerSection = sections
     ?.filter((sec) => sec.section_type === "header" && (!homePage || sec.page === homePage.id))
     .sort((a, b) => a.order - b.order)[0];

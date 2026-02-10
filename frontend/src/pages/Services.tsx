@@ -8,7 +8,12 @@ import ServiceCard from "../components/ui/ServiceCard";
 import Skeleton from "../components/ui/Skeleton";
 
 export default function ServicesPage() {
-  const { data, isLoading } = useQuery({ queryKey: ["services-page"], queryFn: fetchServices });
+  const { data, isLoading } = useQuery({
+    queryKey: ["services-page"],
+    queryFn: fetchServices,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
 

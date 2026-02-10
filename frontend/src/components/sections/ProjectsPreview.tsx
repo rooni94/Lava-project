@@ -7,7 +7,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 export default function ProjectsPreview() {
-  const { data: projects } = useQuery({ queryKey: ["projects"], queryFn: () => fetchProjects() });
+  const { data: projects } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => fetchProjects(),
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+  });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
 
