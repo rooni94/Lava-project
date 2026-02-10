@@ -16,6 +16,7 @@ import {
 import Skeleton from "../../components/ui/Skeleton";
 import { Project, Technology } from "../../types";
 import MediaPickerModal from "../../components/dashboard/MediaPickerModal";
+import { isVideoUrl } from "../../utils/media";
 
 const fontOptions = [
   { label: "Cairo", value: "Cairo" },
@@ -484,8 +485,8 @@ export default function DashboardProjects() {
                   <input type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] || null)} />
                 </label>
                 <label className="w-full border rounded-lg px-3 py-2 flex items-center justify-between cursor-pointer">
-                  <span>{t("معرض الصور (متعدد)", "Gallery (multiple)")}</span>
-                  <input type="file" accept="image/*" multiple onChange={(e) => setGalleryFiles(e.target.files)} />
+                  <span>{t("معرض الوسائط (متعدد)", "Gallery media (multiple)")}</span>
+                  <input type="file" accept="image/*,video/*" multiple onChange={(e) => setGalleryFiles(e.target.files)} />
                 </label>
               </div>
 
@@ -496,7 +497,7 @@ export default function DashboardProjects() {
                   onClick={() => setPickerOpen(true)}
                   className="px-3 py-2 rounded-lg bg-white dark:bg-neutral-900 border border-accent/30 dark:border-neutral-800 text-sm"
                 >
-                  {t("إضافة صور من مكتبة الوسائط", "Add images from media library")}
+                  {t("إضافة وسائط من مكتبة الوسائط", "Add media from media library")}
                 </button>
                 <button
                   type="button"
@@ -517,7 +518,16 @@ export default function DashboardProjects() {
                       key={img}
                       className="border rounded-xl overflow-hidden border-accent/30 dark:border-neutral-800 bg-white dark:bg-neutral-900"
                     >
-                      <img src={img} alt={form.title || "Gallery"} className="w-full h-28 object-cover" loading="lazy" />
+                      <div className="w-full h-28 bg-black/80 relative">
+                        {isVideoUrl(img) ? (
+                          <>
+                            <video src={img} className="w-full h-full object-cover" muted playsInline preload="metadata" />
+                            <div className="absolute inset-0 flex items-center justify-center text-white/90 text-2xl">▶</div>
+                          </>
+                        ) : (
+                          <img src={img} alt={form.title || "Gallery"} className="w-full h-full object-cover" loading="lazy" />
+                        )}
+                      </div>
                       <button
                         type="button"
                         onClick={() =>
@@ -814,7 +824,8 @@ export default function DashboardProjects() {
 
       <MediaPickerModal
         open={pickerOpen}
-        title={t("اختيار الصور", "Pick images")}
+        title={t("اختيار الوسائط", "Pick media")}
+        allowedTypes={["image", "video"]}
         onClose={() => setPickerOpen(false)}
         onPick={(urls) =>
           setForm((p) => ({

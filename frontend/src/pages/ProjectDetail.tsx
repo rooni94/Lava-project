@@ -7,7 +7,7 @@ import MetaHead from "../components/MetaHead";
 import Skeleton from "../components/ui/Skeleton";
 import { fetchProject } from "../api/endpoints";
 import { Project } from "../types";
-import { resolveMediaUrl } from "../utils/media";
+import { isVideoUrl, resolveMediaUrl } from "../utils/media";
 import ImageLightbox from "../components/ui/ImageLightbox";
 
 const categoryLabels = {
@@ -158,15 +158,15 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-          <div className="rounded-2xl overflow-hidden border border-accent/40 dark:border-neutral-800 bg-neutral-900/70">
+          <div className="rounded-2xl overflow-hidden border border-accent/40 dark:border-neutral-800 bg-neutral-950/70 h-[260px] sm:h-[320px] md:h-[360px] grid place-items-center">
               {data.cover_image ? (
                 <img
                   src={resolveMediaUrl(data.cover_image)}
                   alt={title}
-                  className="w-full h-full max-h-[360px] object-cover"
+                  className="w-full h-full object-contain p-2"
                 />
               ) : (
-                <div className="h-full min-h-[260px] grid place-items-center text-neutral-200">{isAr ? "لا توجد صورة" : "No cover image"}</div>
+                <div className="h-full w-full grid place-items-center text-neutral-200">{isAr ? "لا توجد صورة" : "No cover image"}</div>
               )}
             </div>
           </div>
@@ -192,8 +192,8 @@ export default function ProjectDetail() {
             {gallery.length > 0 && (
               <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-4 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "معرض الصور" : "Gallery"}</h3>
-                  <span className="text-xs text-secondary/60 dark:text-neutral-400">{gallery.length} {isAr ? "صورة" : "images"}</span>
+                  <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "معرض الوسائط" : "Gallery"}</h3>
+                  <span className="text-xs text-secondary/60 dark:text-neutral-400">{gallery.length} {isAr ? "عنصر" : "items"}</span>
                 </div>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {galleryUrls.map((src, idx) => (
@@ -205,14 +205,27 @@ export default function ProjectDetail() {
                         setLightboxOpen(true);
                       }}
                       className="group relative overflow-hidden rounded-xl border border-accent/40 dark:border-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary bg-white/60 dark:bg-neutral-950/40"
-                      aria-label={isAr ? "معاينة الصورة" : "Preview image"}
+                      aria-label={isAr ? "معاينة الوسائط" : "Preview media"}
                     >
-                      <img
-                        src={src}
-                        alt={data.title}
-                        className="w-full aspect-[16/10] object-contain p-2 transition duration-300 group-hover:scale-[1.01]"
-                        loading="lazy"
-                      />
+                      {isVideoUrl(src) ? (
+                        <div className="relative">
+                          <video
+                            src={src}
+                            className="w-full aspect-[16/10] object-contain p-2 transition duration-300 group-hover:scale-[1.01]"
+                            muted
+                            playsInline
+                            preload="metadata"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center text-white/90 text-3xl">▶</div>
+                        </div>
+                      ) : (
+                        <img
+                          src={src}
+                          alt={data.title}
+                          className="w-full aspect-[16/10] object-contain p-2 transition duration-300 group-hover:scale-[1.01]"
+                          loading="lazy"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />
                       <div className="absolute bottom-2 left-2 px-2 py-1 text-[11px] rounded-full bg-black/55 text-white opacity-0 group-hover:opacity-100 transition">
                         {isAr ? "عرض" : "View"}

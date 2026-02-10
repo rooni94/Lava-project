@@ -57,7 +57,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             <img
               src={resolveMediaUrl(project.cover_image)}
               alt={project.title}
-              className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              className="h-full w-full object-contain p-3 transition duration-300 group-hover:opacity-95"
               loading="lazy"
             />
           ) : (

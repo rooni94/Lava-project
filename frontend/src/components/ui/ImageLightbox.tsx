@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { isVideoUrl } from "../../utils/media";
 
 type Props = {
   open: boolean;
@@ -64,6 +65,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
 
   if (typeof document === "undefined") return null;
   const current = safeImages[index];
+  const isVideo = isVideoUrl(current);
   const labelGallery = isAr ? "المعرض" : "Gallery";
   const labelPreview = isAr ? "معاينة" : "Preview";
   const labelClose = isAr ? "إغلاق" : "Close";
@@ -72,8 +74,8 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
   const labelZoomIn = isAr ? "تكبير" : "Zoom in";
   const labelZoomOut = isAr ? "تصغير" : "Zoom out";
   const labelReset = isAr ? "إعادة" : "Reset";
-  const canZoomOut = zoom > 1.01;
-  const canZoomIn = zoom < 3.99;
+  const canZoomOut = !isVideo && zoom > 1.01;
+  const canZoomIn = !isVideo && zoom < 3.99;
 
   return createPortal(
     <AnimatePresence>
@@ -96,7 +98,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
             exit={{ y: 18, scale: 0.98, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 22 }}
           >
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl flex flex-col h-[min(900px,calc(100svh-2rem))]">
+            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl flex flex-col h-[min(900px,calc(100vh-2rem))]">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-transparent to-rose-500/10" />
 
               <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10">
@@ -132,9 +134,10 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                 <div className="relative px-3 py-4 flex flex-col min-h-0 min-w-0">
                   <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/40 flex-1 min-h-0">
                     <div
-                      className="w-full h-full bg-black select-none touch-none flex items-center justify-center overflow-hidden"
+                      className={`relative w-full h-full bg-black select-none overflow-hidden ${isVideo ? "touch-auto" : "touch-none"}`}
                       onWheel={(e) => {
                         if (!open) return;
+                        if (isVideo) return;
                         e.preventDefault();
                         const delta = e.deltaY;
                         const next = delta > 0 ? Math.max(1, zoom - 0.15) : Math.min(4, zoom + 0.15);
@@ -142,11 +145,13 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                         if (next <= 1.01) setPan({ x: 0, y: 0 });
                       }}
                       onPointerDown={(e) => {
+                        if (isVideo) return;
                         if (zoom <= 1.01) return;
                         (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
                         dragRef.current = { active: true, startX: e.clientX, startY: e.clientY, panX: pan.x, panY: pan.y };
                       }}
                       onPointerMove={(e) => {
+                        if (isVideo) return;
                         if (!dragRef.current.active) return;
                         const dx = e.clientX - dragRef.current.startX;
                         const dy = e.clientY - dragRef.current.startY;
@@ -159,19 +164,29 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                         setPan({ x: 0, y: 0 });
                       }}
                     >
-                      <img
-                        key={current}
-                        src={current}
-                        alt={title || "Image"}
-                        className="block max-h-full max-w-full w-auto h-auto object-contain bg-black"
-                        style={{
-                          transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-                          transformOrigin: "center center",
-                          transition: dragRef.current.active ? "none" : "transform 120ms ease-out",
-                          willChange: "transform",
-                        }}
-                        draggable={false}
-                      />
+                      {isVideo ? (
+                        <video
+                          key={current}
+                          src={current}
+                          controls
+                          playsInline
+                          className="block max-h-full max-w-full w-auto h-auto bg-black m-auto"
+                        />
+                      ) : (
+                        <img
+                          key={current}
+                          src={current}
+                          alt={title || "Image"}
+                          className="absolute inset-0 w-full h-full object-contain bg-black"
+                          style={{
+                            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                            transformOrigin: "center center",
+                            transition: dragRef.current.active ? "none" : "transform 120ms ease-out",
+                            willChange: "transform",
+                          }}
+                          draggable={false}
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -191,6 +206,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                       <button
                         type="button"
                         onClick={() => {
+                          if (isVideo) return;
                           const next = Math.max(1, zoom - 0.25);
                           setZoom(next);
                           if (next <= 1.01) setPan({ x: 0, y: 0 });
@@ -203,6 +219,7 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                       <button
                         type="button"
                         onClick={() => {
+                          if (isVideo) return;
                           setZoom((z) => Math.min(4, z + 0.25));
                         }}
                         disabled={!canZoomIn}
@@ -237,7 +254,13 @@ export default function ImageLightbox({ open, images, startIndex = 0, title, onC
                             }`}
                             aria-label={`Go to image ${i + 1}`}
                           >
-                            <img src={src} alt="" className="h-full w-full object-contain bg-black" draggable={false} loading="lazy" />
+                            {isVideoUrl(src) ? (
+                              <div className="relative h-full w-full bg-black/90 flex items-center justify-center text-white/80">
+                                <span className="text-[10px] tracking-widest">VIDEO</span>
+                              </div>
+                            ) : (
+                              <img src={src} alt="" className="h-full w-full object-contain bg-black" draggable={false} loading="lazy" />
+                            )}
                           </button>
                         ))}
                       </div>

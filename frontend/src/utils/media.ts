@@ -9,3 +9,9 @@ export function resolveMediaUrl(path?: string | null): string | undefined {
   if (path.startsWith("/")) return `${mediaBase}${path}`;
   return `${mediaBase}/media/${path}`;
 }
+
+export function isVideoUrl(url?: string | null): boolean {
+  if (!url) return false;
+  const clean = String(url).split("?")[0].split("#")[0].toLowerCase();
+  return /\.(mp4|webm|mov|mkv|avi|m4v)$/i.test(clean);
+}

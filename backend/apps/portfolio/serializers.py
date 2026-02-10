@@ -30,7 +30,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         gallery = attrs.get("gallery", getattr(instance, "gallery", []))
 
         if is_active and status_value != "draft" and not (gallery or []):
-            raise serializers.ValidationError({"gallery": "At least one gallery image is required."})
+            raise serializers.ValidationError({"gallery": "At least one gallery item (image or video) is required."})
         return attrs
 
     def create(self, validated_data):
