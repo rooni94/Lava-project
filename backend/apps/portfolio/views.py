@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.accounts.permissions import RolePermission
+from apps.accounts.models import User
 from apps.core.mixins import ActivityLoggerMixin
 from apps.portfolio.models import Project, ProjectImage, Technology
 from apps.portfolio.serializers import ProjectImageSerializer, ProjectSerializer, TechnologySerializer
@@ -25,14 +26,41 @@ class ProjectViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         qs = super().get_queryset()
         request = getattr(self, "request", None)
-        if not request or not request.user.is_authenticated:
+        if not request:
+            return qs.filter(is_active=True)
+
+        admin_view = str(request.query_params.get("admin_view", "")).lower() in {"1", "true", "yes"}
+        user = getattr(request, "user", None)
+        can_view_all = bool(
+            admin_view
+            and user
+            and user.is_authenticated
+            and (
+                getattr(user, "is_superuser", False)
+                or getattr(user, "is_staff", False)
+                or getattr(user, "role", None) in {User.Role.SUPER_ADMIN, User.Role.MANAGER, User.Role.EDITOR}
+            )
+        )
+        if not can_view_all:
             qs = qs.filter(is_active=True)
         return qs
 
     @action(detail=False, methods=["get"], permission_classes=[permissions.AllowAny()], url_path="stats")
     def stats(self, request):
         qs = Project.objects.all()
-        if not request.user.is_authenticated:
+        admin_view = str(request.query_params.get("admin_view", "")).lower() in {"1", "true", "yes"}
+        user = getattr(request, "user", None)
+        can_view_all = bool(
+            admin_view
+            and user
+            and user.is_authenticated
+            and (
+                getattr(user, "is_superuser", False)
+                or getattr(user, "is_staff", False)
+                or getattr(user, "role", None) in {User.Role.SUPER_ADMIN, User.Role.MANAGER, User.Role.EDITOR}
+            )
+        )
+        if not can_view_all:
             qs = qs.filter(is_active=True)
         total = qs.count()
         featured = qs.filter(is_featured=True).count()

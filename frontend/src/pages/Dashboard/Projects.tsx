@@ -98,7 +98,10 @@ const baseForm: Partial<Project> = {
 
 export default function DashboardProjects() {
   const qc = useQueryClient();
-  const { data: projects, isLoading } = useQuery<Project[]>({ queryKey: ["projects-admin"], queryFn: () => fetchProjects() });
+  const { data: projects, isLoading } = useQuery<Project[]>({
+    queryKey: ["projects-admin"],
+    queryFn: () => fetchProjects({ admin_view: true }),
+  });
   const { data: technologies } = useQuery<Technology[]>({ queryKey: ["technologies"], queryFn: fetchTechnologies });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
