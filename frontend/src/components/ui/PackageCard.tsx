@@ -14,6 +14,7 @@ export default function PackageCard({ item }: Props) {
   const short = isAr ? item.short_description_ar : item.short_description_en;
   const desc = isAr ? item.description_ar : item.description_en;
   const priceNote = isAr ? item.price_note : item.price_note_en || item.price_note;
+  const showPrice = item.show_price !== false;
   const bullets =
     desc
       ?.split("\n")
@@ -45,8 +46,14 @@ export default function PackageCard({ item }: Props) {
 
       <div className="flex items-center justify-between pt-2">
         <div>
-          {priceNote ? <div className="text-xs text-secondary/60 dark:text-neutral-400">{renderRiyalText(priceNote)}</div> : null}
-          <div className="text-xl font-bold text-secondary dark:text-neutral-100">{formatRiyal(item.price, "")}</div>
+          {showPrice ? (
+            <>
+              {priceNote ? <div className="text-xs text-secondary/60 dark:text-neutral-400">{renderRiyalText(priceNote)}</div> : null}
+              <div className="text-xl font-bold text-secondary dark:text-neutral-100">{formatRiyal(item.price, "")}</div>
+            </>
+          ) : (
+            <div className="text-sm font-semibold text-secondary/80 dark:text-neutral-200">{isAr ? "السعر عند الطلب" : "Price on request"}</div>
+          )}
         </div>
         <div className="flex gap-2">
           <Link to="/contact" className="px-3 py-2 rounded-full bg-primary text-white text-sm shadow hover:shadow-md">

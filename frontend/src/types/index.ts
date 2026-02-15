@@ -159,6 +159,7 @@ export type Package = {
   product_type?: string;
   featured?: boolean;
   is_active?: boolean;
+  show_price?: boolean;
   category?: PackageCategory | null;
   category_id?: number | null;
   created_at?: string;

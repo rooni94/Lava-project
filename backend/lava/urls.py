@@ -9,7 +9,7 @@ from django.urls import re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions, routers
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.blog.views import BlogCategoryViewSet, BlogCommentViewSet, BlogPostViewSet
 from apps.clients.views import ClientViewSet
@@ -28,7 +28,7 @@ from apps.core.views import (
     SubscriberViewSet,
     UserRegistrationView,
 )
-from apps.accounts.views import UserViewSet
+from apps.accounts.views import DashboardTokenObtainPairView, UserViewSet
 from apps.services.views import ServiceCategoryViewSet
 from apps.portfolio.views import ProjectViewSet, TechnologyViewSet
 from apps.portfolio.views import ProjectImageViewSet
@@ -77,7 +77,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/auth/login/", DashboardTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/auth/register/", UserRegistrationView.as_view(), name="auth_register"),
     path("api/auth/reset-password-request/", UserViewSet.as_view({"post": "reset_password_request"})),

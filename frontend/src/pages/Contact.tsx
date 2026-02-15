@@ -439,7 +439,7 @@ export default function ContactPage() {
                         <div className="font-semibold text-secondary dark:text-neutral-100">{title}</div>
                         {short ? <div className="text-xs text-secondary/70 dark:text-neutral-300">{short}</div> : null}
                         <div className="text-xs text-secondary/70 dark:text-neutral-300 mt-1">
-                          {note ? renderRiyalText(note) : formatRiyal(pkg.price)}
+                          {pkg.show_price === false ? (isAr ? "السعر عند الطلب" : "Price on request") : note ? renderRiyalText(note) : formatRiyal(pkg.price)}
                         </div>
                       </div>
                     );

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode
@@ -15,6 +16,22 @@ from apps.accounts.serializers import (
 )
 from apps.accounts.permissions import RolePermission
 from apps.core.mixins import ActivityLoggerMixin
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+
+class DashboardTokenObtainPairView(TokenObtainPairView):
+    """
+    Optional extra gate for dashboard login endpoint.
+    When DASHBOARD_ACCESS_KEY is set, login requests must include `x-dashboard-key`.
+    """
+
+    def post(self, request, *args, **kwargs):
+        expected = (getattr(settings, "DASHBOARD_ACCESS_KEY", "") or "").strip()
+        if expected:
+            provided = (request.headers.get("x-dashboard-key") or "").strip()
+            if provided != expected:
+                return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+        return super().post(request, *args, **kwargs)
 
 
 class UserViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):

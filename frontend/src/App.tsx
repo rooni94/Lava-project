@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import PageGuard from "./components/layout/PageGuard";
 import { useTranslation } from "react-i18next";
@@ -37,6 +37,24 @@ import {
   DashboardSettingsPage,
 } from "./routes/lazy";
 
+const DASHBOARD_ACCESS_KEY = (import.meta.env.VITE_DASHBOARD_ACCESS_KEY || "").trim();
+const DASHBOARD_GATE_FLAG = "dashboard_access_granted";
+
+function DashboardGate({ children }: { children: JSX.Element }) {
+  const location = useLocation();
+  if (!DASHBOARD_ACCESS_KEY) return children;
+
+  const params = new URLSearchParams(location.search);
+  const key = params.get("k");
+  if (key && key === DASHBOARD_ACCESS_KEY) {
+    sessionStorage.setItem(DASHBOARD_GATE_FLAG, "1");
+    return children;
+  }
+
+  const unlocked = sessionStorage.getItem(DASHBOARD_GATE_FLAG) === "1";
+  return unlocked ? children : <Navigate to="/" replace />;
+}
+
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/dashboard/login" replace />;
@@ -64,127 +82,23 @@ export default function App() {
         <Route path="/careers" element={<PageGuard slug="careers"><CareersPage /></PageGuard>} />
         <Route path="/reset-password" element={<ResetRequestPage />} />
         <Route path="/reset-password/confirm" element={<ResetConfirmPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/services"
-          element={
-            <ProtectedRoute>
-              <DashboardServicesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/projects"
-          element={
-            <ProtectedRoute>
-              <DashboardProjectsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/blog"
-          element={
-            <ProtectedRoute>
-              <DashboardBlogPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/team"
-          element={
-            <ProtectedRoute>
-              <DashboardTeamPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/clients"
-          element={
-            <ProtectedRoute>
-              <DashboardClientsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/packages"
-          element={
-            <ProtectedRoute>
-              <DashboardPackagesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/jobs"
-          element={
-            <ProtectedRoute>
-              <DashboardJobsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/messages"
-          element={
-            <ProtectedRoute>
-              <DashboardMessagesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/job-applications"
-          element={
-            <ProtectedRoute>
-              <DashboardJobApplicationsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/support-chat"
-          element={
-            <ProtectedRoute>
-              <DashboardSupportChatPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/media"
-          element={
-            <ProtectedRoute>
-              <DashboardMediaPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/pages"
-          element={
-            <ProtectedRoute>
-              <DashboardPagesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/sections"
-          element={
-            <ProtectedRoute>
-              <DashboardSectionsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/settings"
-          element={
-            <ProtectedRoute>
-              <DashboardSettingsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/dashboard/login" element={<DashboardLoginPage />} />
+
+        <Route path="/dashboard/login" element={<DashboardGate><DashboardLoginPage /></DashboardGate>} />
+        <Route path="/dashboard" element={<DashboardGate><ProtectedRoute><DashboardPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/services" element={<DashboardGate><ProtectedRoute><DashboardServicesPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/projects" element={<DashboardGate><ProtectedRoute><DashboardProjectsPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/blog" element={<DashboardGate><ProtectedRoute><DashboardBlogPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/team" element={<DashboardGate><ProtectedRoute><DashboardTeamPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/clients" element={<DashboardGate><ProtectedRoute><DashboardClientsPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/packages" element={<DashboardGate><ProtectedRoute><DashboardPackagesPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/jobs" element={<DashboardGate><ProtectedRoute><DashboardJobsPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/messages" element={<DashboardGate><ProtectedRoute><DashboardMessagesPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/job-applications" element={<DashboardGate><ProtectedRoute><DashboardJobApplicationsPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/support-chat" element={<DashboardGate><ProtectedRoute><DashboardSupportChatPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/media" element={<DashboardGate><ProtectedRoute><DashboardMediaPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/pages" element={<DashboardGate><ProtectedRoute><DashboardPagesPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/sections" element={<DashboardGate><ProtectedRoute><DashboardSectionsPage /></ProtectedRoute></DashboardGate>} />
+        <Route path="/dashboard/settings" element={<DashboardGate><ProtectedRoute><DashboardSettingsPage /></ProtectedRoute></DashboardGate>} />
       </Routes>
     </Suspense>
   );

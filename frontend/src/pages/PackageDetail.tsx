@@ -42,6 +42,7 @@ export default function PackageDetail() {
   const short = isAr ? data.short_description_ar : data.short_description_en;
   const desc = isAr ? data.description_ar : data.description_en;
   const priceNote = isAr ? data.price_note : data.price_note_en || data.price_note;
+  const showPrice = data.show_price !== false;
   const bullets = splitLines(desc);
 
   return (
@@ -57,25 +58,23 @@ export default function PackageDetail() {
               <h1 className="text-3xl md:text-4xl font-bold text-secondary dark:text-white">{title}</h1>
               {short ? <p className="text-secondary/80 dark:text-neutral-200 text-lg">{short}</p> : null}
               <div className="flex flex-wrap gap-2 text-sm text-secondary/70 dark:text-neutral-300">
-                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">
-                  {isAr ? "السعر:" : "Price:"} {formatRiyal(data.price, priceNote)}
-                </span>
-                {data.featured ? (
-                  <span className="px-3 py-1 rounded-full bg-primary text-white">{isAr ? "مميزة" : "Featured"}</span>
-                ) : null}
+                {showPrice ? (
+                  <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">
+                    {isAr ? "السعر:" : "Price:"} {formatRiyal(data.price, priceNote)}
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">
+                    {isAr ? "السعر عند الطلب" : "Price on request"}
+                  </span>
+                )}
+                {data.featured ? <span className="px-3 py-1 rounded-full bg-primary text-white">{isAr ? "مميزة" : "Featured"}</span> : null}
               </div>
             </div>
             <div className="flex gap-3 flex-wrap">
-              <Link
-                to="/contact"
-                className="px-5 py-3 rounded-full bg-primary text-white shadow hover:shadow-md text-sm"
-              >
+              <Link to="/contact" className="px-5 py-3 rounded-full bg-primary text-white shadow hover:shadow-md text-sm">
                 {isAr ? "اطلب عرض سعر" : "Request proposal"}
               </Link>
-              <Link
-                to="/packages"
-                className="px-5 py-3 rounded-full border border-primary text-primary text-sm hover:bg-primary/10"
-              >
+              <Link to="/packages" className="px-5 py-3 rounded-full border border-primary text-primary text-sm hover:bg-primary/10">
                 {isAr ? "العودة للباقات" : "Back to packages"}
               </Link>
             </div>
@@ -107,14 +106,20 @@ export default function PackageDetail() {
           <aside className="space-y-4">
             <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-5 shadow-sm">
               <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50 mb-2">{isAr ? "الاستثمار" : "Investment"}</h3>
-              <p className="text-2xl font-bold text-secondary dark:text-neutral-100">{formatRiyal(data.price)}</p>
-              {priceNote ? <p className="text-sm text-secondary/70 dark:text-neutral-300">{renderRiyalText(priceNote)}</p> : null}
+              {showPrice ? (
+                <>
+                  <p className="text-2xl font-bold text-secondary dark:text-neutral-100">{formatRiyal(data.price)}</p>
+                  {priceNote ? <p className="text-sm text-secondary/70 dark:text-neutral-300">{renderRiyalText(priceNote)}</p> : null}
+                </>
+              ) : (
+                <p className="text-base font-semibold text-secondary dark:text-neutral-100">{isAr ? "السعر عند الطلب" : "Price on request"}</p>
+              )}
             </div>
             <div className="bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl p-5 shadow-sm space-y-2">
               <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "خطوات طلب الباقة" : "Request steps"}</h3>
               <ol className={`${isAr ? "pr-5" : "pl-5"} list-decimal space-y-1 text-sm text-secondary/80 dark:text-neutral-300`}>
                 <li>{isAr ? "شارك الهدف والنطاق والميزانية والموعد المتوقع." : "Share goals, scope, budget, and target timeline."}</li>
-                <li>{isAr ? "نراجع الاحتياج ونرسل عرضًا وجدولًا خلال 24–48 ساعة عمل." : "We review the scope and send a proposal with timeline within 24–48 business hours."}</li>
+                <li>{isAr ? "نراجع الاحتياج ونرسل عرضًا وجدولًا خلال 24-48 ساعة عمل." : "We review the scope and send a proposal with timeline within 24-48 business hours."}</li>
                 <li>{isAr ? "بعد الاعتماد نوقّع العقد ونصدر الفاتورة." : "After approval we sign the agreement and issue the invoice."}</li>
                 <li>{isAr ? "نبدأ التنفيذ بعد الدفعة المبدئية وفق الاتفاق." : "Delivery starts after the initial payment per agreement."}</li>
               </ol>
@@ -123,10 +128,7 @@ export default function PackageDetail() {
               <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50">{isAr ? "طرق الدفع المتاحة" : "Payment options"}</h3>
               <div className="flex flex-wrap gap-2 text-xs text-secondary/70 dark:text-neutral-300">
                 {["Stripe", "Tappy", "Tamara", "Apple Pay", "Visa", "Mada"].map((method) => (
-                  <span
-                    key={method}
-                    className="px-3 py-1 rounded-full border border-accent/50 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/70"
-                  >
+                  <span key={method} className="px-3 py-1 rounded-full border border-accent/50 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/70">
                     {method}
                   </span>
                 ))}

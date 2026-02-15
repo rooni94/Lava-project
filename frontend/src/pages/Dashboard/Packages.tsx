@@ -32,7 +32,8 @@ export default function DashboardPackages() {
   });
 
   const bulkMutate = useMutation({
-    mutationFn: (action: "activate" | "deactivate" | "delete") => bulkPackage(action, selected),
+    mutationFn: (action: "activate" | "deactivate" | "delete" | "hide-prices" | "show-prices" | "hide-all-prices" | "show-all-prices") =>
+      bulkPackage(action, selected),
     onSuccess: () => {
       toast.success(t("تم تنفيذ الإجراء", "Action completed"));
       setSelected([]);
@@ -79,6 +80,26 @@ export default function DashboardPackages() {
               </button>
               <button
                 disabled={!selected.length}
+                onClick={() => bulkMutate.mutate("hide-prices")}
+                className="px-3 py-1 bg-amber-100 text-amber-700 rounded disabled:opacity-60"
+              >
+                {t("إخفاء سعر المحدد", "Hide selected prices")}
+              </button>
+              <button
+                disabled={!selected.length}
+                onClick={() => bulkMutate.mutate("show-prices")}
+                className="px-3 py-1 bg-teal-100 text-teal-700 rounded disabled:opacity-60"
+              >
+                {t("إظهار سعر المحدد", "Show selected prices")}
+              </button>
+              <button onClick={() => bulkMutate.mutate("hide-all-prices")} className="px-3 py-1 bg-red-100 text-red-700 rounded">
+                {t("إخفاء جميع الأسعار", "Hide all prices")}
+              </button>
+              <button onClick={() => bulkMutate.mutate("show-all-prices")} className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded">
+                {t("إظهار جميع الأسعار", "Show all prices")}
+              </button>
+              <button
+                disabled={!selected.length}
                 onClick={() => bulkMutate.mutate("delete")}
                 className="px-3 py-1 bg-red-100 text-red-700 rounded disabled:opacity-60"
               >
@@ -98,32 +119,33 @@ export default function DashboardPackages() {
                     <input
                       type="checkbox"
                       checked={selected.includes(p.id)}
-                      onChange={(e) =>
-                        setSelected((prev) => (e.target.checked ? [...prev, p.id] : prev.filter((id) => id !== p.id)))
-                      }
+                      onChange={(e) => setSelected((prev) => (e.target.checked ? [...prev, p.id] : prev.filter((id) => id !== p.id)))}
                       className="mt-1"
                     />
                     <div className="space-y-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-secondary text-lg">{p.title_ar}</span>
-                      <span className="text-secondary/70 text-sm">/ {p.title_en}</span>
-                      {p.featured ? <span className="px-2 py-1 rounded-full bg-primary/10 text-primary text-xs">{t("مميزة", "Featured")}</span> : null}
-                      {p.is_active === false ? <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs">{t("غير فعال", "Inactive")}</span> : null}
-                    </div>
-                    <div className="text-sm text-secondary/70 flex flex-wrap gap-2">
-                      {p.category ? (isAr ? p.category.name_ar : p.category.name_en) : t("بدون تصنيف", "Uncategorized")} · {formatRiyal(p.price)}
-                      {(isAr ? p.price_note : p.price_note_en || p.price_note) ? <> · {isAr ? p.price_note : p.price_note_en || p.price_note}</> : null}
-                    </div>
-                    <div className="text-xs text-secondary/60 line-clamp-2">
-                      {isAr ? p.short_description_ar : p.short_description_en}
-                    </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-secondary text-lg">{p.title_ar}</span>
+                        <span className="text-secondary/70 text-sm">/ {p.title_en}</span>
+                        {p.featured ? <span className="px-2 py-1 rounded-full bg-primary/10 text-primary text-xs">{t("مميزة", "Featured")}</span> : null}
+                        {p.show_price === false ? <span className="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs">{t("السعر مخفي", "Price hidden")}</span> : null}
+                        {p.is_active === false ? <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs">{t("غير فعال", "Inactive")}</span> : null}
+                      </div>
+                      <div className="text-sm text-secondary/70 flex flex-wrap gap-2">
+                        {p.category ? (isAr ? p.category.name_ar : p.category.name_en) : t("بدون تصنيف", "Uncategorized")}
+                        {p.show_price === false ? (
+                          <> · {t("السعر مخفي", "Price hidden")}</>
+                        ) : (
+                          <>
+                            {" "}· {formatRiyal(p.price)}
+                            {(isAr ? p.price_note : p.price_note_en || p.price_note) ? <> · {isAr ? p.price_note : p.price_note_en || p.price_note}</> : null}
+                          </>
+                        )}
+                      </div>
+                      <div className="text-xs text-secondary/60 line-clamp-2">{isAr ? p.short_description_ar : p.short_description_en}</div>
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <button
-                      onClick={() => setEditing(p)}
-                      className="px-3 py-1 rounded bg-blue-50 text-blue-700 text-sm hover:bg-blue-100"
-                    >
+                    <button onClick={() => setEditing(p)} className="px-3 py-1 rounded bg-blue-50 text-blue-700 text-sm hover:bg-blue-100">
                       {t("تعديل", "Edit")}
                     </button>
                     <button

@@ -114,12 +114,6 @@ export default function Navbar() {
             >
               {isAr ? "EN" : "AR"}
             </button>
-            <Link
-              to="/dashboard"
-              className="px-4 py-2 rounded-full bg-primary text-white text-sm shadow hover:shadow-md transition-shadow"
-            >
-              {t("لوحة التحكم", "Dashboard")}
-            </Link>
           </nav>
 
           <div className="md:hidden flex items-center gap-2">
@@ -166,9 +160,6 @@ export default function Navbar() {
                   {t(link.label.ar, link.label.en)}
                 </NavLink>
               ))}
-              <Link to="/dashboard" onClick={() => setOpen(false)} className="py-2 text-primary font-semibold">
-                {t("لوحة التحكم", "Dashboard")}
-              </Link>
             </div>
           </motion.div>
         )}

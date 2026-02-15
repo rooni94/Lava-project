@@ -59,3 +59,25 @@ class PackageViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
         ids = request.data.get("ids", [])
         Package.objects.filter(id__in=ids).delete()
         return Response({"detail": "Deleted"})
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-show-prices")
+    def bulk_show_prices(self, request):
+        ids = request.data.get("ids", [])
+        Package.objects.filter(id__in=ids).update(show_price=True)
+        return Response({"detail": "Prices shown for selected packages"})
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-hide-prices")
+    def bulk_hide_prices(self, request):
+        ids = request.data.get("ids", [])
+        Package.objects.filter(id__in=ids).update(show_price=False)
+        return Response({"detail": "Prices hidden for selected packages"})
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-hide-all-prices")
+    def bulk_hide_all_prices(self, request):
+        Package.objects.update(show_price=False)
+        return Response({"detail": "Prices hidden for all packages"})
+
+    @action(detail=False, methods=["post"], permission_classes=[RolePermission()], url_path="bulk-show-all-prices")
+    def bulk_show_all_prices(self, request):
+        Package.objects.update(show_price=True)
+        return Response({"detail": "Prices shown for all packages"})

@@ -48,6 +48,7 @@ class Package(TimestampedModel):
     )
     featured = models.BooleanField(default=False, verbose_name=_("مميز"))
     is_active = models.BooleanField(default=True, verbose_name=_("فعال"))
+    show_price = models.BooleanField(default=True, verbose_name=_("إظهار السعر"))
 
     class Meta:
         verbose_name = _("باقة")

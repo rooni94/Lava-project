@@ -23,6 +23,7 @@ def _append_unique(items: list[str], extras: list[str]) -> list[str]:
 SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "False") == "True"
+DASHBOARD_ACCESS_KEY = os.environ.get("DASHBOARD_ACCESS_KEY", "").strip()
 ALLOWED_HOSTS = _csv_list(os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1"))
 ALLOWED_HOSTS = _append_unique(ALLOWED_HOSTS, ["localhost", "127.0.0.1"])
 
@@ -290,6 +291,7 @@ CORS_ALLOWED_ORIGINS = _append_unique(
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "x-guest-token",
+    "x-dashboard-key",
 ]
 
 SWAGGER_SETTINGS = {

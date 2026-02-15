@@ -115,7 +115,10 @@ export const fetchContactInfo = async (): Promise<ContactInfo | null> => {
 };
 
 export const login = async (username: string, password: string) => {
-  const { data } = await api.post("/auth/login/", { username, password });
+  const dashboardKey = (import.meta.env.VITE_DASHBOARD_ACCESS_KEY || "").trim();
+  const { data } = await api.post("/auth/login/", { username, password }, {
+    headers: dashboardKey ? { "x-dashboard-key": dashboardKey } : undefined,
+  });
   if (data.access) {
     localStorage.setItem("token", data.access);
     localStorage.setItem("refresh", data.refresh);
@@ -235,7 +238,10 @@ export const bulkService = (action: "activate" | "deactivate" | "delete", ids: n
   api.post(`/services/bulk-${action}/`, { ids });
 export const bulkProject = (action: "publish" | "feature" | "delete" | "activate" | "deactivate", ids: number[]) =>
   api.post(`/projects/bulk-${action}/`, { ids });
-export const bulkPackage = (action: "activate" | "deactivate" | "delete", ids: number[]) =>
+export const bulkPackage = (
+  action: "activate" | "deactivate" | "delete" | "show-prices" | "hide-prices" | "hide-all-prices" | "show-all-prices",
+  ids: number[]
+) =>
   api.post(`/packages/bulk-${action}/`, { ids });
 export const bulkBlog = (action: "publish" | "unpublish" | "delete", ids: number[]) => api.post(`/blog/posts/bulk-${action}/`, { ids });
 export const bulkJobs = (action: "publish" | "delete" | "close", ids: number[]) =>
