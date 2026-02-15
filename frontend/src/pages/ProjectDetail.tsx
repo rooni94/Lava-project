@@ -158,12 +158,13 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-          <div className="rounded-2xl overflow-hidden border border-accent/40 dark:border-neutral-800 bg-neutral-950/70 h-[260px] sm:h-[320px] md:h-[360px] grid place-items-center">
+          <div className="rounded-2xl overflow-hidden border border-accent/40 dark:border-neutral-800 bg-neutral-950/70 min-h-[260px] sm:min-h-[320px] md:min-h-[360px] p-3 flex items-center justify-center">
               {data.cover_image ? (
                 <img
                   src={resolveMediaUrl(data.cover_image)}
                   alt={title}
-                  className="w-full h-full object-contain p-2"
+                  className="max-w-full w-auto h-auto max-h-[70vh]"
+                  style={{ objectFit: "contain", objectPosition: "center" }}
                 />
               ) : (
                 <div className="h-full w-full grid place-items-center text-neutral-200">{isAr ? "لا توجد صورة" : "No cover image"}</div>
