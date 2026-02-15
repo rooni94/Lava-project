@@ -9,17 +9,35 @@ from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+def _csv_list(value: str) -> list[str]:
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def _append_unique(items: list[str], extras: list[str]) -> list[str]:
+    for extra in extras:
+        if extra not in items:
+            items.append(extra)
+    return items
+
 SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "False") == "True"
-ALLOWED_HOSTS = [
-    h.strip() for h in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()
-]
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "http://localhost:8000,http://localhost:5173").split(",")
-    if origin.strip()
-]
+ALLOWED_HOSTS = _csv_list(os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1"))
+ALLOWED_HOSTS = _append_unique(ALLOWED_HOSTS, ["localhost", "127.0.0.1"])
+
+CSRF_TRUSTED_ORIGINS = _csv_list(
+    os.environ.get("CSRF_TRUSTED_ORIGINS", "http://localhost:8000,http://localhost:5173")
+)
+CSRF_TRUSTED_ORIGINS = _append_unique(
+    CSRF_TRUSTED_ORIGINS,
+    [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+)
 
 INSTALLED_APPS = [
     "apps.accounts",
@@ -259,11 +277,16 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
-    if origin.strip()
-]
+CORS_ALLOWED_ORIGINS = _csv_list(os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000"))
+CORS_ALLOWED_ORIGINS = _append_unique(
+    CORS_ALLOWED_ORIGINS,
+    [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+)
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "x-guest-token",
