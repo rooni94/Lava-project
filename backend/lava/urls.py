@@ -76,7 +76,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path(f"{settings.DJANGO_ADMIN_PATH}/", admin.site.urls),
     path("api/auth/login/", DashboardTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/auth/register/", UserRegistrationView.as_view(), name="auth_register"),

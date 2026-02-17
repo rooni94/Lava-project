@@ -24,6 +24,8 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "False") == "True"
 DASHBOARD_ACCESS_KEY = os.environ.get("DASHBOARD_ACCESS_KEY", "").strip()
+DJANGO_ADMIN_PATH = (os.environ.get("DJANGO_ADMIN_PATH", "secure-admin").strip().strip("/") or "secure-admin")
+ADMIN_ALLOWED_IPS = _csv_list(os.environ.get("ADMIN_ALLOWED_IPS", ""))
 ALLOWED_HOSTS = _csv_list(os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1"))
 ALLOWED_HOSTS = _append_unique(ALLOWED_HOSTS, ["localhost", "127.0.0.1"])
 
@@ -74,6 +76,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "lava.middleware.SecurityHeadersMiddleware",
+    "lava.middleware.AdminAccessMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

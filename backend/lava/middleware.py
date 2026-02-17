@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 
 from django.conf import settings
+from django.http import HttpResponseNotFound
 from django.utils.deprecation import MiddlewareMixin
 
 
@@ -27,3 +28,27 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             )
             response.setdefault("Content-Security-Policy", csp)
         return response
+
+
+class AdminAccessMiddleware(MiddlewareMixin):
+    """
+    Optional admin hardening:
+    - Admin lives under DJANGO_ADMIN_PATH.
+    - If ADMIN_ALLOWED_IPS is set, only those client IPs can access admin.
+    """
+
+    def process_request(self, request):
+        admin_prefix = f"/{getattr(settings, 'DJANGO_ADMIN_PATH', 'secure-admin').strip('/')}/"
+        if not request.path.startswith(admin_prefix):
+            return None
+
+        allowlist = getattr(settings, "ADMIN_ALLOWED_IPS", None) or []
+        if not allowlist:
+            return None
+
+        xff = (request.META.get("HTTP_X_FORWARDED_FOR") or "").split(",")[0].strip()
+        client_ip = xff or (request.META.get("REMOTE_ADDR") or "").strip()
+        if client_ip in allowlist:
+            return None
+
+        return HttpResponseNotFound("Not found.")
