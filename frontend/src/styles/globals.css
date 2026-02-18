@@ -84,6 +84,72 @@ h6 {
   letter-spacing: -0.018em;
 }
 
+h1,
+h1[class] {
+  font-size: var(--font-size-h1);
+  line-height: 1.14;
+}
+
+h2,
+h2[class] {
+  font-size: var(--font-size-h2);
+  line-height: 1.18;
+}
+
+h3,
+h3[class] {
+  font-size: var(--font-size-h3);
+  line-height: 1.22;
+}
+
+h4,
+h4[class] {
+  font-size: var(--font-size-h4);
+  line-height: 1.3;
+}
+
+h5,
+h5[class] {
+  font-size: var(--font-size-h5);
+  line-height: 1.35;
+}
+
+h6,
+h6[class] {
+  font-size: var(--font-size-h6);
+  line-height: 1.4;
+}
+
+.theme-h1 {
+  font-size: var(--font-size-h1) !important;
+  line-height: 1.14;
+}
+
+.theme-h2 {
+  font-size: var(--font-size-h2) !important;
+  line-height: 1.18;
+}
+
+.theme-h3 {
+  font-size: var(--font-size-h3) !important;
+  line-height: 1.22;
+}
+
+.theme-h4 {
+  font-size: var(--font-size-h4) !important;
+  line-height: 1.3;
+}
+
+.theme-h5 {
+  font-size: var(--font-size-h5) !important;
+  line-height: 1.35;
+}
+
+.theme-h6 {
+  font-size: var(--font-size-h6) !important;
+  line-height: 1.4;
+}
+
 html[dir="ltr"] h1,
 html[dir="ltr"] h2,
 html[dir="ltr"] h3,

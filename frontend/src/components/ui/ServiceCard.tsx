@@ -153,7 +153,7 @@ export default function ServiceCard({ service }: { service: Service }) {
       <div className="absolute -top-16 -right-14 h-36 w-36 rounded-full bg-primary/15 blur-3xl transition-opacity duration-300 group-hover:opacity-80" />
       <div className="relative flex items-center gap-3 mb-3">
         <div className="w-12 h-12 rounded-2xl bg-primary text-white grid place-items-center shadow-md">{icon}</div>
-        <h3 className="text-xl font-bold text-secondary dark:text-neutral-50">{title}</h3>
+        <h3 className="theme-h3 font-bold text-secondary dark:text-neutral-50">{title}</h3>
       </div>
       <p className="relative text-sm text-secondary/80 dark:text-neutral-300 mb-3 leading-7">{description}</p>
       {features && (

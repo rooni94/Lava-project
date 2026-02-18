@@ -47,6 +47,7 @@ export default function Hero() {
     : heroExtra?.content_en ||
       heroSection?.content ||
       "From brand, content, and strategy to web/apps and ERP/CRM systems, one team delivers cohesive experiences and measurable results.";
+  const heroTitleFontSize = Number(data?.hero_title_font_size || 0);
 
   return (
     <section className="relative overflow-hidden py-16 md:py-20 text-secondary dark:text-neutral-100">
@@ -66,6 +67,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="text-4xl md:text-5xl font-extrabold leading-snug text-secondary dark:text-neutral-50"
+            style={heroTitleFontSize > 0 ? { fontSize: `${heroTitleFontSize}px` } : undefined}
           >
             {heroTitle}
           </motion.h1>

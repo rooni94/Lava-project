@@ -16,7 +16,7 @@ export default function SectionTitle({ title, subtitle, titleStyle, align = "cen
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className={`space-y-3 mb-8 ${align === "start" ? "text-start" : "text-center"}`}
     >
-      <h2 className="text-3xl md:text-4xl font-bold text-secondary dark:text-neutral-50 leading-tight" style={titleStyle}>
+      <h2 className="theme-h2 font-bold text-secondary dark:text-neutral-50" style={titleStyle}>
         {title}
       </h2>
       {subtitle && <p className={`text-secondary/70 dark:text-neutral-300 ${align === "start" ? "max-w-3xl" : "max-w-3xl mx-auto"}`}>{subtitle}</p>}

@@ -197,6 +197,7 @@ export type SiteSettings = {
   font_size_h4?: number;
   font_size_h5?: number;
   font_size_h6?: number;
+  hero_title_font_size?: number;
   seo_title?: string;
   meta_description?: string;
   og_image?: string;

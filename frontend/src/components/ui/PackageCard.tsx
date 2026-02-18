@@ -28,7 +28,7 @@ export default function PackageCard({ item }: Props) {
           <p className="text-xs uppercase tracking-wide text-secondary/60 dark:text-neutral-400">
             {item.category ? (isAr ? item.category.name_ar : item.category.name_en) : isAr ? "باقات" : "Packages"}
           </p>
-          <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50 leading-tight">{title}</h3>
+          <h3 className="theme-h3 font-semibold text-secondary dark:text-neutral-50">{title}</h3>
           {short ? <p className="text-sm text-secondary/75 dark:text-neutral-300">{short}</p> : null}
         </div>
         {item.featured ? (

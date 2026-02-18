@@ -128,7 +128,7 @@ export default function PackagesPage() {
           groups.map((group, idx) => (
             <section key={group.category?.id || idx} className="space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-secondary dark:text-neutral-50">
+                <h2 className="theme-h3 font-semibold text-secondary dark:text-neutral-50">
                   {group.category ? (isAr ? group.category.name_ar : group.category.name_en) : t("باقات أخرى", "Other packages")}
                 </h2>
                 <span className="text-sm text-secondary/60 dark:text-neutral-400">{group.items.length} {t("باقات", "packages")}</span>

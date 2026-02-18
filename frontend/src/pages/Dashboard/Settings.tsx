@@ -35,6 +35,7 @@ const defaultValues: Partial<SiteSettings> = {
   font_size_h4: 20,
   font_size_h5: 18,
   font_size_h6: 16,
+  hero_title_font_size: 52,
 };
 
 type ColorKey = keyof Pick<
@@ -62,7 +63,14 @@ type FontKey = keyof Pick<
 
 type SizeKey = keyof Pick<
   SiteSettings,
-  "font_size_base" | "font_size_h1" | "font_size_h2" | "font_size_h3" | "font_size_h4" | "font_size_h5" | "font_size_h6"
+  | "font_size_base"
+  | "font_size_h1"
+  | "font_size_h2"
+  | "font_size_h3"
+  | "font_size_h4"
+  | "font_size_h5"
+  | "font_size_h6"
+  | "hero_title_font_size"
 >;
 
 export default function DashboardSettings() {
@@ -201,6 +209,7 @@ export default function DashboardSettings() {
             {renderSize("حجم عنوان H4", "H4 size", "font_size_h4")}
             {renderSize("حجم عنوان H5", "H5 size", "font_size_h5")}
             {renderSize("حجم عنوان H6", "H6 size", "font_size_h6")}
+            {renderSize("حجم عنوان الهيرو الرئيسي", "Hero main title size", "hero_title_font_size")}
           </div>
         </div>
 

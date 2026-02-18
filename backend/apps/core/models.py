@@ -44,6 +44,7 @@ class SiteSettings(TimestampedModel):
     font_size_h4 = models.PositiveSmallIntegerField(default=20)
     font_size_h5 = models.PositiveSmallIntegerField(default=18)
     font_size_h6 = models.PositiveSmallIntegerField(default=16)
+    hero_title_font_size = models.PositiveSmallIntegerField(default=52)
     address = models.CharField(max_length=255, blank=True, verbose_name=_("العنوان"))
     phone = models.CharField(max_length=50, blank=True, verbose_name=_("الهاتف"))
     email = models.EmailField(blank=True, verbose_name=_("البريد الإلكتروني"))
