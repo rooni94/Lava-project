@@ -69,14 +69,27 @@ export type TeamMember = {
   image?: string;
 };
 
+export type ClientTestimonial = {
+  id: number;
+  client: number;
+  quote: string;
+  quote_en?: string;
+  author?: string;
+  position?: string;
+  rating?: number;
+  is_featured?: boolean;
+};
+
 export type Client = {
   id: number;
   name: string;
   testimonial?: string;
+  testimonial_en?: string;
   quote?: string;
   rating?: number;
   logo?: string;
   website?: string;
+  testimonials?: ClientTestimonial[];
 };
 
 export type BlogPost = {

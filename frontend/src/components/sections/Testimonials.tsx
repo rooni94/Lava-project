@@ -47,7 +47,16 @@ export default function Testimonials() {
   });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
-  const list: Client[] = clients && clients.length ? clients : isAr ? fallback.ar : fallback.en;
+  const hasTestimonial = (client: Client) => {
+    const first = client.testimonials?.find((item) => item.is_featured) || client.testimonials?.[0];
+    return Boolean(first?.quote || first?.quote_en || client.testimonial || client.testimonial_en || client.quote);
+  };
+
+  const clientsWithTestimonials = (clients || [])
+    .filter(hasTestimonial)
+    .sort((a, b) => Number(Boolean(b.rating)) - Number(Boolean(a.rating)));
+
+  const list: Client[] = clientsWithTestimonials.length ? clientsWithTestimonials : isAr ? fallback.ar : fallback.en;
 
   return (
     <section className="py-14 container mx-auto px-4 text-secondary dark:text-neutral-100">

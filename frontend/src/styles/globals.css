@@ -159,6 +159,23 @@ html[dir="ltr"] h6 {
   font-family: var(--font-heading-ltr, var(--font-heading));
 }
 
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3,
+html[dir="rtl"] h4,
+html[dir="rtl"] h5,
+html[dir="rtl"] h6 {
+  letter-spacing: normal;
+}
+
+html[dir="rtl"] [class*="tracking-"] {
+  letter-spacing: normal !important;
+}
+
+html[dir="rtl"] .uppercase {
+  text-transform: none;
+}
+
 a {
   color: inherit;
   text-decoration: none;

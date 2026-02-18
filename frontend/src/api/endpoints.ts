@@ -2,6 +2,7 @@ import api from "./client";
 import {
   BlogPost,
   Client,
+  ClientTestimonial,
   Page,
   Project,
   Package,
@@ -185,6 +186,10 @@ export const createClient = async (payload: Partial<Client>) => api.post("/clien
 export const updateClient = async (id: number, payload: Partial<Client>) => api.patch(`/clients/${id}/`, payload);
 export const deleteClient = async (id: number) => api.delete(`/clients/${id}/`);
 export const bulkClientDelete = (ids: number[]) => api.post("/clients/bulk-delete/", { ids });
+export const createTestimonial = async (payload: Partial<ClientTestimonial>) => api.post("/testimonials/", payload);
+export const updateTestimonial = async (id: number, payload: Partial<ClientTestimonial>) =>
+  api.patch(`/testimonials/${id}/`, payload);
+export const deleteTestimonial = async (id: number) => api.delete(`/testimonials/${id}/`);
 export const uploadFile = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);

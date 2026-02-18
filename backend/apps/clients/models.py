@@ -27,6 +27,7 @@ class Client(TimestampedModel):
 class Testimonial(TimestampedModel):
     client = models.ForeignKey(Client, related_name="testimonials", on_delete=models.CASCADE)
     quote = models.TextField(verbose_name=_("التوصية"))
+    quote_en = models.TextField(blank=True, verbose_name=_("التوصية بالإنجليزية"))
     author = models.CharField(max_length=150, blank=True)
     position = models.CharField(max_length=150, blank=True)
     rating = models.PositiveSmallIntegerField(default=5)

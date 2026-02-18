@@ -6,12 +6,15 @@ import { motion } from "framer-motion";
 export default function TestimonialCard({ client }: { client: Client }) {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
+  const featured = client.testimonials?.find((item) => item.is_featured) || client.testimonials?.[0];
   const displayText =
-    client.testimonial ||
-    client.quote ||
+    (isAr
+      ? featured?.quote || client.testimonial || client.quote
+      : featured?.quote_en || featured?.quote || client.testimonial_en || client.testimonial || client.quote) ||
     (isAr
       ? "تجربة إيجابية مع فريق لافا في السرعة والجودة والالتزام."
       : "A positive experience with LAVA - the team moved fast, kept quality high, and communicated clearly.");
+  const rating = featured?.rating ?? client.rating ?? 5;
 
   return (
     <motion.div
@@ -29,7 +32,7 @@ export default function TestimonialCard({ client }: { client: Client }) {
         <div>
           <h4 className="font-bold text-secondary dark:text-neutral-50">{client.name}</h4>
           <p className="text-xs text-secondary/70 dark:text-neutral-300">
-            {isAr ? "التقييم" : "Rating"} {client.rating ?? 5}/5
+            {isAr ? "التقييم" : "Rating"} {rating}/5
           </p>
         </div>
       </div>

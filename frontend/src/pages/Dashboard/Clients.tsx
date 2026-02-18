@@ -3,11 +3,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
-import { bulkClientDelete, createClient, deleteClient, fetchClients, updateClient } from "../../api/endpoints";
+import {
+  bulkClientDelete,
+  createClient,
+  createTestimonial,
+  deleteClient,
+  deleteTestimonial,
+  fetchClients,
+  updateClient,
+  updateTestimonial,
+} from "../../api/endpoints";
 import Skeleton from "../../components/ui/Skeleton";
 import { Client } from "../../types";
-
-type ClientItem = { id: number; name: string; rating?: number };
 
 export default function DashboardClients() {
   const qc = useQueryClient();
@@ -17,17 +24,57 @@ export default function DashboardClients() {
   const t = (ar: string, en: string) => (isAr ? ar : en);
   const [name, setName] = useState("");
   const [rating, setRating] = useState(5);
+  const [testimonialAr, setTestimonialAr] = useState("");
+  const [testimonialEn, setTestimonialEn] = useState("");
+  const [testimonialId, setTestimonialId] = useState<number | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
 
   const save = useMutation({
-    mutationFn: () => (editingId ? updateClient(editingId, { name, rating }) : createClient({ name, rating })),
+    mutationFn: async () => {
+      const payload = { name, rating };
+      let clientId = editingId;
+
+      if (editingId) {
+        await updateClient(editingId, payload);
+      } else {
+        const created = await createClient(payload);
+        clientId = created?.data?.id;
+      }
+
+      if (!clientId) throw new Error("Unable to resolve client id");
+
+      const quoteAr = testimonialAr.trim();
+      const quoteEn = testimonialEn.trim();
+
+      if (quoteAr || quoteEn) {
+        const testimonialPayload = {
+          client: clientId,
+          quote: quoteAr || quoteEn,
+          quote_en: quoteEn,
+          rating,
+          is_featured: true,
+        };
+
+        if (testimonialId) {
+          await updateTestimonial(testimonialId, testimonialPayload);
+        } else {
+          await createTestimonial(testimonialPayload);
+        }
+      } else if (testimonialId) {
+        await deleteTestimonial(testimonialId);
+      }
+    },
     onSuccess: () => {
       toast.success(editingId ? t("تم تحديث العميل", "Client updated") : t("تم إضافة العميل", "Client added"));
       setName("");
       setRating(5);
+      setTestimonialAr("");
+      setTestimonialEn("");
+      setTestimonialId(null);
       setEditingId(null);
       qc.invalidateQueries({ queryKey: ["clients-admin"] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
     },
     onError: () => toast.error(t("تعذر حفظ العميل", "Unable to save client")),
   });
@@ -37,6 +84,7 @@ export default function DashboardClients() {
     onSuccess: () => {
       toast.success(t("تم حذف العميل", "Client deleted"));
       qc.invalidateQueries({ queryKey: ["clients-admin"] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
     },
     onError: () => toast.error(t("تعذر حذف العميل", "Unable to delete client")),
   });
@@ -47,6 +95,7 @@ export default function DashboardClients() {
       toast.success(t("تم حذف العملاء المحددين", "Selected clients deleted"));
       setSelected([]);
       qc.invalidateQueries({ queryKey: ["clients-admin"] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
     },
     onError: () => toast.error(t("تعذر الحذف الجماعي", "Bulk delete failed")),
   });
@@ -55,9 +104,13 @@ export default function DashboardClients() {
     if (selected.length !== 1) return;
     const client = data?.find((c) => c.id === selected[0]);
     if (client) {
+      const testimonial = client.testimonials?.find((item) => item.is_featured) || client.testimonials?.[0];
       setEditingId(client.id);
       setName(client.name);
-      setRating(client.rating ?? 5);
+      setRating(testimonial?.rating ?? client.rating ?? 5);
+      setTestimonialId(testimonial?.id ?? null);
+      setTestimonialAr(testimonial?.quote || client.testimonial || "");
+      setTestimonialEn(testimonial?.quote_en || client.testimonial_en || "");
     }
   };
 
@@ -90,12 +143,29 @@ export default function DashboardClients() {
               {editingId ? t("حفظ التعديلات", "Save changes") : t("إضافة عميل", "Add client")}
             </button>
           </div>
+          <div className="grid md:grid-cols-2 gap-3">
+            <textarea
+              value={testimonialAr}
+              onChange={(e) => setTestimonialAr(e.target.value)}
+              placeholder={t("شهادة العميل (عربي)", "Client testimonial (Arabic)")}
+              className="border rounded-lg px-3 py-2 min-h-[96px] bg-white dark:bg-neutral-900 dark:border-neutral-700"
+            />
+            <textarea
+              value={testimonialEn}
+              onChange={(e) => setTestimonialEn(e.target.value)}
+              placeholder={t("شهادة العميل (English)", "Client testimonial (English)")}
+              className="border rounded-lg px-3 py-2 min-h-[96px] bg-white dark:bg-neutral-900 dark:border-neutral-700"
+            />
+          </div>
           {editingId && (
             <button
               onClick={() => {
                 setEditingId(null);
                 setName("");
                 setRating(5);
+                setTestimonialAr("");
+                setTestimonialEn("");
+                setTestimonialId(null);
               }}
               className="text-sm text-secondary dark:text-neutral-300 underline"
             >
@@ -137,7 +207,7 @@ export default function DashboardClients() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.map((client: ClientItem) => (
+                  {data?.map((client) => (
                     <tr key={client.id} className="border-t border-accent/20 dark:border-neutral-800">
                       <td className="p-2">
                         <input
@@ -153,9 +223,13 @@ export default function DashboardClients() {
                       <td className="p-2 flex gap-2">
                         <button
                           onClick={() => {
+                            const testimonial = client.testimonials?.find((item) => item.is_featured) || client.testimonials?.[0];
                             setEditingId(client.id);
                             setName(client.name);
-                            setRating(client.rating ?? 5);
+                            setRating(testimonial?.rating ?? client.rating ?? 5);
+                            setTestimonialId(testimonial?.id ?? null);
+                            setTestimonialAr(testimonial?.quote || client.testimonial || "");
+                            setTestimonialEn(testimonial?.quote_en || client.testimonial_en || "");
                           }}
                           className="text-blue-600 dark:text-blue-400 text-sm"
                         >
