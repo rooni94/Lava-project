@@ -22,7 +22,7 @@ export default function PackageCard({ item }: Props) {
       .filter(Boolean) || [];
 
   return (
-    <article className="rounded-2xl border border-accent/40 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm hover:shadow-lg transition flex flex-col gap-3">
+    <article className="rounded-3xl border border-accent/40 dark:border-neutral-800 bg-white/95 dark:bg-neutral-900/90 p-5 shadow-[0_12px_30px_rgba(15,23,42,0.1)] hover:-translate-y-1 hover:shadow-[0_18px_38px_rgba(15,23,42,0.14)] transition flex flex-col gap-3">
       <div className="flex items-start justify-between gap-2">
         <div className="space-y-1">
           <p className="text-xs uppercase tracking-wide text-secondary/60 dark:text-neutral-400">

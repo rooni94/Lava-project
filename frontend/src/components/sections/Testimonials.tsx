@@ -51,14 +51,16 @@ export default function Testimonials() {
 
   return (
     <section className="py-14 container mx-auto px-4 text-secondary dark:text-neutral-100">
-      <SectionTitle
-        title={isAr ? "شهادات عملائنا" : "Client testimonials"}
-        subtitle={isAr ? "قصص نجاح من عملاء وثقوا بنا لبناء منتجاتهم." : "Success stories from teams that trusted us with their products."}
-      />
-      <div className="grid md:grid-cols-3 gap-6">
-        {list.slice(0, 3).map((client) => (
-          <TestimonialCard key={client.id} client={client} />
-        ))}
+      <div className="rounded-[28px] border border-accent/35 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/75 p-6 md:p-8">
+        <SectionTitle
+          title={isAr ? "شهادات عملائنا" : "Client testimonials"}
+          subtitle={isAr ? "قصص نجاح من عملاء وثقوا بنا لبناء منتجاتهم." : "Success stories from teams that trusted us with their products."}
+        />
+        <div className="grid md:grid-cols-3 gap-6">
+          {list.slice(0, 3).map((client) => (
+            <TestimonialCard key={client.id} client={client} />
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -12,8 +12,39 @@
   <body class="font-cairo bg-surface text-secondary">
     <div id="root"></div>
     <script>
+      const isLocalHost = /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
+      const params = new URLSearchParams(window.location.search);
+      const forceCacheFlush = params.get("flush-cache") === "1";
+      const SW_VERSION = "v3";
+
+      const clearLavaCaches = () => {
+        if (!("caches" in window)) return Promise.resolve();
+        return caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith("lava-")).map((key) => caches.delete(key))));
+      };
+
+      const unregisterAllServiceWorkers = () => {
+        if (!("serviceWorker" in navigator)) return Promise.resolve();
+        return navigator.serviceWorker.getRegistrations().then((regs) => Promise.all(regs.map((reg) => reg.unregister())));
+      };
+
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+        if (isLocalHost || forceCacheFlush) {
+          unregisterAllServiceWorkers()
+            .then(() => clearLavaCaches())
+            .then(() => {
+              if (forceCacheFlush) {
+                params.delete("flush-cache");
+                const query = params.toString();
+                const nextUrl = window.location.pathname + (query ? `?${query}` : "") + window.location.hash;
+                window.location.replace(nextUrl);
+              }
+            });
+        } else if (window.location.protocol === "https:") {
+          navigator.serviceWorker
+            .register(`/service-worker.js?v=${SW_VERSION}`)
+            .then((registration) => registration.update())
+            .catch(() => {});
+        }
       }
     </script>
     <script type="module" src="/src/main.tsx"></script>

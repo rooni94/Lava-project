@@ -1,8 +1,9 @@
-﻿import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import Layout from "../components/layout/Layout";
 import SectionTitle from "../components/ui/SectionTitle";
 import { fetchContactInfo, fetchPackages, submitContact } from "../api/endpoints";
@@ -25,37 +26,13 @@ const inquiryOptions = {
 } as const;
 
 const stageOptions = {
-  ar: [
-    "فكرة أولية",
-    "تصميم جاهز",
-    "منتج قائم يحتاج تطوير",
-    "إطلاق عاجل",
-    "غير محدد",
-  ],
-  en: [
-    "Early idea",
-    "Design ready",
-    "Existing product to upgrade",
-    "Urgent launch",
-    "Not sure yet",
-  ],
+  ar: ["فكرة أولية", "تصميم جاهز", "منتج قائم يحتاج تطوير", "إطلاق عاجل", "غير محدد"],
+  en: ["Early idea", "Design ready", "Existing product to upgrade", "Urgent launch", "Not sure yet"],
 } as const;
 
 const timelineOptions = {
-  ar: [
-    "أقل من شهر",
-    "1-2 شهر",
-    "2-3 أشهر",
-    "3-6 أشهر",
-    "حسب العرض",
-  ],
-  en: [
-    "Less than 1 month",
-    "1-2 months",
-    "2-3 months",
-    "3-6 months",
-    "Depends on proposal",
-  ],
+  ar: ["أقل من شهر", "1-2 شهر", "2-3 أشهر", "3-6 أشهر", "حسب العرض"],
+  en: ["Less than 1 month", "1-2 months", "2-3 months", "3-6 months", "Depends on proposal"],
 } as const;
 
 const paymentMethods = [
@@ -90,9 +67,11 @@ export default function ContactPage() {
     queryKey: ["packages", "contact"],
     queryFn: () => fetchPackages({ product_type: "service", ordering: "-featured" }),
   });
+
   const { register, handleSubmit, reset, watch } = useForm<ContactForm>({
     defaultValues: { inquiry: "web", package_type: "service", topic: "sales" },
   });
+
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const options = isAr ? inquiryOptions.ar : inquiryOptions.en;
@@ -130,6 +109,7 @@ export default function ContactPage() {
         language: i18n.language,
         phone: values.phone,
       });
+
       reset({ inquiry: values.inquiry, package_type: values.package_type, topic: values.topic });
       toast.success(
         isAr
@@ -144,18 +124,23 @@ export default function ContactPage() {
   return (
     <Layout>
       <section className="py-14 container mx-auto px-4 text-secondary dark:text-neutral-100 space-y-10">
-        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-primary/12 via-rose-50 to-white dark:from-primary/20 dark:via-neutral-900 dark:to-neutral-950 border border-accent/40 dark:border-neutral-800 shadow-2xl">
-          <div className="absolute -left-14 -top-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
-          <div className="absolute -right-16 -bottom-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-          <div className="relative grid lg:grid-cols-[1.15fr_0.85fr] gap-6 items-center px-6 py-10 md:px-10">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="neo-panel p-6 md:p-10 relative overflow-hidden"
+        >
+          <div className="absolute -left-16 -top-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
+          <div className="absolute -right-16 -bottom-16 h-64 w-64 rounded-full bg-secondary/10 blur-3xl dark:bg-white/5" />
+
+          <div className="relative grid lg:grid-cols-[1.15fr_0.85fr] gap-6 items-center">
             <div className="space-y-4">
               <p className="text-xs uppercase tracking-[0.25em] text-secondary/60 dark:text-neutral-400">
                 {isAr ? "طلب باقة أو خدمة" : "Request a package"}
               </p>
-              <h1 className="text-3xl md:text-4xl font-bold leading-tight text-secondary dark:text-white">
-                {isAr ? "أرسل طلبك واستلم عرضاً مفصلاً" : "Send your brief and get a detailed proposal"}
+              <h1 className="text-3xl md:text-5xl font-bold leading-tight text-secondary dark:text-white">
+                {isAr ? "أرسل طلبك واستلم عرضاً دقيقاً" : "Send your brief and get a precise proposal"}
               </h1>
-              <p className="text-secondary/80 dark:text-neutral-200 max-w-2xl">
+              <p className="text-secondary/80 dark:text-neutral-200 max-w-2xl leading-8">
                 {isAr
                   ? "نراجع الهدف والنطاق والميزانية، ثم نرسل خطة عمل واضحة وجدولاً زمنيًا خلال 24–48 ساعة عمل."
                   : "We review goals, scope, and budget, then deliver a clear plan and timeline within 24–48 business hours."}
@@ -172,8 +157,9 @@ export default function ContactPage() {
                 </span>
               </div>
             </div>
-            <div className="bg-white/85 dark:bg-neutral-900/80 border border-accent/40 dark:border-neutral-800 rounded-2xl p-5 shadow-lg space-y-3">
-              <div className="text-sm text-secondary/60 dark:text-neutral-400">{isAr ? "ماذا سنرسل لك؟" : "What you get"}</div>
+
+            <div className="rounded-2xl border border-accent/45 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/80 p-5 shadow-lg space-y-3">
+              <div className="text-sm text-secondary/60 dark:text-neutral-400">{isAr ? "ماذا ستحصل؟" : "What you get"}</div>
               <div className="text-lg font-semibold text-secondary dark:text-white">
                 {isAr ? "عرض سعر + خطة تنفيذ واضحة" : "Proposal + delivery plan"}
               </div>
@@ -188,7 +174,7 @@ export default function ContactPage() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
           <div className="space-y-6">
@@ -196,125 +182,71 @@ export default function ContactPage() {
               title={isAr ? "بيانات الطلب" : "Request details"}
               subtitle={
                 isAr
-                  ? "املأ البيانات الأساسية لنرسل لك عرضاً دقيقاً يناسب نطاقك وميزانيتك."
+                  ? "املأ البيانات الأساسية لنرسل عرضًا دقيقًا يناسب نطاقك وميزانيتك."
                   : "Fill in the essentials so we can send an accurate proposal."}
             />
 
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow border border-accent/30 dark:border-neutral-800 space-y-4"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="neo-panel p-5 md:p-6 space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "الاسم الكامل" : "Full name"}</label>
-                  <input
-                    {...register("name", { required: true })}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                    placeholder={isAr ? "اكتب اسمك" : "Your name"}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "المنشأة" : "Company"}</label>
-                  <input
-                    {...register("company")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                    placeholder={isAr ? "اسم الشركة (اختياري)" : "Company name (optional)"}
-                  />
-                </div>
+                <Field label={isAr ? "الاسم الكامل" : "Full name"}>
+                  <input {...register("name", { required: true })} className="field-input" placeholder={isAr ? "اكتب اسمك" : "Your name"} />
+                </Field>
+                <Field label={isAr ? "المنشأة" : "Company"}>
+                  <input {...register("company")} className="field-input" placeholder={isAr ? "اسم الشركة (اختياري)" : "Company name (optional)"} />
+                </Field>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "البريد الإلكتروني" : "Email"}</label>
-                  <input
-                    type="email"
-                    {...register("email", { required: true })}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                    placeholder="name@email.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "رقم التواصل" : "Phone"}</label>
-                  <input
-                    {...register("phone")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                    placeholder={isAr ? "+9665xxxxxxxx" : "+9665xxxxxxxx"}
-                  />
-                </div>
+                <Field label={isAr ? "البريد الإلكتروني" : "Email"}>
+                  <input type="email" {...register("email", { required: true })} className="field-input" placeholder="name@email.com" />
+                </Field>
+                <Field label={isAr ? "رقم التواصل" : "Phone"}>
+                  <input {...register("phone")} className="field-input" placeholder="+9665xxxxxxxx" />
+                </Field>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "الموقع الإلكتروني" : "Website"}</label>
-                  <input
-                    {...register("website")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                    placeholder={isAr ? "https://example.com" : "https://example.com"}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "نوع الخدمة" : "Service type"}</label>
-                  <select
-                    {...register("inquiry")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                  >
+                <Field label={isAr ? "الموقع الإلكتروني" : "Website"}>
+                  <input {...register("website")} className="field-input" placeholder="https://example.com" />
+                </Field>
+                <Field label={isAr ? "نوع الخدمة" : "Service type"}>
+                  <select {...register("inquiry")} className="field-input">
                     {options.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                   </select>
-                </div>
+                </Field>
               </div>
+
               <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "نوع الرسالة" : "Message type"}</label>
-                  <select
-                    {...register("topic")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                  >
+                <Field label={isAr ? "نوع الرسالة" : "Message type"}>
+                  <select {...register("topic")} className="field-input">
                     <option value="sales">{isAr ? "طلب باقة/خدمة" : "Sales / Package"}</option>
                     <option value="support">{isAr ? "دعم فني أو مشكلة" : "Support / Issue"}</option>
                   </select>
-                </div>
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "طريقة الدفع المفضلة" : "Preferred payment method"}</label>
-                  <select
-                    {...register("payment_method")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                  >
+                </Field>
+                <Field label={isAr ? "طريقة الدفع المفضلة" : "Preferred payment method"}>
+                  <select {...register("payment_method")} className="field-input">
                     <option value="">{isAr ? "بدون تحديد" : "No preference"}</option>
                     {paymentMethods.map((method) => (
-                      <option key={method.name} value={method.name}>
-                        {method.name}
-                      </option>
+                      <option key={method.name} value={method.name}>{method.name}</option>
                     ))}
                   </select>
-                </div>
+                </Field>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "نوع الطلب" : "Request type"}</label>
-                  <select
-                    {...register("package_type")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                  >
+                <Field label={isAr ? "نوع الطلب" : "Request type"}>
+                  <select {...register("package_type")} className="field-input">
                     <option value="service">{isAr ? "خدمة منفردة" : "Single service"}</option>
                     <option value="bundle">{isAr ? "باقة كاملة" : "Full package"}</option>
                   </select>
-                </div>
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "الباقة المرغوبة" : "Package preference"}</label>
-                  <select
-                    {...register("package_interest")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                  >
+                </Field>
+                <Field label={isAr ? "الباقة المرغوبة" : "Package preference"}>
+                  <select {...register("package_interest")} className="field-input">
                     <option value="">{isAr ? "غير محدد" : "Not sure yet"}</option>
                     {packages?.map((pkg) => (
-                      <option key={pkg.id} value={isAr ? pkg.title_ar : pkg.title_en}>
-                        {isAr ? pkg.title_ar : pkg.title_en}
-                      </option>
+                      <option key={pkg.id} value={isAr ? pkg.title_ar : pkg.title_en}>{isAr ? pkg.title_ar : pkg.title_en}</option>
                     ))}
                   </select>
                   <p className="text-xs text-secondary/60 dark:text-neutral-400 mt-1">
@@ -326,114 +258,67 @@ export default function ContactPage() {
                         ? "اختياري إذا كنت تريد خدمة محددة."
                         : "Optional if you need a specific service."}
                   </p>
-                </div>
+                </Field>
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "مرحلة المشروع" : "Project stage"}</label>
-                  <select
-                    {...register("stage")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                  >
+                <Field label={isAr ? "مرحلة المشروع" : "Project stage"}>
+                  <select {...register("stage")} className="field-input">
                     <option value="">{isAr ? "اختر المرحلة" : "Select stage"}</option>
-                    {stages.map((stage) => (
-                      <option key={stage} value={stage}>
-                        {stage}
-                      </option>
-                    ))}
+                    {stages.map((stage) => <option key={stage} value={stage}>{stage}</option>)}
                   </select>
-                </div>
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "المدة المتوقعة" : "Timeline"}</label>
-                  <select
-                    {...register("timeline")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                  >
+                </Field>
+                <Field label={isAr ? "المدة المتوقعة" : "Timeline"}>
+                  <select {...register("timeline")} className="field-input">
                     <option value="">{isAr ? "اختر المدة" : "Select timeline"}</option>
-                    {timelines.map((timeline) => (
-                      <option key={timeline} value={timeline}>
-                        {timeline}
-                      </option>
-                    ))}
+                    {timelines.map((timeline) => <option key={timeline} value={timeline}>{timeline}</option>)}
                   </select>
-                </div>
-                <div>
-                  <label className="block text-sm mb-1">{isAr ? "الميزانية" : "Budget"}</label>
-                  <input
-                    {...register("budget")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
-                    placeholder={isAr ? "مثال: 15,000 - 30,000 ريال" : "e.g. SAR 15,000 - 30,000"}
-                  />
-                </div>
+                </Field>
+                <Field label={isAr ? "الميزانية" : "Budget"}>
+                  <input {...register("budget")} className="field-input" placeholder={isAr ? "مثال: 15,000 - 30,000 ريال" : "e.g. SAR 15,000 - 30,000"} />
+                </Field>
               </div>
 
-              <div>
-                <label className="block text-sm mb-1">{isAr ? "وصف الطلب" : "Project brief"}</label>
+              <Field label={isAr ? "وصف الطلب" : "Project brief"}>
                 <textarea
                   rows={5}
                   {...register("message", { required: true })}
-                  className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  className="field-input"
                   placeholder={
                     isAr
-                      ? "اشرح الهدف، المزايا المطلوبة، الفئات المستهدفة، وأي ملاحظات خاصة." 
+                      ? "اشرح الهدف، المزايا المطلوبة، الفئات المستهدفة، وأي ملاحظات خاصة."
                       : "Share goals, required features, target audience, and any special notes."
                   }
                 />
-              </div>
+              </Field>
 
-              <button type="submit" className="bg-primary text-white px-6 py-3 rounded-lg w-full">
+              <button type="submit" className="bg-primary text-white px-6 py-3 rounded-xl w-full shadow-[0_12px_24px_rgba(var(--color-primary),0.3)]">
                 {isAr ? "إرسال الطلب الآن" : "Send request"}
               </button>
-              <p className="text-xs text-secondary/60 dark:text-neutral-400">
-                {isAr ? "نرد عادة خلال 24–48 ساعة عمل." : "We usually respond within 24–48 business hours."}
-              </p>
+              <p className="text-xs text-secondary/60 dark:text-neutral-400">{isAr ? "نرد عادة خلال 24–48 ساعة عمل." : "We usually respond within 24–48 business hours."}</p>
             </form>
           </div>
 
-          <aside className="space-y-6">
-            <div className="bg-surface dark:bg-neutral-900 p-6 rounded-2xl border border-accent/50 dark:border-neutral-800 shadow space-y-3">
-              <h4 className="font-bold text-secondary dark:text-neutral-50">{isAr ? "خطوات العمل" : "Delivery steps"}</h4>
+          <aside className="space-y-5">
+            <SideCard title={isAr ? "خطوات العمل" : "Delivery steps"}>
               <ol className={`${isAr ? "pr-5" : "pl-5"} list-decimal text-sm text-secondary/80 dark:text-neutral-300 space-y-2`}>
                 <li>{isAr ? "مراجعة الطلب وتحديد النطاق" : "Review request and define scope"}</li>
                 <li>{isAr ? "إرسال العرض والجدول الزمني" : "Send proposal and timeline"}</li>
                 <li>{isAr ? "توقيع العقد وخطة الدفعات" : "Agreement and payment plan"}</li>
                 <li>{isAr ? "بدء التنفيذ والمتابعة" : "Start delivery with updates"}</li>
               </ol>
-            </div>
-
-            <div className="bg-surface dark:bg-neutral-900 p-6 rounded-2xl border border-accent/50 dark:border-neutral-800 shadow space-y-3">
-              <h4 className="font-bold text-secondary dark:text-neutral-50">{isAr ? "طرق الدفع" : "Payment options"}</h4>
-              <div className="flex flex-wrap items-center gap-2">
-                {paymentMethods.map((method) => (
-                  <span key={method.name} className="inline-flex items-center justify-center rounded-md bg-white border border-accent/20 px-2 py-1">
-                    <img src={method.logo} alt={method.name} className="h-6 w-auto" loading="lazy" />
-                  </span>
-                ))}
-              </div>
-              <p className="text-xs text-secondary/70 dark:text-neutral-300">
-                {isAr
-                  ? "بوابات دفع آمنة داخل السعودية وخارجها، مع إمكانية جدولة الدفعات حسب الاتفاق."
-                  : "Secure local and international gateways, with installment scheduling available on request."}
-              </p>
-            </div>
+            </SideCard>
 
             {featured.length ? (
-              <div className="bg-white dark:bg-neutral-900 p-6 rounded-2xl border border-accent/40 dark:border-neutral-800 shadow space-y-4">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-secondary dark:text-neutral-50">{isAr ? "باقات مميزة" : "Featured packages"}</h4>
-                  <a href="/packages" className="text-primary text-sm underline">
-                    {isAr ? "كل الباقات" : "All packages"}
-                  </a>
-                </div>
+              <SideCard title={isAr ? "باقات مميزة" : "Featured packages"}>
                 <div className="space-y-3">
                   {featured.map((pkg) => {
                     const title = isAr ? pkg.title_ar : pkg.title_en;
                     const note = isAr ? pkg.price_note : pkg.price_note_en || pkg.price_note;
                     const short = isAr ? pkg.short_description_ar : pkg.short_description_en;
                     return (
-                      <div key={pkg.id} className="border border-accent/30 dark:border-neutral-800 rounded-xl p-3">
-                        <div className="text-sm text-secondary/60 dark:text-neutral-400">
+                      <div key={pkg.id} className="border border-accent/30 dark:border-neutral-800 rounded-xl p-3 bg-white/80 dark:bg-neutral-900/70">
+                        <div className="text-xs text-secondary/60 dark:text-neutral-400">
                           {pkg.category ? (isAr ? pkg.category.name_ar : pkg.category.name_en) : isAr ? "باقات" : "Packages"}
                         </div>
                         <div className="font-semibold text-secondary dark:text-neutral-100">{title}</div>
@@ -445,42 +330,37 @@ export default function ContactPage() {
                     );
                   })}
                 </div>
-              </div>
+                <a href="/packages" className="mt-3 inline-flex text-primary text-sm underline">
+                  {isAr ? "كل الباقات" : "All packages"}
+                </a>
+              </SideCard>
             ) : null}
 
-            <div className="bg-surface dark:bg-neutral-900 p-6 rounded-2xl border border-accent/50 dark:border-neutral-800 shadow space-y-2">
-              <h4 className="font-bold text-secondary dark:text-neutral-50">{isAr ? "بيانات التواصل" : "Contact details"}</h4>
+            <SideCard title={isAr ? "بيانات التواصل" : "Contact details"}>
+              <p className="text-sm text-secondary/80 dark:text-neutral-300">{contactInfo?.location || (isAr ? "الرياض - السعودية" : "Riyadh, Saudi Arabia")}</p>
+              <p className="text-sm text-secondary/80 dark:text-neutral-300">{isAr ? "الهاتف:" : "Phone:"} {contactInfo?.phone || "+966 11 123 4567"}</p>
+              <p className="text-sm text-secondary/80 dark:text-neutral-300">{isAr ? "البريد:" : "Email:"} {contactInfo?.email || "info@lava-tech.sa"}</p>
               <p className="text-sm text-secondary/80 dark:text-neutral-300">
-                {contactInfo?.location || (isAr ? "الرياض - السعودية" : "Riyadh, Saudi Arabia")}
+                {isAr ? "ساعات العمل:" : "Working hours:"} {contactInfo?.working_hours || (isAr ? "الأحد - الخميس، 8 ص - 6 م" : "Sunday - Thursday, 8 AM - 6 PM")}
               </p>
-              <p className="text-sm text-secondary/80 dark:text-neutral-300">
-                {isAr ? "الهاتف:" : "Phone:"} {contactInfo?.phone || "+966 11 123 4567"}
-              </p>
-              <p className="text-sm text-secondary/80 dark:text-neutral-300">
-                {isAr ? "البريد:" : "Email:"} {contactInfo?.email || "info@lava-tech.sa"}
-              </p>
-              <p className="text-sm text-secondary/80 dark:text-neutral-300">
-                {isAr ? "ساعات العمل:" : "Working hours:"}{" "}
-                {contactInfo?.working_hours || (isAr ? "الأحد - الخميس، 8 ص - 6 م" : "Sunday - Thursday, 8 AM - 6 PM")}
-              </p>
-            </div>
+            </SideCard>
           </aside>
         </div>
 
-        <div className="bg-white dark:bg-neutral-900 border border-accent/30 dark:border-neutral-800 rounded-2xl p-6 shadow-sm">
+        <div className="neo-panel p-6">
           <h3 className="text-lg font-semibold text-secondary dark:text-neutral-50 mb-3">
             {isAr ? "معلومات تساعدنا على تقدير أدق" : "Info that helps us estimate accurately"}
           </h3>
           <div className="grid md:grid-cols-3 gap-4 text-sm text-secondary/80 dark:text-neutral-300">
-            <div className="rounded-xl border border-accent/30 dark:border-neutral-800 p-4">
+            <div className="rounded-xl border border-accent/30 dark:border-neutral-800 p-4 bg-white/70 dark:bg-neutral-900/60">
               <div className="font-semibold mb-2">{isAr ? "الهدف التجاري" : "Business goal"}</div>
               <div>{isAr ? "زيادة المبيعات، جذب عملاء، أو أتمتة العمليات." : "Sales growth, lead generation, or operations automation."}</div>
             </div>
-            <div className="rounded-xl border border-accent/30 dark:border-neutral-800 p-4">
+            <div className="rounded-xl border border-accent/30 dark:border-neutral-800 p-4 bg-white/70 dark:bg-neutral-900/60">
               <div className="font-semibold mb-2">{isAr ? "نطاق المزايا" : "Feature scope"}</div>
               <div>{isAr ? "الخصائص الأساسية والمزايا الإضافية المطلوبة." : "Core features plus any advanced add-ons."}</div>
             </div>
-            <div className="rounded-xl border border-accent/30 dark:border-neutral-800 p-4">
+            <div className="rounded-xl border border-accent/30 dark:border-neutral-800 p-4 bg-white/70 dark:bg-neutral-900/60">
               <div className="font-semibold mb-2">{isAr ? "البيانات والمحتوى" : "Content readiness"}</div>
               <div>{isAr ? "الشعار، النصوص، الصور، أو الحاجة لإعدادها." : "Logos, copy, assets, or need for content creation."}</div>
             </div>
@@ -488,5 +368,23 @@ export default function ContactPage() {
         </div>
       </section>
     </Layout>
+  );
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div>
+      <label className="block text-sm mb-1">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+function SideCard({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="neo-panel p-5 space-y-3">
+      <h4 className="font-bold text-secondary dark:text-neutral-50">{title}</h4>
+      {children}
+    </div>
   );
 }

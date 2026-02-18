@@ -10,6 +10,7 @@ import Analytics from "./components/Analytics";
 import { Toaster } from "react-hot-toast";
 import { HelmetProvider } from "react-helmet-async";
 import "./i18n";
+import { applyTheme, getInitialTheme } from "./utils/theme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +30,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+applyTheme(getInitialTheme());
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <QueryClientProvider client={queryClient}>

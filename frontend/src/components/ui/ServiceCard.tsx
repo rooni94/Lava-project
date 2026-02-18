@@ -146,15 +146,18 @@ export default function ServiceCard({ service }: { service: Service }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="p-6 bg-white dark:bg-neutral-900 rounded-2xl shadow hover:-translate-y-1 transition-transform border border-accent/30 dark:border-neutral-800"
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative overflow-hidden p-6 bg-white/85 dark:bg-neutral-900/80 rounded-3xl shadow-[0_12px_30px_rgba(15,23,42,0.1)] border border-accent/35 dark:border-neutral-800"
     >
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 rounded-xl bg-primary text-white grid place-items-center">{icon}</div>
+      <div className="absolute -top-16 -right-14 h-36 w-36 rounded-full bg-primary/15 blur-3xl transition-opacity duration-300 group-hover:opacity-80" />
+      <div className="relative flex items-center gap-3 mb-3">
+        <div className="w-12 h-12 rounded-2xl bg-primary text-white grid place-items-center shadow-md">{icon}</div>
         <h3 className="text-xl font-bold text-secondary dark:text-neutral-50">{title}</h3>
       </div>
-      <p className="text-sm text-secondary/80 dark:text-neutral-300 mb-3 leading-7">{description}</p>
+      <p className="relative text-sm text-secondary/80 dark:text-neutral-300 mb-3 leading-7">{description}</p>
       {features && (
-        <ul className="text-sm text-secondary/80 dark:text-neutral-300 space-y-1 list-disc pl-4">
+        <ul className={`text-sm text-secondary/80 dark:text-neutral-300 space-y-1 list-disc ${isAr ? "pr-4" : "pl-4"}`}>
           {features.map((feat, idx) => (
             <li key={idx}>{feat}</li>
           ))}

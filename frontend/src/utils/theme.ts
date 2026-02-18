@@ -1,4 +1,6 @@
-export const applyTheme = (theme: "light" | "dark") => {
+export type ThemeMode = "light" | "dark";
+
+export const applyTheme = (theme: ThemeMode) => {
   const root = document.documentElement;
   if (theme === "dark") {
     root.classList.add("dark");
@@ -8,9 +10,15 @@ export const applyTheme = (theme: "light" | "dark") => {
   localStorage.setItem("theme", theme);
 };
 
-export const getInitialTheme = (): "light" | "dark" => {
+export const getInitialTheme = (): ThemeMode => {
   const stored = localStorage.getItem("theme");
+  if (stored === "light") return "light";
   if (stored === "dark") return "dark";
+
+  if (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    return "dark";
+  }
+
   return "light";
 };
 
@@ -30,9 +38,9 @@ const DEFAULT_THEME = {
   text_color_dark: "#E5E7EB",
   heading_color_dark: "#F9FAFB",
   body_font_family: "Cairo, Tajawal, 'IBM Plex Sans Arabic', sans-serif",
-  body_font_family_en: "'Space Grotesk', Inter, Sora, sans-serif",
+  body_font_family_en: "Manrope, Sora, sans-serif",
   heading_font_family: "Cairo, Tajawal, 'IBM Plex Sans Arabic', sans-serif",
-  heading_font_family_en: "'Space Grotesk', Inter, Sora, sans-serif",
+  heading_font_family_en: "Sora, Manrope, sans-serif",
   font_size_base: 16,
   font_size_h1: 36,
   font_size_h2: 30,

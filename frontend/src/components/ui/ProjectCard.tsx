@@ -48,21 +48,24 @@ export default function ProjectCard({ project }: { project: Project }) {
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group relative overflow-hidden rounded-2xl bg-white dark:bg-neutral-900 shadow-md border border-accent/40 dark:border-neutral-800 transition hover:-translate-y-1 hover:shadow-xl"
-      style={{ fontFamily: project.body_font_family || "Space Grotesk" }}
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative overflow-hidden rounded-3xl bg-white/90 dark:bg-neutral-900/90 shadow-[0_14px_36px_rgba(15,23,42,0.12)] border border-accent/40 dark:border-neutral-800"
+      style={{ fontFamily: project.body_font_family || "Manrope" }}
     >
       <Link to={detailHref} className="block focus:outline-none focus:ring-2 focus:ring-primary rounded-2xl">
-        <div className="h-48 relative rounded-2xl overflow-hidden bg-gradient-to-br" style={{ background: gradientBg }}>
+        <div className="h-52 relative rounded-3xl overflow-hidden bg-gradient-to-br" style={{ background: gradientBg }}>
           {project.cover_image ? (
             <img
               src={resolveMediaUrl(project.cover_image)}
               alt={project.title}
-              className="h-full w-full object-contain p-3 transition duration-300 group-hover:opacity-95"
+              className="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-[1.02]"
               loading="lazy"
             />
           ) : (
             <div className="absolute inset-0 grid place-items-center text-primary font-semibold text-lg">LAVA</div>
           )}
+          <div className="absolute inset-0 bg-gradient-to-t from-secondary/70 via-secondary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="absolute top-3 left-3 flex flex-wrap gap-2">
             {project.is_featured ? (
               <span className="px-3 py-1 text-xs rounded-full bg-primary text-white shadow-sm">
@@ -73,6 +76,9 @@ export default function ProjectCard({ project }: { project: Project }) {
               {labels[project.category as keyof typeof labels] || project.category}
             </span>
           </div>
+          <div className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-white/90 text-secondary text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+            {isAr ? "عرض التفاصيل" : "View details"}
+          </div>
         </div>
       </Link>
 
@@ -82,7 +88,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             <h3
               className="text-lg md:text-xl font-bold text-secondary dark:text-neutral-50 leading-tight"
               style={{
-                fontFamily: project.title_font_family || "Space Grotesk",
+                fontFamily: project.title_font_family || "var(--font-heading-ltr, Sora)",
                 fontSize: (project.title_font_size || 20) + "px",
               }}
             >

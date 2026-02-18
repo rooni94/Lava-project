@@ -1,21 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import Layout from "../components/layout/Layout";
 import SectionTitle from "../components/ui/SectionTitle";
 import { fetchTeam } from "../api/endpoints";
 import { TeamMember } from "../types";
 import MetaHead from "../components/MetaHead";
+import Reveal from "../components/ui/Reveal";
 
 function TeamCard({ member }: { member: TeamMember }) {
   return (
-    <div className="bg-white dark:bg-neutral-900 border border-accent/30 dark:border-neutral-800 rounded-2xl p-5 shadow text-secondary dark:text-neutral-100">
-      <div className="h-32 w-32 rounded-full bg-primary/10 text-primary grid place-items-center font-bold mx-auto mb-3 overflow-hidden">
-        {member.image ? <img src={member.image} alt={member.name} className="h-full w-full rounded-full object-cover" /> : member.name[0]}
-      </div>
-      <h3 className="text-lg font-bold text-secondary dark:text-neutral-50 text-center">{member.name}</h3>
-      <p className="text-sm text-primary text-center">{member.position}</p>
-      <p className="text-sm text-secondary/80 dark:text-neutral-300 mt-2 text-center">{member.bio}</p>
-    </div>
+    <Reveal>
+      <article className="neo-panel p-5 h-full">
+        <div className="h-32 w-32 rounded-3xl bg-primary/10 text-primary grid place-items-center font-bold mx-auto mb-3 overflow-hidden">
+          {member.image ? <img src={member.image} alt={member.name} className="h-full w-full object-cover" /> : member.name[0]}
+        </div>
+        <h3 className="text-lg font-bold text-secondary dark:text-neutral-50 text-center">{member.name}</h3>
+        <p className="text-sm text-primary text-center">{member.position}</p>
+        <p className="text-sm text-secondary/80 dark:text-neutral-300 mt-2 text-center leading-7">{member.bio}</p>
+      </article>
+    </Reveal>
   );
 }
 
@@ -23,100 +27,105 @@ export default function About() {
   const { data: team } = useQuery({ queryKey: ["team"], queryFn: fetchTeam });
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
+
   const values = isAr
     ? [
-        { title: "شراكة طويلة الأمد", body: "نعمل كامتداد لفريقك ونقيس نجاحنا بالأثر على عملك لا بعدد المهام." },
-        { title: "إبداع يقوده التحليل", body: "نمزج بين الأفكار الجريئة والبيانات لضبط الرسالة والحملات والمنتج." },
-        { title: "إنتاج + برمجة متماسكة", body: "محتوى وتصميم وموشن جرافيك يتكامل مع مواقع وتطبيقات وأنظمة قابلة للتوسع." },
-        { title: "وضوح وشفافية", body: "تقارير دورية، أولويات متفق عليها، وتواصل مباشر مع فريق متعدد التخصصات." },
+        { title: "شراكة طويلة الأمد", body: "نعمل كامتداد لفريقك ونقيس النجاح بالأثر الفعلي على النمو." },
+        { title: "إبداع مدعوم بالبيانات", body: "نحوّل الأفكار الجريئة إلى قرارات دقيقة عبر التحليل المستمر." },
+        { title: "تنفيذ متكامل", body: "التصميم والمحتوى والبرمجة والحملات كلها تسير بإيقاع واحد." },
+        { title: "شفافية كاملة", body: "لوحات متابعة وتحديثات أسبوعية ووضوح في الأولويات." },
       ]
     : [
-        { title: "Long-term partnership", body: "We operate as your extended team and measure success by business impact." },
-        { title: "Creative + analytical", body: "Bold ideas guided by data to tune the message, campaigns, and product." },
-        { title: "Production + build in sync", body: "Content, design, and motion shipped alongside scalable sites, apps, and systems." },
-        { title: "Clarity & transparency", body: "Regular reports, aligned priorities, and direct access to a hybrid team." },
+        { title: "Long-term partnership", body: "We operate as an extension of your team and measure success by real business impact." },
+        { title: "Data-backed creativity", body: "Bold creative choices are guided by ongoing analytics and iteration." },
+        { title: "Integrated execution", body: "Design, content, engineering, and campaigns move in one rhythm." },
+        { title: "Full transparency", body: "Shared dashboards, weekly updates, and clear priorities at every stage." },
+      ];
+
+  const timeline = isAr
+    ? [
+        { year: "2019", detail: "انطلاق LAVA كنواة تجمع البرمجة والتسويق." },
+        { year: "2021", detail: "توسيع الفريق وإطلاق مشاريع إقليمية متعددة." },
+        { year: "2023", detail: "تأسيس وحدات متخصصة للأنظمة المؤسسية وحملات الأداء." },
+        { year: "الآن", detail: "شريك نمو رقمي متكامل لعلامات تبحث عن أثر قابل للقياس." },
+      ]
+    : [
+        { year: "2019", detail: "LAVA launched as a hybrid software and marketing studio." },
+        { year: "2021", detail: "Expanded delivery squads and shipped multi-sector regional projects." },
+        { year: "2023", detail: "Built dedicated units for enterprise systems and performance campaigns." },
+        { year: "Now", detail: "A full digital growth partner for brands that care about measurable impact." },
       ];
 
   return (
     <Layout>
       <MetaHead
-        title={isAr ? "من نحن | LAVA وكالة تسويق وبرمجة" : "About | LAVA marketing & engineering"}
+        title={isAr ? "من نحن | LAVA" : "About | LAVA"}
         description={
           isAr
             ? "فريق واحد يجمع التسويق بالمحتوى والتصميم والموشن مع برمجة المواقع والتطبيقات والأنظمة لتحقيق نمو قابل للقياس."
-            : "One team for marketing, content, design, motion, and engineering web/apps/systems for measurable growth."
+            : "One integrated team for software delivery and digital growth execution."
         }
       />
-      <section className="py-14 bg-white dark:bg-neutral-950 text-secondary dark:text-neutral-100">
-        <div className="container mx-auto px-4 space-y-6">
-          <SectionTitle
-            title={isAr ? "نمو رقمي يقوده الإبداع" : "Creative-led digital growth"}
-            subtitle={
-              isAr ? "تسويق، محتوى، تصميم، موشن، وبرمجة في فريق واحد." : "Marketing, content, design, motion, and engineering under one roof."
-            }
-          />
-          <p className="text-secondary/80 dark:text-neutral-300 leading-8 text-lg">
-            {isAr
-            ? "LAVA وكالة تسويق إلكتروني وبرمجة متكاملة تأسست على فكرة بسيطة: الإبداع الحقيقي يجب أن يقود إلى نتائج حقيقية. نجمع مسوقين ومصممين وكتّاب محتوى ومهندسي برمجيات لنكتب الرسالة، نصمم الهوية، ونبني المواقع والتطبيقات والأنظمة التي تخدم حملاتك وتوسّع أثرك."
-            : "LAVA is a full-stack marketing and engineering agency built on one belief: creativity must deliver real results. Marketers, designers, writers, and engineers craft the story, brand, and the web/apps/systems that make campaigns work and scale."}
-          </p>
-        </div>
-      </section>
 
-      <section className="py-10 container mx-auto px-4 grid md:grid-cols-3 gap-6 text-secondary dark:text-neutral-100">
-        <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-accent/40 dark:border-neutral-800 p-5 shadow">
-          <h3 className="text-xl font-bold text-secondary dark:text-neutral-50 mb-2">
-            {isAr ? "منهجية رشيقة" : "Agile delivery"}
-          </h3>
-          <p className="text-secondary/80 dark:text-neutral-300">
-            {isAr
-              ? "نقسم العمل إلى أسابيع واضحة مع أولويات متفق عليها ومؤشرات إنجاز قابلة للقياس."
-              : "Weekly sprints with clear priorities, demo-ready builds, and measurable success indicators."}
-          </p>
-        </div>
-        <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-accent/40 dark:border-neutral-800 p-5 shadow">
-          <h3 className="text-xl font-bold text-secondary dark:text-neutral-50 mb-2">
-            {isAr ? "أمان وجودة" : "Security & quality"}
-          </h3>
-          <p className="text-secondary/80 dark:text-neutral-300">
-            {isAr
-              ? "نطبق مراجعات كود واختبارات تلقائية وفحوصات أمنية قبل كل إطلاق."
-              : "Code reviews, automated tests, and security checks before every release keep the product stable."}
-          </p>
-        </div>
-        <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-accent/40 dark:border-neutral-800 p-5 shadow">
-          <h3 className="text-xl font-bold text-secondary dark:text-neutral-50 mb-2">
-            {isAr ? "تسليم شفاف" : "Transparent delivery"}
-          </h3>
-          <p className="text-secondary/80 dark:text-neutral-300">
-            {isAr
-              ? "لوحات متابعة، نسخ مرحلية، وتوثيق واضح لكل ميزة لتتبع التقدم بسهولة."
-              : "Roadmaps, staging environments, and clear documentation make it easy to track progress."}
-          </p>
-        </div>
-      </section>
+      <section className="py-14 container mx-auto px-4 space-y-10 text-secondary dark:text-neutral-100">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="neo-panel p-6 md:p-10 relative overflow-hidden"
+        >
+          <div className="absolute -left-14 -top-16 h-52 w-52 rounded-full bg-primary/14 blur-3xl" />
+          <div className="absolute -right-14 -bottom-16 h-56 w-56 rounded-full bg-secondary/10 blur-3xl dark:bg-white/5" />
 
-      <section className="py-14 container mx-auto px-4 text-secondary dark:text-neutral-100">
-        <SectionTitle title={isAr ? "قيمنا" : "Our values"} />
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {values.map((value) => (
-            <div key={value.title} className="p-5 rounded-2xl bg-surface dark:bg-neutral-900 border border-accent/50 dark:border-neutral-800 shadow-sm">
-              <h4 className="text-lg font-bold text-secondary dark:text-neutral-50 mb-2">{value.title}</h4>
-              <p className="text-sm text-secondary/80 dark:text-neutral-300">{value.body}</p>
+          <div className="relative grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-center">
+            <div className="space-y-4">
+              <p className="text-xs uppercase tracking-[0.24em] text-secondary/60 dark:text-neutral-400">
+                {isAr ? "قصة LAVA" : "Our story"}
+              </p>
+              <h1 className="text-3xl md:text-5xl font-bold leading-tight">
+                {isAr ? "نبني النمو عبر الكود والرسالة" : "We engineer growth through product and narrative"}
+              </h1>
+              <p className="text-secondary/80 dark:text-neutral-300 leading-8">
+                {isAr
+                  ? "بدأنا لأننا رأينا فجوة بين فرق البرمجة وفرق التسويق. اليوم نعمل كنظام واحد: نبني المنتج ونطلق الحملة ونقيس الأثر في نفس الإيقاع."
+                  : "We started by solving one core gap: product and growth teams operating in isolation. Today we run both tracks as one coordinated system."}
+              </p>
             </div>
-          ))}
-        </div>
-      </section>
 
-      <section className="py-14 bg-surface dark:bg-neutral-900 text-secondary dark:text-neutral-100">
-        <div className="container mx-auto px-4">
+            <div className="space-y-3">
+              {timeline.map((item) => (
+                <Reveal key={item.year}>
+                  <div className="rounded-2xl border border-accent/45 dark:border-neutral-700 bg-white/75 dark:bg-neutral-900/65 p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-primary">{item.year}</p>
+                    <p className="text-sm text-secondary/80 dark:text-neutral-300 leading-7 mt-1">{item.detail}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        <section className="space-y-6">
+          <SectionTitle title={isAr ? "قيمنا" : "Our values"} />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {values.map((value) => (
+              <Reveal key={value.title}>
+                <div className="neo-panel p-5 h-full">
+                  <h4 className="text-lg font-bold text-secondary dark:text-neutral-50 mb-2">{value.title}</h4>
+                  <p className="text-sm text-secondary/80 dark:text-neutral-300 leading-7">{value.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-6">
           <SectionTitle title={isAr ? "فريق العمل" : "Meet the team"} />
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {team?.map((member) => (
               <TeamCard key={member.id} member={member} />
             ))}
           </div>
-        </div>
+        </section>
       </section>
     </Layout>
   );

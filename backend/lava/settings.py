@@ -30,7 +30,7 @@ ALLOWED_HOSTS = _csv_list(os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1")
 ALLOWED_HOSTS = _append_unique(ALLOWED_HOSTS, ["localhost", "127.0.0.1"])
 
 CSRF_TRUSTED_ORIGINS = _csv_list(
-    os.environ.get("CSRF_TRUSTED_ORIGINS", "http://localhost:8000,http://localhost:5173")
+    os.environ.get("CSRF_TRUSTED_ORIGINS", "http://localhost:8000,http://localhost:5173,http://localhost:4173")
 )
 CSRF_TRUSTED_ORIGINS = _append_unique(
     CSRF_TRUSTED_ORIGINS,
@@ -39,6 +39,8 @@ CSRF_TRUSTED_ORIGINS = _append_unique(
         "http://127.0.0.1:8000",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:4173",
+        "http://127.0.0.1:4173",
     ],
 )
 
@@ -281,12 +283,16 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-CORS_ALLOWED_ORIGINS = _csv_list(os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000"))
+CORS_ALLOWED_ORIGINS = _csv_list(
+    os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:4173,http://localhost:3000")
+)
 CORS_ALLOWED_ORIGINS = _append_unique(
     CORS_ALLOWED_ORIGINS,
     [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:4173",
+        "http://127.0.0.1:4173",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ],

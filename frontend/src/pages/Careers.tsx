@@ -9,6 +9,7 @@ import MetaHead from "../components/MetaHead";
 import { applyToJob, fetchJobOpenings } from "../api/endpoints";
 import Skeleton from "../components/ui/Skeleton";
 import { JobOpening } from "../types";
+import Reveal from "../components/ui/Reveal";
 
 const typeLabels = {
   ar: {
@@ -163,8 +164,9 @@ export default function CareersPage() {
           <Skeleton className="h-32 w-full" />
         ) : data && data.length ? (
           <div className="grid lg:grid-cols-2 gap-6">
-            {data.map((job) => (
-              <div key={job.id} className="bg-white dark:bg-neutral-900 border border-accent/30 dark:border-neutral-800 rounded-2xl p-6 shadow space-y-4">
+            {data.map((job, index) => (
+              <Reveal key={job.id} delay={index * 0.05}>
+                <div className="neo-panel p-6 space-y-4 h-full">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="text-xl font-bold text-secondary dark:text-neutral-50">{job.title}</h3>
@@ -209,7 +211,8 @@ export default function CareersPage() {
                     {job.benefits.join(" · ")}
                   </div>
                 ) : null}
-              </div>
+                </div>
+              </Reveal>
             ))}
           </div>
         ) : (
@@ -217,7 +220,7 @@ export default function CareersPage() {
         )}
 
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-6 items-start" id="apply">
-          <div className="bg-white dark:bg-neutral-900 border border-accent/30 dark:border-neutral-800 rounded-2xl p-6 shadow space-y-4">
+          <div className="neo-panel p-6 space-y-4">
             <h3 className="text-xl font-bold text-secondary dark:text-neutral-50">{t("نموذج التقديم", "Application form")}</h3>
             <p className="text-sm text-secondary/70 dark:text-neutral-300">
               {t("طلب الوظائف منفصل عن طلب الباقات والخدمات.", "Job applications are separate from service requests.")}
@@ -228,7 +231,7 @@ export default function CareersPage() {
                 <label className="block text-sm mb-1">{t("اختر الوظيفة", "Select role")}</label>
                 <select
                   {...register("job_id", { required: true })}
-                  className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  className="field-input"
                 >
                   <option value="">{t("اختر", "Choose")}</option>
                   {data?.map((job) => (
@@ -244,7 +247,7 @@ export default function CareersPage() {
                   <label className="block text-sm mb-1">{t("الاسم الكامل", "Full name")}</label>
                   <input
                     {...register("full_name", { required: true })}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                    className="field-input"
                     placeholder={t("اكتب اسمك", "Your name")}
                   />
                 </div>
@@ -253,7 +256,7 @@ export default function CareersPage() {
                   <input
                     type="email"
                     {...register("email", { required: true })}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                    className="field-input"
                     placeholder="name@email.com"
                   />
                 </div>
@@ -264,7 +267,7 @@ export default function CareersPage() {
                   <label className="block text-sm mb-1">{t("رقم التواصل", "Phone")}</label>
                   <input
                     {...register("phone")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                    className="field-input"
                     placeholder={t("+9665xxxxxxxx", "+9665xxxxxxxx")}
                   />
                 </div>
@@ -272,7 +275,7 @@ export default function CareersPage() {
                   <label className="block text-sm mb-1">{t("رابط الأعمال/الموقع", "Portfolio URL")}</label>
                   <input
                     {...register("portfolio")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                    className="field-input"
                     placeholder="https://"
                   />
                 </div>
@@ -283,7 +286,7 @@ export default function CareersPage() {
                   <label className="block text-sm mb-1">LinkedIn</label>
                   <input
                     {...register("linkedin")}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                    className="field-input"
                     placeholder="https://linkedin.com/in/..."
                   />
                 </div>
@@ -293,7 +296,7 @@ export default function CareersPage() {
                     type="file"
                     accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     {...register("resume", { required: true })}
-                    className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                    className="field-input"
                   />
                   <p className="text-xs text-secondary/60 dark:text-neutral-400 mt-1">
                     {t("يُقبل PDF أو DOC/DOCX — يتم فحص السيرة الذاتية تلقائياً.", "PDF or DOC/DOCX — CV is scanned for malware.")}
@@ -306,7 +309,7 @@ export default function CareersPage() {
                 <textarea
                   rows={4}
                   {...register("cover_letter")}
-                  className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
+                  className="field-input"
                   placeholder={
                     t(
                       "عرّفنا بنفسك وبما يميزك ولماذا يناسبك هذا الدور.",
@@ -316,14 +319,18 @@ export default function CareersPage() {
                 />
               </div>
 
-              <button type="submit" className="bg-primary text-white px-6 py-3 rounded-lg w-full" disabled={apply.isPending}>
+              <button
+                type="submit"
+                className="bg-primary text-white px-6 py-3 rounded-xl w-full shadow-[0_12px_28px_rgba(var(--color-primary),0.32)]"
+                disabled={apply.isPending}
+              >
                 {apply.isPending ? t("جاري الإرسال...", "Submitting...") : t("إرسال الطلب", "Submit application")}
               </button>
             </form>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-surface dark:bg-neutral-900 p-6 rounded-2xl border border-accent/50 dark:border-neutral-800 shadow space-y-3">
+            <div className="neo-panel p-6 space-y-3">
               <h4 className="font-bold text-secondary dark:text-neutral-50">{t("مراحل التوظيف", "Hiring steps")}</h4>
               <ol className={`${isAr ? "pr-5" : "pl-5"} list-decimal text-sm text-secondary/80 dark:text-neutral-300 space-y-2`}>
                 <li>{t("مراجعة السيرة الذاتية والفحص الأمني", "CV review and security scan")}</li>
@@ -333,7 +340,7 @@ export default function CareersPage() {
               </ol>
             </div>
 
-            <div className="bg-white dark:bg-neutral-900 p-6 rounded-2xl border border-accent/40 dark:border-neutral-800 shadow space-y-4">
+            <div className="neo-panel p-6 space-y-4">
               <h4 className="font-bold text-secondary dark:text-neutral-50">{t("لماذا LAVA؟", "Why LAVA?")}</h4>
               <ul className={`${isAr ? "pr-4 list-disc" : "pl-4 list-disc"} text-sm text-secondary/70 dark:text-neutral-300 space-y-2`}>
                 <li>{t("مشاريع حقيقية وتأثير مباشر", "Real projects with tangible impact")}</li>
@@ -343,7 +350,7 @@ export default function CareersPage() {
             </div>
 
             {selectedJob ? (
-              <div className="bg-white dark:bg-neutral-900 p-6 rounded-2xl border border-accent/40 dark:border-neutral-800 shadow space-y-2">
+              <div className="neo-panel p-6 space-y-2">
                 <div className="text-xs text-secondary/60 dark:text-neutral-400">{t("الوظيفة المحددة", "Selected role")}</div>
                 <div className="text-lg font-semibold text-secondary dark:text-neutral-100">{selectedJob.title}</div>
                 <div className="text-sm text-secondary/70 dark:text-neutral-300">

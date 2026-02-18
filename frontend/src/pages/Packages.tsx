@@ -1,12 +1,14 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import Layout from "../components/layout/Layout";
 import MetaHead from "../components/MetaHead";
 import Skeleton from "../components/ui/Skeleton";
 import PackageCard from "../components/ui/PackageCard";
 import { fetchPackageCategories, fetchPackages } from "../api/endpoints";
 import { Package, PackageCategory } from "../types";
+import SectionTitle from "../components/ui/SectionTitle";
 
 type Group = { category: PackageCategory | null; items: Package[] };
 
@@ -29,12 +31,14 @@ export default function PackagesPage() {
       const cat = categories?.find((c) => String(c.id) === String(filter) || c.slug === filter) || null;
       return [{ category: cat, items: packages }];
     }
+
     const bucket: Record<string, Group> = {};
-    packages.forEach((p) => {
-      const key = p.category?.slug || "other";
-      if (!bucket[key]) bucket[key] = { category: p.category || null, items: [] };
-      bucket[key].items.push(p);
+    packages.forEach((pkg) => {
+      const key = pkg.category?.slug || "other";
+      if (!bucket[key]) bucket[key] = { category: pkg.category || null, items: [] };
+      bucket[key].items.push(pkg);
     });
+
     const ordered = categories?.map((c) => bucket[c.slug]).filter(Boolean) as Group[];
     const other = Object.values(bucket).filter((g) => !g.category);
     return [...(ordered || []), ...other];
@@ -48,76 +52,68 @@ export default function PackagesPage() {
       />
 
       <section className="container mx-auto px-4 py-14 space-y-10 text-secondary dark:text-neutral-100">
-        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-primary/12 via-rose-50 to-white dark:from-primary/20 dark:via-neutral-900 dark:to-neutral-950 border border-accent/40 dark:border-neutral-800 shadow-2xl">
-          <div className="absolute -left-14 -top-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
-          <div className="absolute -right-16 -bottom-18 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-          <div className="relative grid lg:grid-cols-[1.15fr_0.85fr] gap-6 items-center px-6 py-10 md:px-10 md:py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="neo-panel p-6 md:p-10 relative overflow-hidden"
+        >
+          <div className="absolute -left-14 -top-16 h-56 w-56 rounded-full bg-primary/16 blur-3xl" />
+          <div className="absolute -right-14 -bottom-20 h-64 w-64 rounded-full bg-secondary/10 blur-3xl dark:bg-white/6" />
+
+          <div className="relative grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-center">
             <div className="space-y-4">
               <p className="text-xs uppercase tracking-[0.25em] text-secondary/60 dark:text-neutral-400">
-                {t("باقات وخدمات جاهزة", "Curated packages")}
+                {t("باقات تشغيل وإطلاق", "Launch-ready offers")}
               </p>
-              <h1 className="text-3xl md:text-4xl font-bold leading-tight text-secondary dark:text-white">
-                {t("باقات رقمية جاهزة للتخصيص والتوسع", "Launch-ready digital packages you can tailor")}
+              <h1 className="text-3xl md:text-5xl font-bold leading-tight text-secondary dark:text-neutral-50">
+                {t("اختر الباقة ثم خصّصها بدقة", "Pick the package, then tailor it exactly")}
               </h1>
-              <p className="text-secondary/80 dark:text-neutral-200 max-w-2xl">
+              <p className="text-secondary/80 dark:text-neutral-300 max-w-3xl leading-8">
                 {t(
-                  "برمجة، هوية بصرية، محتوى، واستضافة في مستويات سعرية واضحة مع إمكانية تعديل البنود حسب احتياجك.",
-                  "Web/apps, brand, content, and hosting with clear tiers you can adjust to fit your scope."
+                  "باقاتنا مصممة لتقصير وقت القرار: نطاق واضح، تسعير مرن، وخطة تنفيذ قابلة للتعديل قبل التعاقد.",
+                  "Our packages are designed to shorten decision time: clear scope, flexible pricing, and adjustable delivery plans."
                 )}
               </p>
               <div className="flex flex-wrap gap-2 text-sm text-secondary/70 dark:text-neutral-300">
-                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">
-                  WordPress · React · React Native
-                </span>
-                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">
-                  {t("هوية ومحتوى", "Brand & content")}
-                </span>
-                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">
-                  {t("تسويق واستضافة", "Marketing & hosting")}
-                </span>
+                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">WordPress</span>
+                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">React</span>
+                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900/80 border border-accent/50 dark:border-neutral-700">React Native</span>
               </div>
             </div>
 
-            <div className="bg-white/85 dark:bg-neutral-900/80 border border-accent/40 dark:border-neutral-800 rounded-2xl p-5 shadow-lg space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-xs uppercase tracking-wide text-secondary/60 dark:text-neutral-400">{t("مؤشرات", "Highlights")}</div>
-                  <div className="text-lg font-semibold text-secondary dark:text-white">{t("جودة + سرعة تنفيذ", "Quality + speed")}</div>
-                </div>
-                <span className="px-3 py-1 rounded-full text-xs bg-primary/10 text-primary border border-primary/30">
-                  {t("قابلة للتخصيص", "Customizable")}
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                <Metric label={t("باقات", "Packages")} value={packages?.length ?? 0} />
-                <Metric label={t("مميزة", "Featured")} value={packages?.filter((p) => p.featured)?.length ?? 0} />
-                <Metric label="24/7" value={t("دعم", "Support")} />
-              </div>
-              <p className="text-sm text-secondary/70 dark:text-neutral-300">
-                {t("اختر الباقة واطلب التعديل المناسب. يمكن دمج أو إزالة أي عنصر حسب الحاجة.", "Pick a package then tailor any items you need.")}
-              </p>
+            <div className="grid grid-cols-3 gap-3">
+              <Metric label={t("باقات", "Packages")} value={packages?.length ?? 0} />
+              <Metric label={t("مميزة", "Featured")} value={packages?.filter((p) => p.featured)?.length ?? 0} />
+              <Metric label="24/7" value={t("دعم", "Support")} />
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setFilter("")}
-            className={`px-3 py-1.5 rounded-full text-sm ${filter === "" ? "bg-primary text-white" : "border border-accent/50 dark:border-neutral-700"}`}
-          >
-            {t("الكل", "All")}
-          </button>
-          {categories?.map((c) => (
+        <div className="neo-panel p-4 md:p-5">
+          <SectionTitle
+            align="start"
+            title={t("تصنيف الباقات", "Package categories")}
+            subtitle={t("اختر المجال المطلوب لعرض الباقات المناسبة.", "Choose a domain to narrow down the right offers.")}
+          />
+          <div className="flex flex-wrap gap-2">
             <button
-              key={c.id}
-              onClick={() => setFilter(String(c.id))}
-              className={`px-3 py-1.5 rounded-full text-sm ${
-                filter === String(c.id) ? "bg-primary text-white" : "border border-accent/50 dark:border-neutral-700"
-              }`}
+              onClick={() => setFilter("")}
+              className={`px-3 py-1.5 rounded-full text-sm ${filter === "" ? "bg-primary text-white" : "border border-accent/50 dark:border-neutral-700"}`}
             >
-              {isAr ? c.name_ar : c.name_en}
+              {t("الكل", "All")}
             </button>
-          ))}
+            {categories?.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setFilter(String(c.id))}
+                className={`px-3 py-1.5 rounded-full text-sm ${
+                  filter === String(c.id) ? "bg-primary text-white" : "border border-accent/50 dark:border-neutral-700"
+                }`}
+              >
+                {isAr ? c.name_ar : c.name_en}
+              </button>
+            ))}
+          </div>
         </div>
 
         {isLoading ? (
@@ -152,7 +148,7 @@ export default function PackagesPage() {
 
 function Metric({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-2xl border border-accent/40 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/70 p-3 text-center">
+    <div className="rounded-2xl border border-accent/40 dark:border-neutral-800 bg-white/75 dark:bg-neutral-900/75 p-3 text-center">
       <div className="text-xs text-secondary/60 dark:text-neutral-400">{label}</div>
       <div className="text-xl font-semibold text-secondary dark:text-neutral-100">{value}</div>
     </div>

@@ -16,7 +16,10 @@ export default function DashboardPackages() {
   const t = (ar: string, en: string) => (isAr ? ar : en);
 
   const { data: categories } = useQuery<PackageCategory[]>({ queryKey: ["package-categories"], queryFn: fetchPackageCategories });
-  const { data: packages, isLoading } = useQuery<Package[]>({ queryKey: ["packages-admin"], queryFn: () => fetchPackages({ product_type: "service" }) });
+  const { data: packages, isLoading } = useQuery<Package[]>({
+    queryKey: ["packages-admin"],
+    queryFn: () => fetchPackages({ product_type: "service", admin_view: true }),
+  });
 
   const [editing, setEditing] = useState<Package | null>(null);
   const [selected, setSelected] = useState<number[]>([]);

@@ -1,9 +1,11 @@
+const STATIC_CACHE = "lava-static-v3";
+
 self.addEventListener("install", (event) => {
   // Activate updated SW ASAP.
   self.skipWaiting();
 
   const precache = async () => {
-    const cache = await caches.open("lava-static-v2");
+    const cache = await caches.open(STATIC_CACHE);
     // Keep this list small; hashed assets under `/assets/` are cached on-demand.
     await cache.addAll(["/", "/index.html", "/manifest.webmanifest", "/favicon.ico", "/logo.PNG"]);
   };
@@ -13,7 +15,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   const cleanup = async () => {
-    const keep = new Set(["lava-static-v2"]);
+    const keep = new Set([STATIC_CACHE]);
     const keys = await caches.keys();
     await Promise.all(
       keys
@@ -54,7 +56,7 @@ self.addEventListener("fetch", (event) => {
   if (!isCacheableStaticRequest(url, request)) return;
 
   const respond = async () => {
-    const cache = await caches.open("lava-static-v2");
+    const cache = await caches.open(STATIC_CACHE);
 
     // Network-first for HTML to avoid serving a stale `index.html` after deploy.
     if (request.mode === "navigate") {
@@ -79,4 +81,3 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(respond());
 });
-

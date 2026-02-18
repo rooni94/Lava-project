@@ -1,7 +1,9 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.accounts.models import User
 from apps.accounts.permissions import RolePermission
 from apps.core.mixins import ActivityLoggerMixin
 from apps.packages.models import Package, PackageCategory
@@ -27,7 +29,7 @@ class PackageViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     filterset_fields = ("category", "featured", "is_active", "product_type")
     search_fields = ("title_ar", "title_en", "short_description_ar", "short_description_en")
     ordering_fields = ("created_at", "featured", "price")
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     throttle_scope = "packages"
 
     def get_permissions(self):
@@ -38,7 +40,22 @@ class PackageViewSet(ActivityLoggerMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         qs = super().get_queryset()
         request = getattr(self, "request", None)
-        if not request or not request.user.is_authenticated:
+        if not request:
+            return qs.filter(is_active=True)
+
+        admin_view = str(request.query_params.get("admin_view", "")).lower() in {"1", "true", "yes"}
+        user = getattr(request, "user", None)
+        can_view_all = bool(
+            admin_view
+            and user
+            and user.is_authenticated
+            and (
+                getattr(user, "is_superuser", False)
+                or getattr(user, "is_staff", False)
+                or getattr(user, "role", None) in {User.Role.SUPER_ADMIN, User.Role.MANAGER, User.Role.EDITOR}
+            )
+        )
+        if not can_view_all:
             qs = qs.filter(is_active=True)
         return qs
 

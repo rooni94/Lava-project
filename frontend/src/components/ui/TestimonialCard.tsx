@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { renderRiyalText } from "../../utils/currency";
 import { Client } from "../../types";
+import { motion } from "framer-motion";
 
 export default function TestimonialCard({ client }: { client: Client }) {
   const { i18n } = useTranslation();
@@ -13,9 +14,16 @@ export default function TestimonialCard({ client }: { client: Client }) {
       : "A positive experience with LAVA - the team moved fast, kept quality high, and communicated clearly.");
 
   return (
-    <div className="p-6 bg-white dark:bg-neutral-900 rounded-2xl shadow border border-accent/30 dark:border-neutral-800 space-y-3">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      whileHover={{ y: -4 }}
+      className="relative overflow-hidden p-6 bg-white/90 dark:bg-neutral-900/85 rounded-3xl shadow-[0_12px_34px_rgba(15,23,42,0.1)] border border-accent/35 dark:border-neutral-800 space-y-3"
+    >
+      <div className="absolute -top-14 -right-12 h-28 w-28 rounded-full bg-primary/12 blur-2xl" />
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full bg-primary text-white grid place-items-center font-bold">
+        <div className="w-12 h-12 rounded-2xl bg-primary text-white grid place-items-center font-bold shadow-sm">
           {client.name.substring(0, 1)}
         </div>
         <div>
@@ -25,7 +33,7 @@ export default function TestimonialCard({ client }: { client: Client }) {
           </p>
         </div>
       </div>
-      <p className="text-sm text-secondary/80 dark:text-neutral-300 leading-7">{renderRiyalText(displayText)}</p>
-    </div>
+      <p className="text-sm text-secondary/80 dark:text-neutral-300 leading-7 relative">{renderRiyalText(displayText)}</p>
+    </motion.div>
   );
 }

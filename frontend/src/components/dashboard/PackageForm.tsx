@@ -1,10 +1,10 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { Package, PackageCategory } from "../../types";
 import { RiyalSymbol } from "../../utils/currency";
 import { createPackage, updatePackage } from "../../api/endpoints";
-import toast from "react-hot-toast";
 
 type FormState = {
   slug: string;
@@ -92,13 +92,13 @@ export default function PackageForm({
       return createPackage(payload);
     },
     onSuccess: () => {
-      toast.success(initial ? t("ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¨Ø§Ù‚Ø©", "Package updated") : t("ØªÙ…Øª Ø¥Ø¶Ø§ÙØ© Ø§Ù„Ø¨Ø§Ù‚Ø©", "Package added"));
+      toast.success(initial ? t("تم تحديث الباقة", "Package updated") : t("تمت إضافة الباقة", "Package added"));
       qc.invalidateQueries({ queryKey: ["packages-admin"] });
       qc.invalidateQueries({ queryKey: ["packages"] });
       onDone?.();
       if (!initial) setForm(empty);
     },
-    onError: () => toast.error(t("ØªØ¹Ø°Ø± Ø­ÙØ¸ Ø§Ù„Ø¨Ø§Ù‚Ø©", "Failed to save package")),
+    onError: () => toast.error(t("تعذر حفظ الباقة", "Failed to save package")),
   });
 
   return (
@@ -111,11 +111,11 @@ export default function PackageForm({
     >
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-secondary dark:text-neutral-50">
-          {initial ? t("ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨Ø§Ù‚Ø©", "Edit package") : t("Ø¥Ø¶Ø§ÙØ© Ø¨Ø§Ù‚Ø©", "Add package")}
+          {initial ? t("تعديل الباقة", "Edit package") : t("إضافة باقة", "Add package")}
         </h2>
         {onDone && initial ? (
           <button type="button" onClick={onDone} className="text-sm text-primary underline">
-            {t("Ø¥Ù„ØºØ§Ø¡", "Cancel")}
+            {t("إلغاء", "Cancel")}
           </button>
         ) : null}
       </div>
@@ -124,13 +124,13 @@ export default function PackageForm({
         <input
           value={form.title_ar}
           onChange={(e) => setForm((p) => ({ ...p, title_ar: e.target.value }))}
-          placeholder={t("Ø§Ù„Ø¹Ù†ÙˆØ§Ù† (Ø¹Ø±Ø¨ÙŠ)", "Title (Arabic)")}
+          placeholder={t("العنوان (عربي)", "Title (Arabic)")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
         <input
           value={form.title_en}
           onChange={(e) => setForm((p) => ({ ...p, title_en: e.target.value }))}
-          placeholder={t("Ø§Ù„Ø¹Ù†ÙˆØ§Ù† (EN)", "Title (EN)")}
+          placeholder={t("العنوان (EN)", "Title (EN)")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
         <input
@@ -144,7 +144,7 @@ export default function PackageForm({
           onChange={(e) => setForm((p) => ({ ...p, category_id: e.target.value ? Number(e.target.value) : null }))}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         >
-          <option value="">{t("Ø§Ø®ØªØ± Ø§Ù„ØªØµÙ†ÙŠÙ", "Select category")}</option>
+          <option value="">{t("اختر التصنيف", "Select category")}</option>
           {categories?.map((c) => (
             <option key={c.id} value={c.id}>
               {isAr ? c.name_ar : c.name_en}
@@ -157,13 +157,13 @@ export default function PackageForm({
         <input
           value={form.short_description_ar}
           onChange={(e) => setForm((p) => ({ ...p, short_description_ar: e.target.value }))}
-          placeholder={t("ÙˆØµÙ Ù‚ØµÙŠØ± (Ø¹)", "Short description (AR)")}
+          placeholder={t("وصف قصير (ع)", "Short description (AR)")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
         <input
           value={form.short_description_en}
           onChange={(e) => setForm((p) => ({ ...p, short_description_en: e.target.value }))}
-          placeholder={t("ÙˆØµÙ Ù‚ØµÙŠØ± (EN)", "Short description (EN)")} 
+          placeholder={t("وصف قصير (EN)", "Short description (EN)")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
       </div>
@@ -171,13 +171,13 @@ export default function PackageForm({
       <textarea
         value={form.description_ar}
         onChange={(e) => setForm((p) => ({ ...p, description_ar: e.target.value }))}
-        placeholder={t("Ø§Ù„Ù…Ø²Ø§ÙŠØ§ / Ø§Ù„Ù…Ø­ØªÙˆÙ‰ (AR) - Ø³Ø·Ø± Ù„ÙƒÙ„ Ù†Ù‚Ø·Ø©", "Features (AR) - one per line")}
+        placeholder={t("المزايا / المحتوى (AR) - سطر لكل نقطة", "Features (AR) - one per line")}
         className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700 min-h-[90px]"
       />
       <textarea
         value={form.description_en}
         onChange={(e) => setForm((p) => ({ ...p, description_en: e.target.value }))}
-        placeholder={t("Ø§Ù„Ù…Ø²Ø§ÙŠØ§ / Ø§Ù„Ù…Ø­ØªÙˆÙ‰ (EN) - Ø³Ø·Ø± Ù„ÙƒÙ„ Ù†Ù‚Ø·Ø©", "Features / content (EN) - one per line")}
+        placeholder={t("المزايا / المحتوى (EN) - سطر لكل نقطة", "Features / content (EN) - one per line")}
         className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700 min-h-[90px]"
       />
 
@@ -186,23 +186,23 @@ export default function PackageForm({
           type="number"
           value={form.price}
           onChange={(e) => setForm((p) => ({ ...p, price: Number(e.target.value) }))}
-          placeholder={t("Ø§Ù„Ø³Ø¹Ø±", "Price")}
+          placeholder={t("السعر", "Price")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
         <input
           value={form.price_note}
           onChange={(e) => setForm((p) => ({ ...p, price_note: e.target.value }))}
-          placeholder={t("Ù…Ù„Ø§Ø­Ø¸Ø© Ø§Ù„Ø³Ø¹Ø± (Ù…Ø«Ø§Ù„ 3,500 â€“ 5,000)", "Price note (e.g. 3,500 â€“ 5,000)")}
+          placeholder={t("ملاحظة السعر (مثال 3,500 - 5,000)", "Price note (e.g. 3,500 - 5,000)")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
         <input
           value={form.price_note_en}
           onChange={(e) => setForm((p) => ({ ...p, price_note_en: e.target.value }))}
-          placeholder={t("Ù…Ù„Ø§Ø­Ø¸Ø© Ø§Ù„Ø³Ø¹Ø± (EN) Ù…Ø«Ø§Ù„: From SAR 3,500", "Price note (EN) e.g. From SAR 3,500")}
+          placeholder={t("ملاحظة السعر (EN) مثال: From SAR 3,500", "Price note (EN) e.g. From SAR 3,500")}
           className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700"
         />
         <div className="w-full border rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 dark:border-neutral-700 flex items-center gap-2 text-secondary/80 dark:text-neutral-200">
-          <span>{t("Ø§Ù„Ø¹Ù…Ù„Ø©", "Currency")}:</span>
+          <span>{t("العملة", "Currency")}:</span>
           <span className="font-semibold">SAR</span>
           <RiyalSymbol className="h-4 w-4" />
         </div>
@@ -215,7 +215,7 @@ export default function PackageForm({
         </label>
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((p) => ({ ...p, is_active: e.target.checked }))} />
-          {t("فعّالة", "Active")}
+          {t("فعالة", "Active")}
         </label>
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={form.show_price} onChange={(e) => setForm((p) => ({ ...p, show_price: e.target.checked }))} />
@@ -226,14 +226,13 @@ export default function PackageForm({
       <div className="flex justify-end gap-2 pt-1">
         {onDone && (
           <button type="button" className="text-secondary/70 underline" onClick={onDone}>
-            {t("Ø¥Ù„ØºØ§Ø¡", "Cancel")}
+            {t("إلغاء", "Cancel")}
           </button>
         )}
         <button type="submit" className="px-4 py-2 rounded-lg bg-primary text-white" disabled={mutate.isPending}>
-          {mutate.isPending ? t("Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø­ÙØ¸...", "Saving...") : initial ? t("ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¨Ø§Ù‚Ø©", "Update package") : t("Ø­ÙØ¸ Ø§Ù„Ø¨Ø§Ù‚Ø©", "Save package")}
+          {mutate.isPending ? t("جاري الحفظ...", "Saving...") : initial ? t("تحديث الباقة", "Update package") : t("حفظ الباقة", "Save package")}
         </button>
       </div>
     </form>
   );
 }
-

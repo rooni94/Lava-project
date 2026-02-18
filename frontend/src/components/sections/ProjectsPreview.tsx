@@ -17,8 +17,9 @@ export default function ProjectsPreview() {
   const isAr = i18n.language === "ar";
 
   return (
-    <section className="py-14 bg-white dark:bg-neutral-950 text-secondary dark:text-neutral-100">
+    <section className="py-14 bg-white/70 dark:bg-neutral-950 text-secondary dark:text-neutral-100">
       <div className="container mx-auto px-4">
+        <div className="rounded-[28px] border border-accent/35 dark:border-neutral-800 bg-surface/80 dark:bg-neutral-900/70 p-6 md:p-8 shadow-[0_12px_34px_rgba(15,23,42,0.08)]">
         <SectionTitle
           title={isAr ? "أحدث الأعمال" : "Latest projects"}
           subtitle={
@@ -41,10 +42,11 @@ export default function ProjectsPreview() {
         <div className="mt-6 text-center">
           <a
             href="/portfolio"
-            className="inline-block px-6 py-3 rounded-full bg-primary text-white hover:shadow-md transition-shadow"
+            className="inline-block px-6 py-3 rounded-full bg-primary text-white shadow-[0_12px_26px_rgba(var(--color-primary),0.3)] hover:-translate-y-0.5 transition-transform"
           >
             {isAr ? "شاهد كل الأعمال" : "View all projects"}
           </a>
+        </div>
         </div>
       </div>
     </section>

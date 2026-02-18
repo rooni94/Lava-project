@@ -5,23 +5,29 @@ export default function CallToAction() {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   return (
-    <section className="py-16 bg-primary text-white text-center">
-      <div className="container mx-auto px-4 space-y-4">
-        <h3 className="text-3xl font-bold">
-          {isAr ? "لنشعل نمو علامتك بتسويق ذكي وكود متين." : "Ignite your growth with smart marketing and solid code."}
-        </h3>
-        <p className="text-white/80 max-w-2xl mx-auto">
-          {isAr
-            ? "فريق واحد يكتب الرسالة، يصمم الهوية، يدير الحملات، ويطور الموقع أو التطبيق الذي يحقق الأثر."
-            : "One team to craft your story, design your identity, run campaigns, and ship the web/app experience that converts."}
-        </p>
-        <div className="flex flex-wrap gap-3 justify-center">
-          <Link to="/contact" className="px-6 py-3 rounded-full bg-white text-primary font-semibold">
-            {isAr ? "احجز استشارة" : "Book a consultation"}
-          </Link>
-          <Link to="/services" className="px-6 py-3 rounded-full border border-white text-white font-semibold">
-            {isAr ? "اكتشف التسويق والبرمجة معًا" : "Explore marketing + engineering"}
-          </Link>
+    <section className="py-16 text-white">
+      <div className="container mx-auto px-4">
+        <div className="relative overflow-hidden rounded-[30px] bg-primary p-8 md:p-10 text-center shadow-[0_24px_60px_rgba(var(--color-primary),0.45)]">
+          <div className="absolute -left-14 -top-12 h-40 w-40 rounded-full bg-white/20 blur-3xl" />
+          <div className="absolute -right-10 -bottom-16 h-44 w-44 rounded-full bg-secondary/30 blur-2xl" />
+          <div className="relative space-y-4">
+            <h3 className="text-3xl font-bold">
+              {isAr ? "لنشعل نمو علامتك بتسويق ذكي وكود متين." : "Ignite your growth with smart marketing and solid code."}
+            </h3>
+            <p className="text-white/80 max-w-2xl mx-auto">
+              {isAr
+                ? "فريق واحد يكتب الرسالة، يصمم الهوية، يدير الحملات، ويطور الموقع أو التطبيق الذي يحقق الأثر."
+                : "One team to craft your story, design your identity, run campaigns, and ship the web/app experience that converts."}
+            </p>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link to="/contact" className="px-6 py-3 rounded-full bg-white text-primary font-semibold">
+                {isAr ? "احجز استشارة" : "Book a consultation"}
+              </Link>
+              <Link to="/services" className="px-6 py-3 rounded-full border border-white text-white font-semibold hover:bg-white/10 transition-colors">
+                {isAr ? "اكتشف التسويق والبرمجة معًا" : "Explore marketing + engineering"}
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>

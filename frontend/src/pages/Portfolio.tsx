@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import Layout from "../components/layout/Layout";
 import MetaHead from "../components/MetaHead";
 import ProjectCard from "../components/ui/ProjectCard";
 import Skeleton from "../components/ui/Skeleton";
 import { fetchProjectStats, fetchProjects } from "../api/endpoints";
 import { Project } from "../types";
+import SectionTitle from "../components/ui/SectionTitle";
 
 const categoryFilters = [
   { key: "", labelAr: "الكل", labelEn: "All" },
@@ -39,11 +41,8 @@ export default function PortfolioPage() {
     staleTime: 5 * 60 * 1000,
     cacheTime: 60 * 60 * 1000,
   });
-  const {
-    data: projects,
-    isLoading,
-    isFetching,
-  } = useQuery<Project[]>({
+
+  const { data: projects, isLoading, isFetching } = useQuery<Project[]>({
     queryKey: ["projects", { category, sort }],
     queryFn: () =>
       fetchProjects({
@@ -54,11 +53,6 @@ export default function PortfolioPage() {
     cacheTime: 60 * 60 * 1000,
   });
 
-  const heroCopy = t(
-    "واجهات رقمية وأنظمة أعمال وهوية بصرية تُنفذ بمعايير عالية لعملاء في مجالات متنوعة.",
-    "Digital products, business systems, and bold identities crafted to launch and scale brands."
-  );
-
   return (
     <Layout>
       <MetaHead
@@ -67,36 +61,68 @@ export default function PortfolioPage() {
       />
 
       <section className="container mx-auto px-4 py-14 space-y-8 text-secondary dark:text-neutral-100">
-        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-primary/10 via-rose-50 to-white dark:from-primary/20 dark:via-neutral-900 dark:to-neutral-950 border border-accent/40 dark:border-neutral-800 shadow-2xl">
-          <div className="absolute -left-16 -top-20 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
-          <div className="absolute -right-12 -bottom-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-          <div className="relative grid lg:grid-cols-[1.35fr_0.65fr] gap-6 items-center px-6 py-8 md:px-10 md:py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="neo-panel p-6 md:p-10 relative overflow-hidden"
+        >
+          <div className="absolute -left-16 -top-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
+          <div className="absolute -right-14 -bottom-14 h-64 w-64 rounded-full bg-secondary/10 blur-3xl dark:bg-white/5" />
+          <div className="relative grid lg:grid-cols-[1.25fr_0.75fr] gap-8 items-center">
             <div className="space-y-4">
               <p className="text-xs uppercase tracking-[0.25em] text-secondary/60 dark:text-neutral-400">{t("الأعمال", "Portfolio")}</p>
-              <h1 className="text-3xl md:text-4xl font-bold leading-tight text-secondary dark:text-white">
-                {t("أعمال مختارة بعناية", "Curated projects that ship results")}
+              <h1 className="text-3xl md:text-5xl font-bold leading-tight text-secondary dark:text-neutral-50 ribbon-line">
+                {t("أعمال تُترجم الرؤية إلى نتائج", "Work that turns vision into measurable outcomes")}
               </h1>
-              <p className="text-secondary/80 dark:text-neutral-200 max-w-2xl">{heroCopy}</p>
-              <div className="flex flex-wrap gap-3 text-sm text-secondary/70 dark:text-neutral-300">
-                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900 border border-accent/40 dark:border-neutral-700">
-                  {t("ويب • جوال • أنظمة • علامة", "Web • Mobile • Systems • Brand")}
-                </span>
-                <span className="px-3 py-1 rounded-full bg-white/80 dark:bg-neutral-900 border border-accent/40 dark:border-neutral-700">
-                  {t("منتجات • لوحات تحكم • مواقع", "Products • Dashboards • Sites")}
-                </span>
-              </div>
+              <p className="text-secondary/80 dark:text-neutral-300 max-w-3xl leading-8">
+                {t(
+                  "كل مشروع هنا يمثل توازنًا بين الجمال البصري، المنطق التقني، وأهداف النمو التجاري.",
+                  "Every case study here balances visual craft, technical architecture, and growth intent."
+                )}
+              </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-1 gap-3">
+            <div className="grid sm:grid-cols-3 lg:grid-cols-1 gap-3">
               <StatCard label={t("إجمالي الأعمال", "Total projects")} value={stats?.total_projects ?? 0} />
-              <StatCard label={t("مميزة", "Featured")} value={stats?.featured_projects ?? 0} />
-              <StatCard label={t("وسائط ومعارض", "Media & galleries")} value={stats?.media_items ?? 0} />
+              <StatCard label={t("مشاريع مميزة", "Featured projects")} value={stats?.featured_projects ?? 0} />
+              <StatCard label={t("وسائط ومعارض", "Media assets")} value={stats?.media_items ?? 0} />
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-neutral-900 border border-accent/40 dark:border-neutral-800 rounded-2xl px-4 py-3 shadow-sm">
-          <div className="flex items-center gap-2 flex-wrap">
+        <div className="neo-panel p-4 md:p-5 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <SectionTitle
+              align="start"
+              title={t("تصفية الأعمال", "Filter projects")}
+              subtitle={t("اختر التصنيف ثم طريقة العرض.", "Pick a category and sort mode.")}
+            />
+
+            <div className="flex items-center gap-2 text-sm">
+              <button
+                onClick={() => setSort("latest")}
+                className={`px-4 py-2 rounded-full border transition ${
+                  sort === "latest"
+                    ? "bg-primary text-white border-primary"
+                    : "border-accent/60 dark:border-neutral-700 hover:border-primary"
+                }`}
+              >
+                {t("الأحدث", "Latest")}
+              </button>
+              <button
+                onClick={() => setSort("featured")}
+                className={`px-4 py-2 rounded-full border transition ${
+                  sort === "featured"
+                    ? "bg-primary text-white border-primary"
+                    : "border-accent/60 dark:border-neutral-700 hover:border-primary"
+                }`}
+              >
+                {t("المميزة", "Featured")}
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
             {categoryFilters.map((f) => (
               <button
                 key={f.key}
@@ -110,26 +136,6 @@ export default function PortfolioPage() {
                 {t(f.labelAr, f.labelEn)}
               </button>
             ))}
-          </div>
-
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-secondary/60 dark:text-neutral-400">{t("عرض", "Sort")}</span>
-            <button
-              onClick={() => setSort("latest")}
-              className={`px-3 py-1.5 rounded-full border transition ${
-                sort === "latest" ? "bg-primary text-white border-primary" : "border-accent/50 dark:border-neutral-700"
-              }`}
-            >
-              {t("الأحدث", "Latest")}
-            </button>
-            <button
-              onClick={() => setSort("featured")}
-              className={`px-3 py-1.5 rounded-full border transition ${
-                sort === "featured" ? "bg-primary text-white border-primary" : "border-accent/50 dark:border-neutral-700"
-              }`}
-            >
-              {t("المميزة", "Featured")}
-            </button>
           </div>
         </div>
 
@@ -157,7 +163,7 @@ export default function PortfolioPage() {
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-accent/50 dark:border-neutral-700 bg-white/70 dark:bg-white/5 backdrop-blur px-4 py-3 shadow-sm">
+    <div className="rounded-2xl border border-accent/50 dark:border-neutral-700 bg-white/75 dark:bg-neutral-900/65 backdrop-blur px-4 py-3 shadow-sm">
       <div className="text-xs uppercase tracking-wide text-secondary/60 dark:text-neutral-400">{label}</div>
       <div className="text-2xl font-semibold text-secondary dark:text-white">{value}</div>
     </div>
