@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { fetchPageBySlug } from "../api/endpoints";
 import { Page } from "../types";
 import Skeleton from "../components/ui/Skeleton";
-import NotFound from "./NotFound";
+
 
 interface PageDetailProps {
   slug: string;
@@ -38,7 +38,7 @@ export default function PageDetail({ slug }: PageDetailProps) {
   }
 
   if (isError || !page) {
-    return <NotFound />;
+    return <div>Page not found</div>;
   }
 
   // Find content based on language
