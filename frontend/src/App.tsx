@@ -80,7 +80,8 @@ export default function App() {
         <Route path="/blog/:slug" element={<PageGuard slug="blog"><BlogDetailPage /></PageGuard>} />
         <Route path="/contact" element={<PageGuard slug="contact"><ContactPage /></PageGuard>} />
         <Route path="/careers" element={<PageGuard slug="careers"><CareersPage /></PageGuard>} />
-        <Route path="/:slug" element={<PageDetailPage />} />
+        <Route path="/privacy-policy" element={<PageGuard slug="privacy-policy"><PageDetailPage /></PageGuard>} />
+        <Route path="/terms-conditions" element={<PageGuard slug="terms-conditions"><PageDetailPage /></PageGuard>} />
         <Route path="/reset-password" element={<ResetRequestPage />} />
         <Route path="/reset-password/confirm" element={<ResetConfirmPage />} />
 

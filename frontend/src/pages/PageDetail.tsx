@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { fetchPageBySlug } from "../api/endpoints";
@@ -6,15 +5,21 @@ import { Page } from "../types";
 import Skeleton from "../components/ui/Skeleton";
 import NotFound from "./NotFound";
 
-export default function PageDetail() {
-  const { slug } = useParams<{ slug: string }>();
+interface PageDetailProps {
+  slug: string;
+}
+
+export default function PageDetail({ slug }: PageDetailProps) {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const t = (ar: string, en: string) => (isAr ? ar : en);
 
   const { data: page, isLoading, isError } = useQuery<Page>({
     queryKey: ["page", slug],
-    queryFn: () => { if (!slug) throw new Error("No slug provided"); return fetchPageBySlug(slug); },
+    queryFn: () => {
+      if (!slug) throw new Error("No slug provided");
+      return fetchPageBySlug(slug);
+    },
     enabled: !!slug,
   });
 
@@ -52,7 +57,6 @@ export default function PageDetail() {
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950">
       <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-secondary dark:text-neutral-50 mb-4">
             {page.title}
@@ -64,7 +68,6 @@ export default function PageDetail() {
           )}
         </div>
 
-        {/* Content */}
         {displaySection ? (
           <div className="prose prose-lg max-w-none dark:prose-invert">
             <div 
@@ -80,7 +83,6 @@ export default function PageDetail() {
           </div>
         )}
 
-        {/* Last updated */}
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-neutral-800">
           <p className="text-sm text-gray-500 dark:text-neutral-500">
             {t("آخر تحديث:", "Last updated:")} {new Date(page.updated_at).toLocaleDateString(isAr ? 'ar-SA' : 'en-US')}
