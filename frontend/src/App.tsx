@@ -33,7 +33,7 @@ import {
   DashboardSupportChatPage,
   DashboardMediaPage,
   DashboardPagesPage,
-  DashboardSectionsPage,
+  DashboardSectionsPage, PageDetailPage,
   DashboardSettingsPage,
 } from "./routes/lazy";
 
@@ -80,6 +80,7 @@ export default function App() {
         <Route path="/blog/:slug" element={<PageGuard slug="blog"><BlogDetailPage /></PageGuard>} />
         <Route path="/contact" element={<PageGuard slug="contact"><ContactPage /></PageGuard>} />
         <Route path="/careers" element={<PageGuard slug="careers"><CareersPage /></PageGuard>} />
+        <Route path="/:slug" element={<PageGuard><PageDetailPage /></PageGuard>} />
         <Route path="/reset-password" element={<ResetRequestPage />} />
         <Route path="/reset-password/confirm" element={<ResetConfirmPage />} />
 
