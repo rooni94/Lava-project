@@ -114,6 +114,8 @@ export type Page = {
   status: string;
   meta_description?: string;
   hero_image?: string;
+  sections?: Section[];
+  updated_at?: string;
 };
 
 export type Section = {

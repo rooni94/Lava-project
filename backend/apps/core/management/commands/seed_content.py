@@ -64,7 +64,7 @@ class Command(BaseCommand):
             defaults={
                 "location": "الرياض، حي العليا، شارع الملك فهد، برج LAVA، الطابق 12",
                 "phone": "+966 11 123 4567",
-                "email": "info@lava-tech.sa",
+                "email": "info@lava.sa",
                 "working_hours": "الأحد - الخميس: 8:00 ص - 6:00 م",
             },
         )
@@ -199,7 +199,7 @@ class Command(BaseCommand):
                 "sections": [
                     {
                         "title": "معلومات الاتصال",
-                        "content": "العنوان: الرياض، برج LAVA، الطابق 12\nالهاتف: +966 11 123 4567\nالبريد: info@lava-tech.sa\nساعات العمل: الأحد - الخميس: 8:00 ص - 6:00 م",
+                        "content": "العنوان: الرياض، برج LAVA، الطابق 12\nالهاتف: +966 11 123 4567\nالبريد: info@lava.sa\nساعات العمل: الأحد - الخميس: 8:00 ص - 6:00 م",
                         "order": 1,
                     },
                 ],

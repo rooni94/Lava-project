@@ -172,12 +172,12 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "True") == "True"
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "False") == "True"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@itlava.com")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@lava.sa")
 
-SUPPORT_EMAIL = os.environ.get("SUPPORT_EMAIL", "support@itlava.com")
-CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "contact@itlava.com")
-JOBS_EMAIL = os.environ.get("JOBS_EMAIL", "jobs@itlava.com")
-NOREPLY_EMAIL = os.environ.get("NOREPLY_EMAIL", "noreply@itlava.com")
+SUPPORT_EMAIL = os.environ.get("SUPPORT_EMAIL", "support@lava.sa")
+CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "contact@lava.sa")
+JOBS_EMAIL = os.environ.get("JOBS_EMAIL", "jobs@lava.sa")
+NOREPLY_EMAIL = os.environ.get("NOREPLY_EMAIL", "noreply@lava.sa")
 
 # CV / Resume scanning
 CV_SCAN_REQUIRED = os.environ.get("CV_SCAN_REQUIRED", "True") == "True"

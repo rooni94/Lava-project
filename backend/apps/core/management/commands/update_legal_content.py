@@ -55,7 +55,7 @@ class Command(BaseCommand):
 <p>قد نقوم بتحديث هذه السياسة وسننشر التغييرات هنا.</p>
 
 <h2>9. التواصل معنا</h2>
-<p>privacy@lava.com.sa | +966 11 123 4567</p>
+<p>privacy@lava.sa | +966 11 123 4567</p>
 </div>''',
             order=1
         )
@@ -106,7 +106,7 @@ class Command(BaseCommand):
 <p>We may update this policy and will post changes here.</p>
 
 <h2>9. Contact Us</h2>
-<p>privacy@lava.com.sa | +966 11 123 4567</p>
+<p>privacy@lava.sa | +966 11 123 4567</p>
 </div>''',
             order=2
         )
@@ -163,7 +163,7 @@ class Command(BaseCommand):
 <p>تخضع هذه الشروط لقوانين المملكة العربية السعودية.</p>
 
 <h2>10. التواصل</h2>
-<p>legal@lava.com.sa | +966 11 123 4567</p>
+<p>legal@lava.sa | +966 11 123 4567</p>
 </div>''',
             order=1
         )
@@ -214,7 +214,7 @@ class Command(BaseCommand):
 <p>These terms are governed by Saudi Arabian laws.</p>
 
 <h2>10. Contact</h2>
-<p>legal@lava.com.sa | +966 11 123 4567</p>
+<p>legal@lava.sa | +966 11 123 4567</p>
 </div>''',
             order=2
         )

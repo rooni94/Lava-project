@@ -339,7 +339,7 @@ export default function ContactPage() {
             <SideCard title={isAr ? "بيانات التواصل" : "Contact details"}>
               <p className="text-sm text-secondary/80 dark:text-neutral-300">{contactInfo?.location || (isAr ? "الرياض - السعودية" : "Riyadh, Saudi Arabia")}</p>
               <p className="text-sm text-secondary/80 dark:text-neutral-300">{isAr ? "الهاتف:" : "Phone:"} {contactInfo?.phone || "+966 11 123 4567"}</p>
-              <p className="text-sm text-secondary/80 dark:text-neutral-300">{isAr ? "البريد:" : "Email:"} {contactInfo?.email || "info@lava-tech.sa"}</p>
+              <p className="text-sm text-secondary/80 dark:text-neutral-300">{isAr ? "البريد:" : "Email:"} {contactInfo?.email || "info@lava.sa"}</p>
               <p className="text-sm text-secondary/80 dark:text-neutral-300">
                 {isAr ? "ساعات العمل:" : "Working hours:"} {contactInfo?.working_hours || (isAr ? "الأحد - الخميس، 8 ص - 6 م" : "Sunday - Thursday, 8 AM - 6 PM")}
               </p>

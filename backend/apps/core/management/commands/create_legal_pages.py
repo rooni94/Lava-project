@@ -52,7 +52,7 @@ class Command(BaseCommand):
 قد نقوم بتحديث هذه السياسة.
 
 ## 8. التواصل معنا
-info@lava.com.sa''',
+info@lava.sa''',
                 order=1
             )
             
@@ -89,7 +89,7 @@ You have the right to access, correct, delete.
 We may update this policy.
 
 ## 8. Contact Us
-info@lava.com.sa''',
+info@lava.sa''',
                 order=2
             )
         else:
@@ -146,7 +146,7 @@ info@lava.com.sa''',
 تخضع هذه الشروط لقوانين السعودية.
 
 ## 10. التواصل
-legal@lava.com.sa''',
+legal@lava.sa''',
                 order=1
             )
             
@@ -187,7 +187,7 @@ We reserve the right to modify these terms.
 These terms are governed by Saudi Arabian laws.
 
 ## 10. Contact
-legal@lava.com.sa''',
+legal@lava.sa''',
                 order=2
             )
         else:
