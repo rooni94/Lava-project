@@ -78,5 +78,6 @@ export default function Home() {
       <Testimonials />
       <CallToAction />
     </Layout>
+    </>
   );
 }
