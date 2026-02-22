@@ -1,6 +1,8 @@
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+const apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8000/api" : "/api");
 const mediaBase =
-  import.meta.env.VITE_MEDIA_BASE_URL || apiBase.replace(/\/api\/?$/, "") || "http://localhost:8000";
+  import.meta.env.VITE_MEDIA_BASE_URL ||
+  apiBase.replace(/\/api\/?$/, "") ||
+  (import.meta.env.DEV ? "http://localhost:8000" : "");
 
 export function resolveMediaUrl(path?: string | null): string | undefined {
   if (!path) return undefined;
