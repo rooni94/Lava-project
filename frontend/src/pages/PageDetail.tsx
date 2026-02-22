@@ -14,7 +14,7 @@ export default function PageDetail() {
 
   const { data: page, isLoading, isError } = useQuery<Page>({
     queryKey: ["page", slug],
-    queryFn: () => fetchPageBySlug(slug!),
+    queryFn: () => { if (!slug) throw new Error("No slug provided"); return fetchPageBySlug(slug); },
     enabled: !!slug,
   });
 
