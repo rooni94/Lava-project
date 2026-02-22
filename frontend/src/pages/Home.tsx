@@ -9,13 +9,14 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import Reveal from "../components/ui/Reveal";
 
+
+
 export default function Home() {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   return (
-    <Layout>
+    <>
       <MetaHead
-        title={isAr ? "LAVA | وكالة تسويق وبرمجة متكاملة" : "LAVA | Integrated marketing & engineering agency"}
         description={
           isAr
             ? "نمزج التسويق الإبداعي مع هندسة المنتجات: محتوى وتصميم وموشن جرافيك وخطط نمو، إلى جانب برمجة مواقع، تطبيقات، ولوحات تحكم وأنظمة قابلة للتوسع."

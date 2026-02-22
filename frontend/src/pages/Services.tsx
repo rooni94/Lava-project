@@ -73,14 +73,14 @@ export default function ServicesPage() {
               <p className="text-xs uppercase tracking-[0.25em] text-secondary/60 dark:text-neutral-400">
                 {isAr ? "مسارين في نظام واحد" : "Dual-track execution"}
               </p>
-              <h1 className="text-3xl md:text-5xl font-bold leading-tight text-secondary dark:text-neutral-50">
-                {isAr ? "هندسة برمجيات + تسويق أداء في منظومة واحدة" : "Software engineering + performance marketing in one system"}
-              </h1>
+                    <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
+        {isAr ? "خدمات متكاملة: برمجة، تسويق، تصميم، إنتاج" : "Integrated Services: Programming, Marketing, Design, Production"}
+      </h1>
               <p className="text-secondary/75 dark:text-neutral-300 max-w-3xl leading-8">
                 {isAr
                   ? "نصمم المنتجات ونبنيها ونسوقها ضمن فريق واحد، لذلك لا يوجد تعارض بين الإطلاق التقني والأهداف التسويقية."
                   : "We design, build, and scale products with one integrated team so technical launches and growth goals move together."}
-              </p>
+               نحن نركز على برمجة سعودية و تسويق رقمي و تصميم مواقع و إنتاج فيديوهات و تطوير تطبيقات.</p>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3">
