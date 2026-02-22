@@ -15,7 +15,6 @@ export default function Home() {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   return (
-    <>
       <MetaHead
         description={
           isAr
@@ -78,6 +77,5 @@ export default function Home() {
       <Testimonials />
       <CallToAction />
     </Layout>
-    </>
   );
 }
