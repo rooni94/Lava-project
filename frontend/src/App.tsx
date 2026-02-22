@@ -33,7 +33,7 @@ import {
   DashboardSupportChatPage,
   DashboardMediaPage,
   DashboardPagesPage,
-  DashboardSectionsPage, PageDetailPage,
+  DashboardSectionsPage, PrivacyPolicyPage, TermsConditionsPage,
   DashboardSettingsPage,
 } from "./routes/lazy";
 
