@@ -30,3 +30,5 @@ export const DashboardMediaPage = lazy(() => import("../pages/Dashboard/Media"))
 export const DashboardPagesPage = lazy(() => import("../pages/Dashboard/Pages"));
 export const DashboardSectionsPage = lazy(() => import("../pages/Dashboard/Sections"));
 export const DashboardSettingsPage = lazy(() => import("../pages/Dashboard/Settings"));
+export const PrivacyPolicyPage = lazy(() => import("../pages/PrivacyPolicy"));
+export const TermsConditionsPage = lazy(() => import("../pages/TermsConditions"));
