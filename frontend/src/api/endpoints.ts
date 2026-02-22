@@ -221,13 +221,13 @@ export const replyMessage = async (id: number, payload: { subject?: string; body
   api.post(`/messages/${id}/reply/`, payload);
 
 export const fetchPages = async (): Promise<Page[]> => {
+  const { data } = await api.get('/pages/');
+  return data.results ?? data;
+};
 
 export const fetchPageBySlug = async (slug: string): Promise<Page> => {
   const { data } = await api.get(`/pages/${slug}/`);
   return data;
-};
-  const { data } = await api.get("/pages/");
-  return data.results ?? data;
 };
 
 export const createPage = async (payload: Partial<Page>) => api.post("/pages/", payload);
