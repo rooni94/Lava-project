@@ -111,8 +111,10 @@ export type Page = {
   name: string;
   slug: string;
   title: string;
+  title_en?: string;
   status: string;
   meta_description?: string;
+  meta_description_en?: string;
   hero_image?: string;
   sections?: Section[];
   updated_at?: string;

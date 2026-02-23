@@ -75,7 +75,9 @@ class Page(TimestampedModel):
     name = models.CharField(max_length=100, verbose_name=_("الاسم"))
     slug = models.SlugField(unique=True)
     title = models.CharField(max_length=200, verbose_name=_("العنوان"))
+    title_en = models.CharField(max_length=200, blank=True, verbose_name=_("العنوان بالإنجليزية"))
     meta_description = models.TextField(blank=True, verbose_name=_("وصف ميتا"))
+    meta_description_en = models.TextField(blank=True, verbose_name=_("وصف ميتا بالإنجليزية"))
     hero_image = models.ImageField(upload_to="pages/", blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="published")
 

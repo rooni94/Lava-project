@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import Layout from "../components/layout/Layout";
 import SectionTitle from "../components/ui/SectionTitle";
 import MetaHead from "../components/MetaHead";
-import { fetchServices } from "../api/endpoints";
+import { fetchServices, fetchPageBySlug } from "../api/endpoints";
 import ServiceCard from "../components/ui/ServiceCard";
 import Skeleton from "../components/ui/Skeleton";
-import { Service } from "../types";
+import { Service, Page, Section } from "../types";
 import Reveal from "../components/ui/Reveal";
 
 const isSoftwareService = (service: Service) => {
@@ -16,49 +16,119 @@ const isSoftwareService = (service: Service) => {
   return /(web|website|app|mobile|system|erp|crm|platform|code|dev|cloud|dashboard)/.test(text);
 };
 
+const getExtraString = (section: Section, key: string): string => {
+  const extra = (section.extra || {}) as Record<string, unknown>;
+  const raw = extra[key];
+  return typeof raw === "string" ? raw : "";
+};
+
+type ProcessStep = { title: string; body: string };
+
+function extractProcessSteps(sections: Section[], isAr: boolean): ProcessStep[] {
+  const steps = sections
+    .filter((s) => s.section_type === "process_step")
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  if (!steps.length) {
+    return isAr
+      ? [
+          { title: "استكشاف", body: "تحليل الهدف التجاري واحتياج المستخدم والنطاق الفني." },
+          { title: "تصميم الحل", body: "بناء تصور المنتج والرسالة التسويقية في مسار موحد." },
+          { title: "التنفيذ", body: "تطوير + إنتاج + حملات بإيقاع أسبوعي واضح." },
+          { title: "التحسين", body: "قراءة النتائج وتحسين التجربة والعائد بشكل مستمر." },
+        ]
+      : [
+          { title: "Discovery", body: "Analyze business goals, user needs, and technical constraints." },
+          { title: "Solution design", body: "Shape product direction and campaign narrative as one system." },
+          { title: "Build", body: "Ship engineering, production, and campaigns in weekly cycles." },
+          { title: "Optimize", body: "Use real performance data to refine both product and growth." },
+        ];
+  }
+
+  return steps.map((step) => ({
+    title: isAr ? step.title : getExtraString(step, "title_en") || step.title,
+    body: isAr ? step.content : getExtraString(step, "content_en") || step.content,
+  }));
+}
+
+function extractHeroContent(sections: Section[], isAr: boolean) {
+  const heroSection = sections.find((s) => s.section_type === "hero");
+  if (!heroSection) {
+    return {
+      badge: isAr ? "مسارين في نظام واحد" : "Dual-track execution",
+      title: isAr ? "هندسة برمجيات + تسويق أداء في منظومة واحدة" : "Software engineering + performance marketing in one system",
+      subtitle: isAr
+        ? "نصمم المنتجات ونبنيها ونسوقها ضمن فريق واحد، لذلك لا يوجد تعارض بين الإطلاق التقني والأهداف التسويقية."
+        : "We design, build, and scale products with one integrated team so technical launches and growth goals move together.",
+    };
+  }
+
+  return {
+    badge: isAr ? getExtraString(heroSection, "badge_ar") || heroSection.title : getExtraString(heroSection, "badge_en") || getExtraString(heroSection, "title_en") || heroSection.title,
+    title: isAr ? heroSection.content : getExtraString(heroSection, "title_en") || heroSection.content,
+    subtitle: isAr ? getExtraString(heroSection, "subtitle_ar") || "" : getExtraString(heroSection, "subtitle_en") || "",
+  };
+}
+
+function extractSectionTitle(sections: Section[], sectionType: string, isAr: boolean) {
+  const section = sections.find((s) => s.section_type === sectionType);
+  if (!section) return { title: "", subtitle: "" };
+  return {
+    title: isAr ? section.title : getExtraString(section, "title_en") || section.title,
+    subtitle: isAr ? section.content : getExtraString(section, "content_en") || section.content,
+  };
+}
+
 export default function ServicesPage() {
-  const { data, isLoading } = useQuery({
+  const { data: servicesData, isLoading: servicesLoading } = useQuery({
     queryKey: ["services-page"],
     queryFn: fetchServices,
     staleTime: 5 * 60 * 1000,
     cacheTime: 60 * 60 * 1000,
   });
 
+  const { data: page, isLoading: pageLoading } = useQuery<Page | null>({
+    queryKey: ["page", "services"],
+    queryFn: async () => {
+      try {
+        return await fetchPageBySlug("services");
+      } catch {
+        return null;
+      }
+    },
+  });
+
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
 
   const { software, marketing } = useMemo(() => {
-    const services = data || [];
+    const services = servicesData || [];
     return {
       software: services.filter(isSoftwareService),
       marketing: services.filter((service) => !isSoftwareService(service)),
     };
-  }, [data]);
+  }, [servicesData]);
 
-  const process = isAr
-    ? [
-        { title: "استكشاف", body: "تحليل الهدف التجاري واحتياج المستخدم والنطاق الفني." },
-        { title: "تصميم الحل", body: "بناء تصور المنتج والرسالة التسويقية في مسار موحد." },
-        { title: "التنفيذ", body: "تطوير + إنتاج + حملات بإيقاع أسبوعي واضح." },
-        { title: "التحسين", body: "قراءة النتائج وتحسين التجربة والعائد بشكل مستمر." },
-      ]
-    : [
-        { title: "Discovery", body: "Analyze business goals, user needs, and technical constraints." },
-        { title: "Solution design", body: "Shape product direction and campaign narrative as one system." },
-        { title: "Build", body: "Ship engineering, production, and campaigns in weekly cycles." },
-        { title: "Optimize", body: "Use real performance data to refine both product and growth." },
-      ];
+  const sections = page?.sections || [];
+  const hero = useMemo(() => extractHeroContent(sections, isAr), [sections, isAr]);
+  const process = useMemo(() => extractProcessSteps(sections, isAr), [sections, isAr]);
+  const softwareSection = useMemo(() => extractSectionTitle(sections, "section_title", isAr), [sections, isAr]);
+  const marketingSection = useMemo(() => {
+    const marketingSections = sections.filter((s) => s.section_type === "section_title" && s.order >= 20);
+    const section = marketingSections[0];
+    if (!section) return { title: "", subtitle: "" };
+    return {
+      title: isAr ? section.title : getExtraString(section, "title_en") || section.title,
+      subtitle: isAr ? section.content : getExtraString(section, "content_en") || section.content,
+    };
+  }, [sections, isAr]);
+
+  const pageTitle = page ? (isAr ? page.title : page.title_en || page.title) : isAr ? "خدمات LAVA" : "LAVA services";
+  const pageDescription = page ? (isAr ? page.meta_description : page.meta_description_en || page.meta_description) : isAr ? "حلول متكاملة تجمع تطوير البرمجيات والتسويق الرقمي ضمن فريق واحد." : "Integrated software and digital marketing services delivered by one coordinated team.";
 
   return (
     <Layout>
-      <MetaHead
-        title={isAr ? "خدمات LAVA" : "LAVA services"}
-        description={
-          isAr
-            ? "حلول متكاملة تجمع تطوير البرمجيات والتسويق الرقمي ضمن فريق واحد."
-            : "Integrated software and digital marketing services delivered by one coordinated team."
-        }
-      />
+      <MetaHead title={pageTitle} description={pageDescription} />
 
       <section className="py-14 container mx-auto px-4 space-y-10 text-secondary dark:text-neutral-100">
         <motion.div
@@ -71,8 +141,9 @@ export default function ServicesPage() {
           <div className="relative grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-center">
             <div className="space-y-4">
               <p className="text-xs uppercase tracking-[0.25em] text-secondary/60 dark:text-neutral-400">
-                {isAr ? "مسارين في نظام واحد" : "Dual-track execution"}
+                {hero.badge}
               </p>
+<<<<<<< HEAD
                     <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
         {isAr ? "خدمات متكاملة: برمجة، تسويق، تصميم، إنتاج" : "Integrated Services: Programming, Marketing, Design, Production"}
       </h1>
@@ -81,6 +152,16 @@ export default function ServicesPage() {
                   ? "نصمم المنتجات ونبنيها ونسوقها ضمن فريق واحد، لذلك لا يوجد تعارض بين الإطلاق التقني والأهداف التسويقية."
                   : "We design, build, and scale products with one integrated team so technical launches and growth goals move together."}
                نحن نركز على برمجة سعودية و تسويق رقمي و تصميم مواقع و إنتاج فيديوهات و تطوير تطبيقات.</p>
+=======
+              <h1 className="text-3xl md:text-5xl font-bold leading-tight text-secondary dark:text-neutral-50">
+                {hero.title}
+              </h1>
+              {hero.subtitle && (
+                <p className="text-secondary/75 dark:text-neutral-300 max-w-3xl leading-8">
+                  {hero.subtitle}
+                </p>
+              )}
+>>>>>>> 1f28e09 (Add services page content management with bilingual support)
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3">
@@ -103,16 +184,12 @@ export default function ServicesPage() {
           <section className="space-y-6">
             <SectionTitle
               align="start"
-              title={isAr ? "خدمات التطوير البرمجي" : "Software development services"}
-              subtitle={
-                isAr
-                  ? "منصات ويب وتطبيقات وأنظمة أعمال مبنية للاستقرار والتوسع."
-                  : "Web platforms, apps, and business systems built for long-term scale."
-              }
+              title={softwareSection.title || (isAr ? "خدمات التطوير البرمجي" : "Software development services")}
+              subtitle={softwareSection.subtitle || (isAr ? "منصات ويب وتطبيقات وأنظمة أعمال مبنية للاستقرار والتوسع." : "Web platforms, apps, and business systems built for long-term scale.")}
             />
 
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {isLoading ? (
+              {servicesLoading ? (
                 <Skeleton className="h-40 w-full col-span-full" />
               ) : software.length ? (
                 software.map((service) => <ServiceCard key={service.id} service={service} />)
@@ -127,16 +204,12 @@ export default function ServicesPage() {
           <section className="space-y-6">
             <SectionTitle
               align="start"
-              title={isAr ? "خدمات التسويق الرقمي" : "Digital marketing services"}
-              subtitle={
-                isAr
-                  ? "محتوى وإنتاج مرئي وحملات أداء مرتبطة ببيانات حقيقية."
-                  : "Content, production, and performance campaigns tied to measurable outcomes."
-              }
+              title={marketingSection.title || (isAr ? "خدمات التسويق الرقمي" : "Digital marketing services")}
+              subtitle={marketingSection.subtitle || (isAr ? "محتوى وإنتاج مرئي وحملات أداء مرتبطة ببيانات حقيقية." : "Content, production, and performance campaigns tied to measurable outcomes.")}
             />
 
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {isLoading ? (
+              {servicesLoading ? (
                 <Skeleton className="h-40 w-full col-span-full" />
               ) : marketing.length ? (
                 marketing.map((service) => <ServiceCard key={service.id} service={service} />)
