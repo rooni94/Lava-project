@@ -87,7 +87,7 @@ export default function ServicesPage() {
     cacheTime: 60 * 60 * 1000,
   });
 
-  const { data: page, isLoading: pageLoading } = useQuery<Page | null>({
+  const { data: page } = useQuery<Page | null>({
     queryKey: ["page", "services"],
     queryFn: async () => {
       try {
@@ -109,7 +109,7 @@ export default function ServicesPage() {
     };
   }, [servicesData]);
 
-  const sections = page?.sections || [];
+  const sections = useMemo(() => page?.sections ?? [], [page]);
   const hero = useMemo(() => extractHeroContent(sections, isAr), [sections, isAr]);
   const process = useMemo(() => extractProcessSteps(sections, isAr), [sections, isAr]);
   const softwareSection = useMemo(() => extractSectionTitle(sections, "section_title", isAr), [sections, isAr]);
@@ -143,16 +143,6 @@ export default function ServicesPage() {
               <p className="text-xs uppercase tracking-[0.25em] text-secondary/60 dark:text-neutral-400">
                 {hero.badge}
               </p>
-<<<<<<< HEAD
-                    <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
-        {isAr ? "خدمات متكاملة: برمجة، تسويق، تصميم، إنتاج" : "Integrated Services: Programming, Marketing, Design, Production"}
-      </h1>
-              <p className="text-secondary/75 dark:text-neutral-300 max-w-3xl leading-8">
-                {isAr
-                  ? "نصمم المنتجات ونبنيها ونسوقها ضمن فريق واحد، لذلك لا يوجد تعارض بين الإطلاق التقني والأهداف التسويقية."
-                  : "We design, build, and scale products with one integrated team so technical launches and growth goals move together."}
-               نحن نركز على برمجة سعودية و تسويق رقمي و تصميم مواقع و إنتاج فيديوهات و تطوير تطبيقات.</p>
-=======
               <h1 className="text-3xl md:text-5xl font-bold leading-tight text-secondary dark:text-neutral-50">
                 {hero.title}
               </h1>
@@ -161,7 +151,6 @@ export default function ServicesPage() {
                   {hero.subtitle}
                 </p>
               )}
->>>>>>> 1f28e09 (Add services page content management with bilingual support)
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3">
