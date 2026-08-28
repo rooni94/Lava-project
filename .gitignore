@@ -1,28 +1,54 @@
 # Python / Django
 __pycache__/
 *.py[cod]
-*.sqlite3
-db.sqlite3
+*.pyo
 .venv/
+venv/
+env/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .cache/
+coverage.xml
+.coverage
+htmlcov/
+
+# Local databases, exports, backups, and runtime data
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+*.dump
+*.bak
+*.backup
+dump.rdb
+data.json
 staticfiles/
 media/
-data.json
-# Node / React
-node_modules/
-dist/
-.vite/
+docker-volumes/
 
 # Environment / secrets
 .env
 .env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Node / React / Vite
+node_modules/
+dist/
+.vite/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
 
 # OS / IDE
+.DS_Store
 *.DS_Store
 Thumbs.db
 .vscode/
 .idea/
-
-# Docker / misc
-*.log

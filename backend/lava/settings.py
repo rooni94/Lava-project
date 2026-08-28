@@ -166,18 +166,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.User"
 
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
-EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.hostinger.com")
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "465"))
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "True") == "True"
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "False") == "True"
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "False") == "True"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@lava.sa")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@example.invalid")
 
-SUPPORT_EMAIL = os.environ.get("SUPPORT_EMAIL", "support@lava.sa")
-CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "contact@lava.sa")
-JOBS_EMAIL = os.environ.get("JOBS_EMAIL", "jobs@lava.sa")
-NOREPLY_EMAIL = os.environ.get("NOREPLY_EMAIL", "noreply@lava.sa")
+SUPPORT_EMAIL = os.environ.get("SUPPORT_EMAIL", "support@example.invalid")
+CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "contact@example.invalid")
+JOBS_EMAIL = os.environ.get("JOBS_EMAIL", "jobs@example.invalid")
+NOREPLY_EMAIL = os.environ.get("NOREPLY_EMAIL", "no-reply@example.invalid")
 
 # CV / Resume scanning
 CV_SCAN_REQUIRED = os.environ.get("CV_SCAN_REQUIRED", "True") == "True"

@@ -4,9 +4,9 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: lava
-      POSTGRES_USER: lava
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: "${POSTGRES_DB:-lava}"
+      POSTGRES_USER: "${POSTGRES_USER:-lava}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -24,12 +24,12 @@ services:
       - ./backend:/app
       - media:/app/media
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-      REDIS_URL: redis://redis:6379/0
-      CORS_ALLOWED_ORIGINS: http://localhost:5173
-      ALLOWED_HOSTS: localhost,127.0.0.1
-      SECRET_KEY: ${SECRET_KEY}
-      DEBUG: "False"
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lava}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-lava}"
+      REDIS_URL: "${REDIS_URL:-redis://redis:6379/0}"
+      CORS_ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS:-http://localhost:5173}"
+      ALLOWED_HOSTS: "${ALLOWED_HOSTS:-localhost,127.0.0.1}"
+      SECRET_KEY: "${SECRET_KEY:?Set SECRET_KEY in .env}"
+      DEBUG: "${DEBUG:-False}"
       SECURE_SSL_REDIRECT: "False"
       MEDIA_WATERMARK_ENABLED: "True"
       MEDIA_WATERMARK_IMAGE_PATH: "static/watermarks/logo.png"

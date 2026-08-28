@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
@@ -32,12 +34,21 @@ class Command(BaseCommand):
         User = get_user_model()
         admin_username = "admin"
         admin_email = "admin@lava.local"
-        admin_password = None
+        admin_password = os.environ.get("SEED_ADMIN_PASSWORD", "").strip()
         user, created = User.objects.get_or_create(
             username=admin_username,
             defaults={"email": admin_email, "role": User.Role.SUPER_ADMIN},
         )
-        if created or not user.check_password(admin_password):
+        if created:
+            if admin_password:
+                user.set_password(admin_password)
+            else:
+                user.set_unusable_password()
+            user.role = User.Role.SUPER_ADMIN
+            user.is_staff = True
+            user.is_superuser = True
+            user.save()
+        elif admin_password and not user.check_password(admin_password):
             user.set_password(admin_password)
             user.role = User.Role.SUPER_ADMIN
             user.is_staff = True
